@@ -49,7 +49,7 @@ export default function ProblemSolutionGrid() {
                 <div>
                   <p className="font-semibold text-muted-foreground mb-1">The Challenge:</p>
                   <h3 className="text-xl font-bold text-primary mb-3">{item.problem}</h3>
-                  <p className="font-semibold text-accent mb-1">{item.service}</p>
+                  <p className="font-semibold text-primary mb-1">{item.service}</p>
                   <p className="text-muted-foreground">{item.solution}</p>
                 </div>
               </div>

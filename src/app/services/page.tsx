@@ -125,6 +125,7 @@ const services: Service[] = [
 ];
 
 const serviceCategories = [
+  { id: "all", name: "All" },
   { id: "development", name: "Development" },
   { id: "design", name: "Design" },
   { id: "marketing", name: "Marketing" },
@@ -147,21 +148,44 @@ export default function ServicesPage() {
       
       <section className="py-16 md:py-24 bg-background">
         <div className="container max-w-7xl">
-          <Tabs defaultValue="development" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto mb-12">
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 h-auto mb-12">
               {serviceCategories.map((cat) => (
                 <TabsTrigger key={cat.id} value={cat.id} className="py-2.5">{cat.name}</TabsTrigger>
               ))}
             </TabsList>
+            
+            <TabsContent value="all">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {services.map((service) => (
+                    <Card key={service.title} className="flex flex-col h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <CardHeader>
+                            <div className="mb-4">
+                                <service.Icon className="w-10 h-10 text-primary" />
+                            </div>
+                            <CardTitle className="text-xl text-primary">{service.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent className="flex-grow">
+                            <CardDescription>{service.description}</CardDescription>
+                        </CardContent>
+                        <CardFooter>
+                            <div className="flex flex-wrap gap-2">
+                                {service.tech.map(t => <Badge key={t} variant="outline">{t}</Badge>)}
+                            </div>
+                        </CardFooter>
+                    </Card>
+                ))}
+              </div>
+            </TabsContent>
 
-            {serviceCategories.map((cat) => (
+            {serviceCategories.filter(c => c.id !== 'all').map((cat) => (
                 <TabsContent key={cat.id} value={cat.id}>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {services.filter(s => s.category === cat.id).map((service) => (
                             <Card key={service.title} className="flex flex-col h-full hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                                 <CardHeader>
                                     <div className="mb-4">
-                                        <service.Icon className="w-10 h-10 text-accent" />
+                                        <service.Icon className="w-10 h-10 text-primary" />
                                     </div>
                                     <CardTitle className="text-xl text-primary">{service.title}</CardTitle>
                                 </CardHeader>

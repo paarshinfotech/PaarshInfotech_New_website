@@ -29,7 +29,7 @@ export default function ServiceLifecycle() {
             {processSteps.map((step) => (
               <div key={step.title} className="relative flex flex-col items-center text-center group">
                 <div className="relative z-10 flex items-center justify-center w-24 h-24 bg-background rounded-full">
-                  <div className="flex items-center justify-center w-20 h-20 bg-primary/10 text-primary rounded-full ring-8 ring-primary/5 transition-all duration-300 group-hover:bg-accent group-hover:text-accent-foreground group-hover:ring-accent/10 group-hover:scale-105">
+                  <div className="flex items-center justify-center w-20 h-20 bg-primary/10 text-primary rounded-full ring-8 ring-primary/5 transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:ring-primary/10 group-hover:scale-105">
                     <step.Icon className="w-8 h-8" />
                   </div>
                 </div>

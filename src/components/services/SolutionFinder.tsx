@@ -1,12 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, ShoppingBag, LineChart, Bot, Rocket } from "lucide-react";
 import type { LucideIcon } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type Goal = {
   id: string;
@@ -63,7 +63,7 @@ const goals: Goal[] = [
 ];
 
 export default function SolutionFinder() {
-  const [openItem, setOpenItem] = useState<string | null>(goals[0].id);
+  const [selectedGoal, setSelectedGoal] = useState<Goal>(goals[0]);
 
   return (
     <section className="py-16 md:py-24 bg-secondary">
@@ -79,10 +79,10 @@ export default function SolutionFinder() {
             {goals.map((goal) => (
               <button
                 key={goal.id}
-                onClick={() => setOpenItem(goal.id)}
+                onClick={() => setSelectedGoal(goal)}
                 className={cn(
                   "flex items-center gap-4 text-left p-4 rounded-lg border-2 transition-all w-full",
-                  openItem === goal.id
+                  selectedGoal.id === goal.id
                     ? "bg-primary text-primary-foreground border-primary shadow-lg"
                     : "bg-background hover:bg-muted/50 border-transparent"
                 )}
@@ -90,44 +90,35 @@ export default function SolutionFinder() {
                 <goal.Icon className="w-8 h-8 flex-shrink-0" />
                 <div>
                   <p className="font-bold text-lg">{goal.title}</p>
-                  <p className={cn("text-sm", openItem === goal.id ? "text-primary-foreground/80" : "text-muted-foreground")}>{goal.description}</p>
+                  <p className={cn("text-sm", selectedGoal.id === goal.id ? "text-primary-foreground/80" : "text-muted-foreground")}>{goal.description}</p>
                 </div>
               </button>
             ))}
           </div>
           <div className="lg:col-span-2">
-            <Accordion
-              type="single"
-              value={openItem ?? ""}
-              onValueChange={setOpenItem}
-              className="w-full"
-            >
-              {goals.map((goal) => (
-                <AccordionItem key={goal.id} value={goal.id} className="border-none">
-                  <AccordionContent className="pt-0">
-                    <div className="bg-background p-8 rounded-lg shadow-lg">
-                      <h3 className="text-2xl font-bold text-primary mb-6">Recommended Services for "{goal.title}"</h3>
-                      <div className="space-y-6">
-                        {goal.services.map((service) => (
-                          <div key={service.name} className="flex items-start gap-4">
-                              <div className="flex-shrink-0 w-6 h-6 bg-accent rounded-full flex items-center justify-center mt-1">
-                                <ArrowRight className="w-4 h-4 text-accent-foreground" />
-                              </div>
-                              <div>
+            <Card className="h-full">
+                <CardHeader>
+                    <CardTitle className="text-2xl text-primary">Recommended Services for "{selectedGoal.title}"</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-6">
+                    {selectedGoal.services.map((service) => (
+                        <div key={service.name} className="flex items-start gap-4">
+                            <div className="flex-shrink-0 w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mt-1">
+                                <ArrowRight className="w-4 h-4 text-primary" />
+                            </div>
+                            <div>
                                 <p className="font-semibold text-lg text-primary">{service.name}</p>
                                 <p className="text-muted-foreground">{service.description}</p>
-                              </div>
-                          </div>
-                        ))}
-                      </div>
-                       <Button asChild className="mt-8">
-                         <Link href="/quote">Request a Quote <ArrowRight className="ml-2 w-4 h-4" /></Link>
-                       </Button>
+                            </div>
+                        </div>
+                    ))}
                     </div>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+                    <Button asChild className="mt-8">
+                        <Link href="/quote">Request a Quote <ArrowRight className="ml-2 w-4 h-4" /></Link>
+                    </Button>
+                </CardContent>
+            </Card>
           </div>
         </div>
       </div>

@@ -41,10 +41,10 @@ export default function ExpectedOutcomes() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {outcomesData.map((outcome) => (
-                        <Card key={outcome.title} className="text-center p-6 border-l-4 border-l-accent shadow-lg hover:shadow-xl transition-shadow">
+                        <Card key={outcome.title} className="text-center p-6 border-l-4 border-l-primary shadow-lg hover:shadow-xl transition-shadow">
                             <CardHeader className="p-0 items-center">
-                                <div className="p-4 bg-accent/10 rounded-full mb-4">
-                                    <outcome.Icon className="w-8 h-8 text-accent" />
+                                <div className="p-4 bg-primary/10 rounded-full mb-4">
+                                    <outcome.Icon className="w-8 h-8 text-primary" />
                                 </div>
                                 <p className="text-4xl font-extrabold text-primary">{outcome.metric}</p>
                                 <CardTitle className="text-xl mt-2">{outcome.title}</CardTitle>
