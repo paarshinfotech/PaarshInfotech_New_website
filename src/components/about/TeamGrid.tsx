@@ -24,13 +24,13 @@ export default function TeamGrid() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {teamMembers.map((member) => (
             <div key={member.name} className="group relative flex flex-col items-center text-center">
-              <div className="relative w-36 h-36">
+              <div className="relative w-44 h-44">
                  <Image
                   src={member.avatar}
                   alt={member.name}
-                  width={144}
-                  height={144}
-                  className="rounded-full border-4 border-background shadow-lg transition-transform duration-300 group-hover:scale-110"
+                  width={176}
+                  height={176}
+                  className="rounded-full object-cover border-4 border-background shadow-lg transition-transform duration-300 group-hover:scale-110"
                   data-ai-hint={member.hint}
                 />
               </div>
