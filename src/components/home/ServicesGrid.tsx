@@ -1,5 +1,4 @@
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import Link from 'next/link';
 import { Code, Server, Smartphone, ShoppingCart, BrainCircuit, PenTool } from 'lucide-react';
 import type { LucideIcon } from "lucide-react";
 
@@ -48,17 +47,15 @@ export default function ServicesGrid() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {services.map(({ title, description, Icon }) => (
-            <Link href="/services" key={title} className="block group">
-              <Card className="h-full hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-transparent hover:border-primary/20">
-                <CardHeader>
-                  <div className="mb-4">
-                     <Icon className="w-10 h-10 text-accent" />
-                  </div>
-                  <CardTitle className="text-xl text-primary">{title}</CardTitle>
-                  <CardDescription className="pt-2">{description}</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
+            <Card key={title} className="h-full hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-transparent hover:border-primary/20">
+              <CardHeader>
+                <div className="mb-4">
+                   <Icon className="w-10 h-10 text-accent" />
+                </div>
+                <CardTitle className="text-xl text-primary">{title}</CardTitle>
+                <CardDescription className="pt-2">{description}</CardDescription>
+              </CardHeader>
+            </Card>
           ))}
         </div>
       </div>

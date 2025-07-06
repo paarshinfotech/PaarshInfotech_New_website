@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className="bg-secondary text-secondary-foreground border-t">
       <div className="container py-12 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-primary">Paarsh Infotech</h3>
@@ -19,19 +19,9 @@ export function Footer() {
             <ul className="space-y-2 text-sm">
               <li><Link href="/" className="hover:text-primary transition-colors">Home</Link></li>
               <li><Link href="/about" className="hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link href="/services" className="hover:text-primary transition-colors">Services</Link></li>
+              <li><Link href="/careers" className="hover:text-primary transition-colors">Careers</Link></li>
+              <li><Link href="/media" className="hover:text-primary transition-colors">Media</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
-            </ul>
-          </div>
-
-          {/* Services */}
-          <div>
-            <h4 className="font-semibold mb-4">Services</h4>
-            <ul className="space-y-2 text-sm">
-              <li><Link href="/services" className="hover:text-primary transition-colors">Web Development</Link></li>
-              <li><Link href="/services" className="hover:text-primary transition-colors">Software Development</Link></li>
-              <li><Link href="/services" className="hover:text-primary transition-colors">Mobile App Development</Link></li>
-              <li><Link href="/services" className="hover:text-primary transition-colors">AI & ML</Link></li>
             </ul>
           </div>
 
