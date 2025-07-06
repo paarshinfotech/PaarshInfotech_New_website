@@ -8,6 +8,7 @@ import OurProcess from "@/components/about/OurProcess";
 import LeadershipTeam from "@/components/about/LeadershipTeam";
 import CompanyCulture from "@/components/about/CompanyCulture";
 import Stats from "@/components/home/Stats";
+import OurJourney from "@/components/about/OurJourney";
 
 export default function AboutPage() {
   return (
@@ -15,6 +16,7 @@ export default function AboutPage() {
       <AboutHero />
       <CompanyStatement />
       <VisionStatement />
+      <OurJourney />
       <OurValues />
       <OurProcess />
       <Stats />
