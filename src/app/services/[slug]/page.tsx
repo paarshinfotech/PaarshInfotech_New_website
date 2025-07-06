@@ -1,4 +1,5 @@
-// This page is intentionally left blank to resolve a build issue.
+import { notFound } from 'next/navigation';
+
 export default function ServiceSlugPage() {
-  return null;
+  notFound();
 }
