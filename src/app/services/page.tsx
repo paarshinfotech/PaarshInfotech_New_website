@@ -1,27 +1,19 @@
-import WhyChooseUs from "@/components/home/WhyChooseUs";
-import Link from 'next/link';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
+import type { LucideIcon } from "lucide-react";
+import {
+  CodeXml, ServerCog, Smartphone, Paintbrush, BrainCircuit, GanttChartSquare,
+  TabletSmartphone, ShoppingCart, Network, Bot, Megaphone, PenTool, Palette, Users
+} from "lucide-react";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { LucideIcon } from "lucide-react";
-import {
-  CodeXml,
-  ServerCog,
-  Smartphone,
-  Paintbrush,
-  BrainCircuit,
-  GanttChartSquare,
-  TabletSmartphone,
-  ShoppingCart,
-  Network,
-  Bot,
-  Megaphone,
-  PenTool,
-  Palette,
-  Users,
-} from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+import ProblemSolutionGrid from "@/components/services/ProblemSolutionGrid";
+import ExpectedOutcomes from "@/components/services/ExpectedOutcomes";
+import ServiceLifecycle from "@/components/services/ServiceLifecycle";
+import SolutionFinder from "@/components/services/SolutionFinder";
 
 type Service = {
   title: string;
@@ -133,10 +125,10 @@ const services: Service[] = [
 ];
 
 const serviceCategories = [
-    { id: "development", name: "Development" },
-    { id: "design", name: "Design" },
-    { id: "marketing", name: "Marketing" },
-    { id: "intelligence", name: "Intelligence" },
+  { id: "development", name: "Development" },
+  { id: "design", name: "Design" },
+  { id: "marketing", name: "Marketing" },
+  { id: "intelligence", name: "Intelligence" },
 ] as const;
 
 export default function ServicesPage() {
@@ -145,10 +137,10 @@ export default function ServicesPage() {
       <section className="py-20 md:py-28 bg-secondary">
         <div className="container text-center max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-primary">
-            Our Services
+            Our Digital Solutions
           </h1>
           <p className="mt-6 text-lg md:text-xl text-foreground/80">
-            Comprehensive digital solutions to build, launch, and grow your business.
+            From concept to launch, we provide comprehensive digital services to build, innovate, and grow your business.
           </p>
         </div>
       </section>
@@ -190,48 +182,22 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      <section className="py-16 md:py-24 bg-secondary">
-        <div className="container max-w-7xl">
-            <div className="text-center mb-16">
-                <h2 className="text-3xl md:text-4xl font-bold text-primary">Success Stories</h2>
-                <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto">See how we've helped businesses like yours achieve their goals with our tailored solutions.</p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-                <div className="space-y-4">
-                    <h3 className="text-2xl font-bold text-primary">Global E-Commerce Platform Launch</h3>
-                    <p className="text-muted-foreground">We partnered with a retail startup to build a scalable e-commerce platform from the ground up. The solution included a custom storefront, secure payment gateway integration, and an automated inventory management system, resulting in a 300% increase in sales within the first quarter.</p>
-                    <div className="flex flex-wrap gap-2">
-                        <Badge>E-Commerce Development</Badge>
-                        <Badge>Web Development</Badge>
-                        <Badge>Strategy & Design</Badge>
-                    </div>
-                </div>
-                <div className="w-full h-80 relative rounded-lg overflow-hidden group">
-                    <Image
-                        src="https://placehold.co/600x400.png"
-                        alt="E-commerce project"
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        data-ai-hint="online store"
-                    />
-                </div>
-            </div>
-        </div>
-      </section>
+      <ProblemSolutionGrid />
+      <ExpectedOutcomes />
+      <ServiceLifecycle />
+      <SolutionFinder />
 
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-16 md:py-24 bg-secondary">
         <div className="container text-center max-w-3xl">
-          <h2 className="text-3xl font-bold text-primary mb-4">Have a project in mind?</h2>
+          <h2 className="text-3xl font-bold text-primary mb-4">Ready to Start Your Project?</h2>
           <p className="text-foreground/80 mb-8">
-            Let's discuss how our expertise can help you achieve your goals. Get a free, no-obligation quote today.
+            Let's discuss how our expertise can help you achieve your goals. Get a free, no-obligation quote today and let's build something amazing together.
           </p>
           <Button asChild size="lg">
             <Link href="/quote">Get Your Free Quote</Link>
           </Button>
         </div>
       </section>
-
-      <WhyChooseUs />
     </>
   );
 }
