@@ -1,7 +1,6 @@
 import AboutHero from "@/components/about/AboutHero";
 import CompanyStatement from "@/components/about/CompanyStatement";
 import CompanyStats from "@/components/about/CompanyStats";
-import AdminQuote from "@/components/about/AdminQuote";
 import DirectorCard from "@/components/about/DirectorCard";
 import VisionStatement from "@/components/about/VisionStatement";
 import TeamGrid from "@/components/about/TeamGrid";
@@ -15,7 +14,6 @@ export default function AboutPage() {
       <VisionStatement />
       <CompanyStats />
       <DirectorCard />
-      <AdminQuote />
       <TeamGrid />
       <Testimonials />
     </>

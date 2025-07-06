@@ -8,7 +8,6 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Quote } from "lucide-react";
 
 const testimonials = [
   {
@@ -26,6 +25,11 @@ const testimonials = [
     name: "Sneha Patil",
     role: "Data Science Intern",
   },
+  {
+    quote: "The team's dedication to quality is evident in every project. They are not just developers; they are true partners in our success.",
+    name: "Ravi Kumar",
+    role: "Project Lead, Tech Solutions Inc.",
+  },
 ];
 
 export default function Testimonials() {
@@ -33,9 +37,9 @@ export default function Testimonials() {
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">From Our Team</h2>
-          <p className="mt-4 text-lg text-foreground/70">
-            Hear what our interns and employees have to say.
+          <h2 className="text-3xl md:text-4xl font-bold text-primary">From Our Team & Partners</h2>
+          <p className="mt-4 text-lg text-foreground/70 max-w-2xl mx-auto">
+            Hear what our interns, employees, and clients have to say about their experience with us.
           </p>
         </div>
         <Carousel
@@ -43,21 +47,23 @@ export default function Testimonials() {
             align: "start",
             loop: true,
           }}
-          className="w-full max-w-4xl mx-auto"
+          className="w-full max-w-5xl mx-auto"
         >
           <CarouselContent>
             {testimonials.map((testimonial, index) => (
-              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/1">
+              <CarouselItem key={index} className="md:basis-1/2">
                 <div className="p-4 h-full">
-                  <Card className="h-full bg-background shadow-lg flex flex-col">
-                    <CardContent className="flex flex-col items-center justify-center p-8 text-center flex-grow">
-                      <Quote className="w-10 h-10 text-accent mb-4" />
-                      <p className="text-base text-foreground/80 mb-6 flex-grow">"{testimonial.quote}"</p>
-                      <div className="mt-auto">
-                        <p className="font-semibold text-primary">{testimonial.name}</p>
+                  <Card className="h-full bg-background shadow-lg flex flex-col justify-between p-8 relative overflow-hidden">
+                    <CardContent className="p-0 z-10">
+                      <p className="text-lg text-foreground/90 mb-6 font-medium italic">"{testimonial.quote}"</p>
+                      <div>
+                        <p className="font-bold text-primary">{testimonial.name}</p>
                         <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                       </div>
                     </CardContent>
+                    <div className="absolute -bottom-8 -right-8 text-9xl font-bold text-primary/5 z-0 select-none">
+                      ”
+                    </div>
                   </Card>
                 </div>
               </CarouselItem>

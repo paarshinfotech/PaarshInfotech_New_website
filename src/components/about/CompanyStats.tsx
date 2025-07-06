@@ -1,4 +1,3 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Briefcase, BarChart } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -10,23 +9,17 @@ const stats: { value: string; label: string; Icon: LucideIcon }[] = [
 
 export default function CompanyStats() {
     return (
-        <section className="py-16 md:py-24 bg-secondary">
+        <section className="py-16 md:py-24 bg-background">
             <div className="container max-w-5xl">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                     {stats.map((stat) => (
-                        <Card key={stat.label} className="text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-                            <CardHeader>
-                                <div className="flex justify-center mb-4">
-                                    <div className="p-4 bg-primary/10 rounded-full">
-                                        <stat.Icon className="w-8 h-8 text-primary" />
-                                    </div>
-                                </div>
-                                <p className="text-4xl font-bold text-primary">{stat.value}</p>
-                            </CardHeader>
-                            <CardContent className="pt-0">
-                                <CardTitle className="text-lg font-medium text-muted-foreground">{stat.label}</CardTitle>
-                            </CardContent>
-                        </Card>
+                        <div key={stat.label} className="p-8 border border-transparent hover:border-border hover:shadow-lg rounded-lg transition-all duration-300">
+                            <div className="flex justify-center mb-4">
+                               <stat.Icon className="w-12 h-12 text-accent" />
+                            </div>
+                            <p className="text-5xl font-extrabold text-primary">{stat.value}</p>
+                            <p className="mt-2 text-base font-medium text-muted-foreground">{stat.label}</p>
+                        </div>
                     ))}
                 </div>
             </div>

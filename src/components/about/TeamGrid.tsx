@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const teamMembers = [
   { name: "Priya Sharma", role: "HR Manager", avatar: "https://placehold.co/200x200.png", hint: "professional woman" },
@@ -24,22 +23,22 @@ export default function TeamGrid() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {teamMembers.map((member) => (
-            <Card key={member.name} className="text-center hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-              <CardHeader className="items-center p-6">
-                <Image
+            <div key={member.name} className="group relative flex flex-col items-center text-center">
+              <div className="relative w-36 h-36">
+                 <Image
                   src={member.avatar}
                   alt={member.name}
-                  width={100}
-                  height={100}
-                  className="rounded-full border-4 border-secondary"
+                  width={144}
+                  height={144}
+                  className="rounded-full border-4 border-background shadow-lg transition-transform duration-300 group-hover:scale-110"
                   data-ai-hint={member.hint}
                 />
-              </CardHeader>
-              <CardContent className="p-6 pt-0">
-                <CardTitle className="text-xl text-primary">{member.name}</CardTitle>
-                <p className="text-muted-foreground">{member.role}</p>
-              </CardContent>
-            </Card>
+              </div>
+              <div className="mt-4">
+                <h3 className="text-xl font-bold text-primary">{member.name}</h3>
+                <p className="text-sm text-accent font-semibold">{member.role}</p>
+              </div>
+            </div>
           ))}
         </div>
       </div>
