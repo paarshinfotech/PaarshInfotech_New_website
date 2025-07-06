@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Stats from "@/components/home/Stats";
-import WhyChooseUs from "@/components/home/WhyChooseUs";
+import OurValues from "@/components/about/OurValues";
+import LeadershipTeam from "@/components/about/LeadershipTeam";
+import OurProcess from "@/components/about/OurProcess";
+import CompanyCulture from "@/components/about/CompanyCulture";
 
 export default function AboutPage() {
   return (
@@ -19,7 +22,7 @@ export default function AboutPage() {
       <section className="py-16 md:py-24 bg-background">
         <div className="container max-w-7xl">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="w-full h-96 relative rounded-lg overflow-hidden">
+            <div className="w-full h-96 relative rounded-lg overflow-hidden shadow-lg">
               <Image
                 src="https://placehold.co/800x600.png"
                 alt="Paarsh Infotech Office"
@@ -40,9 +43,12 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-
+      
+      <OurValues />
       <Stats />
-      <WhyChooseUs />
+      <LeadershipTeam />
+      <OurProcess />
+      <CompanyCulture />
     </>
   );
 }
