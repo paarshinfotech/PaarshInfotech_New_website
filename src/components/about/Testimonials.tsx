@@ -8,6 +8,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
+import { useRef } from "react";
 
 const testimonials = [
   {
@@ -33,6 +35,10 @@ const testimonials = [
 ];
 
 export default function Testimonials() {
+  const plugin = useRef(
+    Autoplay({ delay: 3000, stopOnInteraction: true, stopOnMouseEnter: true })
+  );
+
   return (
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
@@ -47,6 +53,7 @@ export default function Testimonials() {
             align: "start",
             loop: true,
           }}
+          plugins={[plugin.current]}
           className="w-full max-w-5xl mx-auto"
         >
           <CarouselContent>
