@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { getSmartReply } from "@/app/actions";
@@ -106,7 +106,7 @@ export function QuoteForm() {
                               checked={field.value?.includes(item.label)}
                               onCheckedChange={(checked) => {
                                 return checked
-                                  ? field.onChange([...field.value, item.label])
+                                  ? field.onChange([...(field.value || []), item.label])
                                   : field.onChange(field.value?.filter((value) => value !== item.label));
                               }}
                             />
@@ -153,7 +153,7 @@ export function QuoteForm() {
         <Card className="border-destructive">
             <CardHeader>
                 <CardTitle className="text-destructive">Error</CardTitle>
-            </Header>
+            </CardHeader>
             <CardContent>
                 <p>{error}</p>
             </CardContent>
