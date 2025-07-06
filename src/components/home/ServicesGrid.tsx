@@ -1,39 +1,6 @@
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Code, Server, Smartphone, ShoppingCart, BrainCircuit, PenTool } from 'lucide-react';
-import type { LucideIcon } from "lucide-react";
-
-const services: { title: string; description: string; Icon: LucideIcon }[] = [
-  {
-    title: "Web Development",
-    description: "Creating responsive, powerful, and user-friendly websites tailored to your business needs.",
-    Icon: Code,
-  },
-  {
-    title: "Software Development",
-    description: "Custom software solutions to streamline your operations and drive efficiency.",
-    Icon: Server,
-  },
-  {
-    title: "Mobile App Development",
-    description: "Building native and cross-platform mobile apps for both iOS and Android platforms.",
-    Icon: Smartphone,
-  },
-  {
-    title: "E-commerce Solutions",
-    description: "Develop feature-rich online stores to sell your products and services globally.",
-    Icon: ShoppingCart,
-  },
-  {
-    title: "AI and ML",
-    description: "Leveraging Artificial Intelligence and Machine Learning to build smart applications.",
-    Icon: BrainCircuit,
-  },
-  {
-    title: "UI/UX Design",
-    description: "Crafting intuitive and beautiful user interfaces that enhance user experience.",
-    Icon: PenTool,
-  },
-];
+import Link from "next/link";
+import { servicesData } from "@/lib/servicesData";
 
 export default function ServicesGrid() {
   return (
@@ -46,16 +13,18 @@ export default function ServicesGrid() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map(({ title, description, Icon }) => (
-            <Card key={title} className="h-full hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-transparent hover:border-primary/20">
-              <CardHeader>
-                <div className="mb-4">
-                   <Icon className="w-10 h-10 text-accent" />
-                </div>
-                <CardTitle className="text-xl text-primary">{title}</CardTitle>
-                <CardDescription className="pt-2">{description}</CardDescription>
-              </CardHeader>
-            </Card>
+          {servicesData.map((service) => (
+            <Link key={service.slug} href={`/services/${service.slug}`} className="block h-full">
+                <Card className="h-full hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-transparent hover:border-primary/20">
+                    <CardHeader>
+                        <div className="mb-4">
+                        <service.Icon className="w-10 h-10 text-accent" />
+                        </div>
+                        <CardTitle className="text-xl text-primary">{service.title}</CardTitle>
+                        <CardDescription className="pt-2">{service.description}</CardDescription>
+                    </CardHeader>
+                </Card>
+            </Link>
           ))}
         </div>
       </div>
