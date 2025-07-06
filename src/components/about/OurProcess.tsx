@@ -23,6 +23,8 @@ export default function OurProcess() {
         <div className="relative">
           {/* Desktop horizontal line */}
           <div className="hidden lg:block absolute top-12 left-0 w-full h-0.5 bg-border -translate-y-1/2" aria-hidden="true"></div>
+          <div className="hidden lg:block absolute top-12 left-0 w-3 h-3 bg-primary rounded-full -translate-x-1/2 -translate-y-1/2" aria-hidden="true"></div>
+          <div className="hidden lg:block absolute top-12 right-0 w-3 h-3 bg-primary rounded-full translate-x-1/2 -translate-y-1/2" aria-hidden="true"></div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-16">
             {processSteps.map((step) => (
