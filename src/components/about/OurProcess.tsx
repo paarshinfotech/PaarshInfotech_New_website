@@ -2,11 +2,11 @@ import { Search, PenTool, Code, Rocket, LifeBuoy } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 const processSteps: { title: string; description: string; Icon: LucideIcon }[] = [
-  { title: "Discover", description: "We start by understanding your vision, goals, and requirements through in-depth analysis.", Icon: Search },
-  { title: "Design", description: "Our team crafts intuitive UI/UX designs and a solid technical architecture for your project.", Icon: PenTool },
-  { title: "Develop", description: "Following agile methodologies, our developers write clean, efficient, and scalable code.", Icon: Code },
-  { title: "Deploy", description: "We handle the seamless deployment of your application to the cloud with rigorous testing.", Icon: Rocket },
-  { title: "Support", description: "Our partnership continues with ongoing support and maintenance to ensure long-term success.", Icon: LifeBuoy },
+  { title: "1. Discover", description: "We start by understanding your vision, goals, and requirements through in-depth analysis.", Icon: Search },
+  { title: "2. Design", description: "Our team crafts intuitive UI/UX designs and a solid technical architecture for your project.", Icon: PenTool },
+  { title: "3. Develop", description: "Following agile methodologies, our developers write clean, efficient, and scalable code.", Icon: Code },
+  { title: "4. Deploy", description: "We handle the seamless deployment of your application to the cloud with rigorous testing.", Icon: Rocket },
+  { title: "5. Support", description: "Our partnership continues with ongoing support and maintenance to ensure long-term success.", Icon: LifeBuoy },
 ];
 
 export default function OurProcess() {
@@ -21,21 +21,17 @@ export default function OurProcess() {
         </div>
         <div className="relative">
           <div className="hidden md:block absolute top-1/2 left-0 w-full h-px bg-border -translate-y-1/2"></div>
-          <div className="hidden md:block absolute top-1/2 left-0 w-full">
-            <div className="flex justify-between">
-              {processSteps.map((_, index) => (
-                <div key={index} className="w-3 h-3 bg-primary rounded-full transform -translate-x-1/2"></div>
-              ))}
-            </div>
-          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-0 relative">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-8 relative">
             {processSteps.map((step, index) => (
-              <div key={step.title} className="flex flex-col items-center text-center p-4">
-                <div className="mb-4 bg-primary text-primary-foreground p-4 rounded-full border-4 border-background shadow-md">
-                  <step.Icon className="w-8 h-8" />
+              <div key={step.title} className="flex flex-col items-center text-center p-4 group">
+                <div className="relative">
+                    <div className="hidden md:block absolute top-1/2 left-1/2 w-3 h-3 bg-primary rounded-full transform -translate-x-1/2 -translate-y-[calc(50%+4px)] z-10" />
+                    <div className="mb-4 bg-primary text-primary-foreground p-4 rounded-full border-4 border-background shadow-md transition-all duration-300 group-hover:scale-110 group-hover:bg-accent group-hover:text-accent-foreground">
+                    <step.Icon className="w-8 h-8" />
+                    </div>
                 </div>
-                <h3 className="text-xl font-bold text-primary mb-2">{step.title}</h3>
+                <h3 className="text-xl font-bold text-primary mb-2 mt-2">{step.title}</h3>
                 <p className="text-muted-foreground text-sm">{step.description}</p>
               </div>
             ))}
