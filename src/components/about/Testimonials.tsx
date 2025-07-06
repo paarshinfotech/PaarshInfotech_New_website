@@ -1,15 +1,6 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
-import { useRef } from "react";
 import Image from "next/image";
 
 const testimonials = [
@@ -39,11 +30,10 @@ const testimonials = [
   },
 ];
 
-export default function Testimonials() {
-  const plugin = useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: false, stopOnMouseEnter: true })
-  );
+// We duplicate the testimonials to create a seamless loop for the marquee effect.
+const extendedTestimonials = [...testimonials, ...testimonials];
 
+export default function Testimonials() {
   return (
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
@@ -53,18 +43,10 @@ export default function Testimonials() {
             Hear what our interns, employees, and clients have to say about their experience with us.
           </p>
         </div>
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          plugins={[plugin.current]}
-          className="w-full max-w-6xl mx-auto"
-        >
-          <CarouselContent>
-            {testimonials.map((testimonial, index) => (
-              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                <div className="p-4 h-full">
+        <div className="relative w-full overflow-hidden group">
+          <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
+            {extendedTestimonials.map((testimonial, index) => (
+              <div key={index} className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4">
                   <Card className="h-full bg-background shadow-lg flex flex-col p-8">
                     <CardContent className="p-0 flex-grow">
                       <p className="text-foreground/80 mb-6 italic">"{testimonial.quote}"</p>
@@ -77,13 +59,10 @@ export default function Testimonials() {
                         </div>
                     </div>
                   </Card>
-                </div>
-              </CarouselItem>
+              </div>
             ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+          </div>
+        </div>
       </div>
     </section>
   );
