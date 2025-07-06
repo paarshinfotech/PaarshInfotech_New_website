@@ -8,8 +8,8 @@ export default function VisionStatement() {
         <div className="relative">
           <Quote className="w-24 h-24 text-primary/5 absolute -top-8 -left-8 transform -rotate-12" />
           <Quote className="w-24 h-24 text-primary/5 absolute -bottom-8 -right-8 transform rotate-12" />
-          <blockquote className="relative z-10 text-xl md:text-2xl text-foreground/80 leading-relaxed bg-background p-8 rounded-lg shadow-lg">
-            To be a leading Web Solution company in the IT sector, known for our innovative solutions and commitment to client success. We aim to empower businesses through technology, driving growth and efficiency with every project we deliver.
+          <blockquote className="relative z-10 text-lg md:text-xl text-foreground/80 leading-relaxed bg-background p-8 rounded-lg shadow-lg">
+            To be a globally recognized Web Solution company at the forefront of the IT sector, celebrated for our innovative solutions and unwavering commitment to client success. We aim to empower businesses of all sizes by harnessing the power of technology, driving sustainable growth, enhancing operational efficiency, and fostering a culture of continuous improvement with every project we deliver.
           </blockquote>
         </div>
       </div>
