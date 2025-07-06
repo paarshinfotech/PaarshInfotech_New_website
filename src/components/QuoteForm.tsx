@@ -9,9 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { smartReplyTool, type SmartReplyInput } from "@/ai/flows/smart-reply-tool";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { getSmartReply } from "@/app/actions";
 
 const services = [
   { id: "web", label: "Web Development" },
@@ -32,17 +32,6 @@ const formSchema = z.object({
 });
 
 type FormData = z.infer<typeof formSchema>;
-
-async function getSmartReply(input: SmartReplyInput) {
-  "use server";
-  try {
-    const result = await smartReplyTool(input);
-    return { success: true, content: result.followUpEmailContent };
-  } catch (error) {
-    console.error("Error generating smart reply:", error);
-    return { success: false, error: "Failed to generate smart reply. Please try again." };
-  }
-}
 
 export function QuoteForm() {
   const [isLoading, setIsLoading] = useState(false);
@@ -164,7 +153,7 @@ export function QuoteForm() {
         <Card className="border-destructive">
             <CardHeader>
                 <CardTitle className="text-destructive">Error</CardTitle>
-            </CardHeader>
+            </Header>
             <CardContent>
                 <p>{error}</p>
             </CardContent>

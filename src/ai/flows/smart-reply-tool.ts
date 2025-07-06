@@ -45,7 +45,7 @@ const prompt = ai.definePrompt({
   If the client message is negative or asking for you to do something you can\'t do, politely decline.
   If the client message is unclear, ask for clarification.
   End with a call to action, inviting the client to schedule a call or meeting.
-  Follow Up Email Content:`,,
+  Follow Up Email Content:`,
 });
 
 const smartReplyFlow = ai.defineFlow(
