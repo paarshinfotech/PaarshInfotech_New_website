@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 
 export default function Hero() {
   return (
-    <section className="py-20 md:py-32 bg-secondary">
+    <section className="py-24 md:py-40 bg-gradient-to-b from-secondary via-secondary to-background">
       <div className="container text-center max-w-4xl">
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-primary mb-6">
           Best Software Development Company in Nashik
@@ -12,7 +12,7 @@ export default function Hero() {
           We deliver high-quality, reliable, and scalable software solutions to help your business grow.
         </p>
         <div className="flex justify-center gap-4">
-          <Button asChild size="lg">
+          <Button asChild size="lg" className="shadow-lg shadow-primary/20 hover:shadow-xl transition-shadow">
             <Link href="/quote">Get A Quote</Link>
           </Button>
           <Button asChild size="lg" variant="outline">

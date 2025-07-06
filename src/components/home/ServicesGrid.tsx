@@ -1,30 +1,38 @@
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from 'next/link';
+import { Code, Server, Smartphone, ShoppingCart, BrainCircuit, PenTool } from 'lucide-react';
+import type { LucideIcon } from "lucide-react";
 
-const services = [
+const services: { title: string; description: string; Icon: LucideIcon }[] = [
   {
     title: "Web Development",
     description: "Creating responsive, powerful, and user-friendly websites tailored to your business needs.",
+    Icon: Code,
   },
   {
     title: "Software Development",
     description: "Custom software solutions to streamline your operations and drive efficiency.",
+    Icon: Server,
   },
   {
     title: "Mobile App Development",
     description: "Building native and cross-platform mobile apps for both iOS and Android platforms.",
+    Icon: Smartphone,
   },
   {
     title: "E-commerce Solutions",
     description: "Develop feature-rich online stores to sell your products and services globally.",
+    Icon: ShoppingCart,
   },
   {
     title: "AI and ML",
     description: "Leveraging Artificial Intelligence and Machine Learning to build smart applications.",
+    Icon: BrainCircuit,
   },
   {
     title: "UI/UX Design",
     description: "Crafting intuitive and beautiful user interfaces that enhance user experience.",
+    Icon: PenTool,
   },
 ];
 
@@ -39,12 +47,15 @@ export default function ServicesGrid() {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {services.map((service) => (
-            <Link href="/services" key={service.title} className="block">
-              <Card className="h-full hover:shadow-lg hover:-translate-y-1 transition-transform duration-300">
+          {services.map(({ title, description, Icon }) => (
+            <Link href="/services" key={title} className="block group">
+              <Card className="h-full hover:shadow-xl hover:-translate-y-2 transition-all duration-300 border-transparent hover:border-primary/20">
                 <CardHeader>
-                  <CardTitle className="text-xl text-primary">{service.title}</CardTitle>
-                  <CardDescription className="pt-2">{service.description}</CardDescription>
+                  <div className="mb-4">
+                     <Icon className="w-10 h-10 text-accent" />
+                  </div>
+                  <CardTitle className="text-xl text-primary">{title}</CardTitle>
+                  <CardDescription className="pt-2">{description}</CardDescription>
                 </CardHeader>
               </Card>
             </Link>

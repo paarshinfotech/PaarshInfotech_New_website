@@ -46,25 +46,27 @@ export default function Testimonials() {
             align: "start",
             loop: true,
           }}
-          className="w-full max-w-4xl mx-auto"
+          className="w-full max-w-6xl mx-auto"
         >
           <CarouselContent>
             {testimonials.map((testimonial, index) => (
-              <CarouselItem key={index}>
-                <div className="p-1">
-                  <Card className="border-0 shadow-none bg-transparent">
-                    <CardContent className="flex flex-col items-center justify-center p-6 text-center">
-                      <p className="text-lg italic text-foreground/90 mb-6">"{testimonial.quote}"</p>
-                      <Image
+              <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                <div className="p-4 h-full">
+                  <Card className="h-full bg-background shadow-lg flex flex-col">
+                    <CardContent className="flex flex-col items-center justify-center p-6 text-center flex-grow">
+                       <Image
                         src={testimonial.avatar}
                         alt={testimonial.name}
                         width={64}
                         height={64}
-                        className="rounded-full mb-4"
+                        className="rounded-full mb-4 border-2 border-primary/20"
                         data-ai-hint="person"
                       />
-                      <p className="font-semibold text-primary">{testimonial.name}</p>
-                      <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                      <p className="text-base text-foreground/80 mb-6 flex-grow">"{testimonial.quote}"</p>
+                      <div className="mt-auto">
+                        <p className="font-semibold text-primary">{testimonial.name}</p>
+                        <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                      </div>
                     </CardContent>
                   </Card>
                 </div>

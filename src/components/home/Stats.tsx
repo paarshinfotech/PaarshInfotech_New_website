@@ -69,7 +69,7 @@ export default function Stats() {
               <p className="text-4xl md:text-5xl font-bold text-accent">
                 {isVisible ? <CountUp end={stat.value} /> : '0'}+
               </p>
-              <p className="mt-2 text-base md:text-lg text-primary-foreground/80">{stat.label}</p>
+              <p className="mt-2 text-base md:text-lg font-medium text-primary-foreground/80">{stat.label}</p>
             </div>
           ))}
         </div>
