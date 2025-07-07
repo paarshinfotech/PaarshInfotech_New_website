@@ -20,7 +20,7 @@ export default function ContactPage() {
               <div>
                 <h2 className="text-3xl font-bold text-primary mb-4">Get in Touch</h2>
                 <p className="text-foreground/80 mb-6">
-                  Have a question or a project in mind? Fill out the form, and we'll get back to you as soon as possible. For immediate assistance, please use the contact details below.
+                  If you require any level of business support for our services, please get in touch with us via the methods below. For immediate assistance, please use the contact details provided.
                 </p>
               </div>
               <ContactInfoCards />

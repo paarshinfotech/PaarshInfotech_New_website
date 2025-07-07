@@ -5,22 +5,58 @@ export const contactInfo = [
   {
     Icon: Phone,
     title: "Phone",
-    value: "+91 12345 67890",
-    href: "tel:+911234567890",
+    value: "+91 98609 88343",
+    href: "tel:+919860988343",
   },
   {
     Icon: Mail,
-    title: "Email",
+    title: "Primary Email",
     value: "info@paarshinfotech.com",
     href: "mailto:info@paarshinfotech.com",
+  },
+  {
+    Icon: Mail,
+    title: "Secondary Email",
+    value: "paarshinfotech@gmail.com",
+    href: "mailto:paarshinfotech@gmail.com",
   },
 ];
 
 export const officeLocations = [
     {
-        city: "Nashik (HQ)",
-        address: "123 Tech Park, College Road",
-        pincode: "422005, Maharashtra, India"
+        city: "Nashik Office (HQ)",
+        address: "Office No. 1, Bhakti Apartment, near Hotel Rasoi, Suchita Nagar, Mumbai Naka, Nashik, Maharashtra, India",
+        pincode: "422009"
+    },
+    {
+        city: "Nashik Office",
+        address: "Pandit Colony, Nashik, Maharashtra, India",
+        pincode: "422009"
+    },
+    {
+        city: "Pune Office",
+        address: "Pune, Maharashtra, India",
+        pincode: "422009"
+    },
+    {
+        city: "Sangli Office",
+        address: "G1 Pragati Residency, Lane No. 4, Pragati Colony, Near Diamond Hotel, 100 Ft. Road, Sangli, Maharashtra, India",
+        pincode: "422009"
+    },
+    {
+        city: "Surat Office",
+        address: "Office No. 12, Exceluss Business Space, Bhimrad Canal Road, Althan, Surat, Gujarat, India",
+        pincode: "395017"
+    },
+    {
+        city: "Dharwad Office",
+        address: "Office No. 1, Shelke Complex, Near Harimandir Mankilla, Dharwad, Karnataka, India",
+        pincode: "580001"
+    },
+    {
+        city: "Jalgaon Office",
+        address: "Gurukul Colony, near MJ College, Beside JDCC Bank, Jalgaon, Maharashtra, India",
+        pincode: "425001"
     }
 ];
 
