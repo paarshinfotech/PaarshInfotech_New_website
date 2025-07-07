@@ -6,14 +6,14 @@ export default function ContactInfoCards() {
     <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {contactInfo.map((info) => (
         <a key={info.title} href={info.href} className="block group">
-          <Card className="p-6 h-full transition-all duration-300 group-hover:bg-primary/5 group-hover:border-primary/20 group-hover:shadow-lg group-hover:-translate-y-1">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-primary/10 rounded-full">
-                <info.Icon className="w-6 h-6 text-primary" />
+          <Card className="p-6 h-full transition-all duration-300 group-hover:bg-primary/5 group-hover:shadow-lg group-hover:-translate-y-1 text-center">
+            <div className="flex flex-col items-center">
+              <div className="p-4 bg-primary/10 rounded-full inline-flex transition-colors group-hover:bg-accent">
+                <info.Icon className="w-8 h-8 text-primary transition-colors group-hover:text-accent-foreground" />
               </div>
-              <div>
-                <h3 className="text-lg font-semibold text-primary">{info.title}</h3>
-                <p className="text-muted-foreground break-all">{info.value}</p>
+              <div className="mt-4">
+                <h3 className="text-xl font-bold text-primary">{info.title}</h3>
+                <p className="text-muted-foreground break-all mt-1">{info.value}</p>
               </div>
             </div>
           </Card>
