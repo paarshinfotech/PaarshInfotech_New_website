@@ -6,7 +6,6 @@ import WorkingHours from "@/components/contact/WorkingHours";
 import SocialLinks from "@/components/contact/SocialLinks";
 import MapEmbed from "@/components/contact/MapEmbed";
 import ContactFAQs from "@/components/contact/ContactFAQs";
-import Newsletter from "@/components/home/Newsletter";
 import ContactCTA from "@/components/contact/ContactCTA";
 
 export default function ContactPage() {
@@ -39,7 +38,6 @@ export default function ContactPage() {
       <MapEmbed />
       <ContactFAQs />
       <ContactCTA />
-      <Newsletter />
     </>
   );
 }

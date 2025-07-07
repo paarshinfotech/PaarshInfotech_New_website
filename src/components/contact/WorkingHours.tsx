@@ -1,6 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { workingHours } from "@/lib/contactData";
-import { Clock } from "lucide-react";
 
 export default function WorkingHours() {
   return (
