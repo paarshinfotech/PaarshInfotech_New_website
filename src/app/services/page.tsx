@@ -8,7 +8,7 @@ export default function ServicesPage() {
   return (
     <>
       <section className="py-20 md:py-28 bg-secondary">
-        <div className="container text-center max-w-4xl">
+        <div className="container text-center md:text-left max-w-4xl">
           <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-primary">
             Our Services
           </h1>
