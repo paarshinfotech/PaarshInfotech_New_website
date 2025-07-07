@@ -7,6 +7,7 @@ import SocialLinks from "@/components/contact/SocialLinks";
 import MapEmbed from "@/components/contact/MapEmbed";
 import ContactFAQs from "@/components/contact/ContactFAQs";
 import ContactCTA from "@/components/contact/ContactCTA";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function ContactPage() {
   return (
@@ -24,8 +25,12 @@ export default function ContactPage() {
                 </p>
               </div>
               <ContactInfoCards />
-              <WorkingHours />
-              <SocialLinks />
+              <Card>
+                <CardContent className="p-6 grid sm:grid-cols-2 gap-8 items-start">
+                  <WorkingHours />
+                  <SocialLinks />
+                </CardContent>
+              </Card>
             </div>
             <div>
               <ContactForm />
