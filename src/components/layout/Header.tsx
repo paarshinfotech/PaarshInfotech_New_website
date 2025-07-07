@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -50,14 +51,30 @@ export function Header() {
               <NavLink key={link.href} {...link} />
             ))}
           </nav>
-          <div className="flex items-center space-x-4">
-             <div className="text-sm text-foreground/80">
-              <div>info@paarshinfotech.com</div>
-              <div>+91 12345 67890</div>
-            </div>
+          <div className="flex items-center space-x-2">
             <Button asChild>
               <Link href="/quote">Get A Quote</Link>
             </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Phone className="h-4 w-4" />
+                  <span className="sr-only">Contact Information</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto">
+                <div className="space-y-4">
+                  <a href="mailto:info@paarshinfotech.com" className="flex items-center gap-3 group">
+                    <Mail className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="text-sm font-medium group-hover:text-primary transition-colors">info@paarshinfotech.com</span>
+                  </a>
+                  <a href="tel:+911234567890" className="flex items-center gap-3 group">
+                    <Phone className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <span className="text-sm font-medium group-hover:text-primary transition-colors">+91 12345 67890</span>
+                  </a>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
         
@@ -80,9 +97,15 @@ export function Header() {
                 <Button asChild className="mt-4">
                   <Link href="/quote" onClick={() => setIsMobileMenuOpen(false)}>Get A Quote</Link>
                 </Button>
-                 <div className="text-sm text-foreground/80 mt-4 border-t pt-4">
-                  <div>info@paarshinfotech.com</div>
-                  <div>+91 12345 67890</div>
+                 <div className="text-sm text-foreground/80 mt-4 border-t pt-4 space-y-3">
+                  <a href="mailto:info@paarshinfotech.com" className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    <span>info@paarshinfotech.com</span>
+                  </a>
+                  <a href="tel:+911234567890" className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    <span>+91 12345 67890</span>
+                  </a>
                 </div>
               </nav>
             </div>

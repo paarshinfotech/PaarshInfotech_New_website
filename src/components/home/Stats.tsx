@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
+import { Smile, Briefcase, Clock, Users } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
-const stats = [
-  { value: 150, label: "Happy Clients" },
-  { value: 200, label: "Projects Completed" },
-  { value: 9000, label: "Hours of Support" },
-  { value: 25, label: "Hard Workers" },
+const stats: { value: number; label: string; Icon: LucideIcon }[] = [
+  { value: 150, label: "Happy Clients", Icon: Smile },
+  { value: 200, label: "Projects Completed", Icon: Briefcase },
+  { value: 9000, label: "Hours of Support", Icon: Clock },
+  { value: 25, label: "Hard Workers", Icon: Users },
 ];
 
 function CountUp({ end }: { end: number }) {
@@ -63,13 +65,14 @@ export default function Stats() {
   return (
     <section ref={ref} className="py-16 md:py-24 bg-primary text-primary-foreground">
       <div className="container max-w-7xl">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-y-8 text-center md:divide-x divide-primary-foreground/20">
           {stats.map((stat) => (
-            <div key={stat.label}>
+            <div key={stat.label} className="flex flex-col items-center p-4">
+              <stat.Icon className="w-10 h-10 mb-3 text-primary-foreground/70" />
               <p className="text-4xl md:text-5xl font-bold text-accent">
                 {isVisible ? <CountUp end={stat.value} /> : '0'}+
               </p>
-              <p className="mt-2 text-base md:text-lg font-medium text-primary-foreground/80">{stat.label}</p>
+              <p className="mt-2 text-base font-medium text-primary-foreground/80">{stat.label}</p>
             </div>
           ))}
         </div>
