@@ -10,9 +10,10 @@ interface MediaItem {
 
 interface MediaGalleryGridProps {
   items: MediaItem[];
+  onImageClick: (index: number) => void;
 }
 
-export default function MediaGalleryGrid({ items }: MediaGalleryGridProps) {
+export default function MediaGalleryGrid({ items, onImageClick }: MediaGalleryGridProps) {
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container max-w-7xl">
@@ -23,7 +24,11 @@ export default function MediaGalleryGrid({ items }: MediaGalleryGridProps) {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {items.map((item, index) => (
-              <Card key={index} className="overflow-hidden group relative aspect-square">
+              <Card
+                key={index}
+                className="overflow-hidden group relative aspect-square cursor-pointer"
+                onClick={() => onImageClick(index)}
+              >
                 <Image
                   src={item.src}
                   alt={item.alt}
