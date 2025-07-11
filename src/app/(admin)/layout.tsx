@@ -1,8 +1,8 @@
-
-import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { PropsWithChildren } from 'react';
+import { AdminSidebar } from '@/components/admin/AdminSidebar';
 
-export default function AdminLayout({ children }: PropsWithChildren) {
+// This layout is specific to the (admin) group and does not include public header/footer
+export default function AdminAreaLayout({ children }: PropsWithChildren) {
   return (
     <div className="flex min-h-screen bg-secondary/50">
       <AdminSidebar />
