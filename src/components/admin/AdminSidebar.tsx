@@ -1,0 +1,89 @@
+
+"use client"
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
+import {
+  BarChart2,
+  Briefcase,
+  FileText,
+  Home,
+  Menu,
+  MessageSquare,
+  Package,
+  Settings,
+  Users,
+  Image as ImageIcon
+} from "lucide-react";
+
+const navLinks = [
+  { href: "/admin/dashboard", label: "Dashboard", icon: Home },
+  { href: "/admin/team", label: "Team", icon: Users },
+  { href: "/admin/services", label: "Services", icon: Briefcase },
+  { href: "/admin/clients", label: "Clients", icon: Package },
+  { href: "/admin/careers", label: "Careers", icon: FileText },
+  { href: "/admin/media", label: "Media", icon: ImageIcon },
+  { href: "/admin/contacts", label: "Contacts", icon: MessageSquare },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart2 },
+];
+
+const settingsLink = { href: "/admin/settings", label: "Settings", icon: Settings };
+
+export function AdminSidebar() {
+  const pathname = usePathname();
+
+  const NavLink = ({ href, label, icon: Icon }: typeof navLinks[0]) => {
+    const isActive = pathname === href;
+    return (
+      <Link href={href}>
+        <Button
+          variant={isActive ? "secondary" : "ghost"}
+          className="w-full justify-start"
+        >
+          <Icon className="mr-2 h-4 w-4" />
+          {label}
+        </Button>
+      </Link>
+    );
+  };
+  
+  const SidebarContent = () => (
+      <div className="flex flex-col h-full">
+        <div className="p-4 border-b">
+            <h2 className="text-xl font-semibold">Admin Panel</h2>
+        </div>
+        <nav className="flex-1 px-2 py-4 space-y-1">
+            {navLinks.map((link) => (
+                <NavLink key={link.href} {...link} />
+            ))}
+        </nav>
+        <div className="mt-auto p-2">
+             <NavLink {...settingsLink} />
+        </div>
+    </div>
+  )
+
+  return (
+    <>
+      <div className="hidden lg:block w-64 border-r bg-background">
+        <SidebarContent />
+      </div>
+      <div className="lg:hidden absolute top-4 left-4 z-10">
+        <Sheet>
+            <SheetTrigger asChild>
+                <Button variant="outline" size="icon">
+                    <Menu className="h-5 w-5" />
+                    <span className="sr-only">Open menu</span>
+                </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[280px] p-0">
+                <SidebarContent />
+            </SheetContent>
+        </Sheet>
+      </div>
+    </>
+  );
+}
