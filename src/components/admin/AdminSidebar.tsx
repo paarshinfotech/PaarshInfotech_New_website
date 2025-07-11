@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,7 +17,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
   BarChart2,
@@ -63,7 +63,7 @@ export function AdminSidebar() {
   const NavLink = ({ href, label, icon: Icon }: typeof navLinks[0]) => {
     const isActive = pathname === href;
     return (
-      <Link href={href}>
+      <Link href={href} legacyBehavior passHref>
         <Button
           variant={isActive ? "secondary" : "ghost"}
           className="w-full justify-start"
@@ -80,11 +80,13 @@ export function AdminSidebar() {
         <div className="p-4 border-b">
             <h2 className="text-xl font-semibold">Admin Panel</h2>
         </div>
-        <nav className="flex-1 px-2 py-4 space-y-1">
-            {navLinks.map((link) => (
-                <NavLink key={link.href} {...link} />
-            ))}
-        </nav>
+        <ScrollArea className="flex-1">
+          <nav className="px-2 py-4 space-y-1">
+              {navLinks.map((link) => (
+                  <NavLink key={link.href} {...link} />
+              ))}
+          </nav>
+        </ScrollArea>
         <div className="mt-auto p-2 border-t">
              <NavLink {...settingsLink} />
              <AlertDialog>
@@ -116,7 +118,7 @@ export function AdminSidebar() {
 
   return (
     <>
-      <div className="hidden lg:block w-64 border-r bg-background">
+      <div className="hidden lg:flex flex-col w-64 border-r bg-background">
         <SidebarContent />
       </div>
       <div className="lg:hidden absolute top-4 left-4 z-10">
@@ -127,7 +129,7 @@ export function AdminSidebar() {
                     <span className="sr-only">Open menu</span>
                 </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-[280px] p-0">
+            <SheetContent side="left" className="w-[280px] p-0 flex flex-col">
                 <SidebarContent />
             </SheetContent>
         </Sheet>
