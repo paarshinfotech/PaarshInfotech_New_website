@@ -2,10 +2,22 @@
 "use client"
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
   BarChart2,
   Briefcase,
@@ -16,7 +28,9 @@ import {
   Package,
   Settings,
   Users,
-  Image as ImageIcon
+  Image as ImageIcon,
+  LogOut,
+  Loader2
 } from "lucide-react";
 
 const navLinks = [
@@ -34,6 +48,17 @@ const settingsLink = { href: "/admin/settings", label: "Settings", icon: Setting
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  
+  const handleLogout = () => {
+    setIsLoggingOut(true);
+    // Simulate API call for logout
+    setTimeout(() => {
+        router.push('/admin/login');
+        setIsLoggingOut(false);
+    }, 1500)
+  }
 
   const NavLink = ({ href, label, icon: Icon }: typeof navLinks[0]) => {
     const isActive = pathname === href;
@@ -60,8 +85,31 @@ export function AdminSidebar() {
                 <NavLink key={link.href} {...link} />
             ))}
         </nav>
-        <div className="mt-auto p-2">
+        <div className="mt-auto p-2 border-t">
              <NavLink {...settingsLink} />
+             <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-start">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Log Out
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure you want to log out?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            You will be returned to the login page.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleLogout} disabled={isLoggingOut}>
+                             {isLoggingOut && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Continue
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+             </AlertDialog>
         </div>
     </div>
   )
