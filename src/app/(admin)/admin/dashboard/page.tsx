@@ -1,9 +1,11 @@
 
+"use client"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ArrowUpRight, BarChart as BarChartIcon, Briefcase, FileText, MessageSquare, Users } from "lucide-react";
+import { ArrowUpRight, Briefcase, FileText, MessageSquare, Users } from "lucide-react";
 import Link from "next/link";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 
