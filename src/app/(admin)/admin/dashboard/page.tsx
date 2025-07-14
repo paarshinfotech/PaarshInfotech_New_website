@@ -1,4 +1,5 @@
 
+
 "use client"
 
 import { useState } from "react"
@@ -11,6 +12,19 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { ContactViewModal } from "@/components/admin/contacts/ContactViewModal"
 import type { Contact } from "@/app/(admin)/admin/contacts/page"
+
+const siteTrafficData = [
+  { month: "January", desktop: 186, mobile: 80 },
+  { month: "February", desktop: 305, mobile: 200 },
+  { month: "March", desktop: 237, mobile: 120 },
+  { month: "April", desktop: 73, mobile: 190 },
+  { month: "May", desktop: 209, mobile: 130 },
+  { month: "June", desktop: 214, mobile: 140 },
+]
+const siteTrafficConfig = {
+  desktop: { label: "Desktop", color: "hsl(var(--chart-1))" },
+  mobile: { label: "Mobile", color: "hsl(var(--chart-2))" },
+} satisfies ChartConfig
 
 const userDemographicsData = [
   { country: "USA", value: 45, fill: "var(--color-usa)" },
@@ -97,6 +111,24 @@ export default function DashboardPage() {
                 </div>
                 
                 <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-3">
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Site Traffic - Last 6 Months</CardTitle>
+                            <CardDescription>Desktop vs. Mobile</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <ChartContainer config={siteTrafficConfig} className="min-h-[300px] w-full">
+                                <BarChart accessibilityLayer data={siteTrafficData}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={(value) => value.slice(0, 3)} />
+                                    <ChartTooltip content={<ChartTooltipContent />} />
+                                    <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                                    <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                                </BarChart>
+                            </ChartContainer>
+                        </CardContent>
+                    </Card>
+
                     <Card>
                         <CardHeader>
                             <CardTitle>User Demographics</CardTitle>
@@ -115,7 +147,7 @@ export default function DashboardPage() {
                         </CardContent>
                     </Card>
                     
-                    <Card className="lg:col-span-2">
+                    <Card className="lg:col-span-1">
                         <CardHeader>
                             <CardTitle>Recent Contact Requests</CardTitle>
                             <CardDescription>A quick view of the latest messages.</CardDescription>
@@ -165,3 +197,4 @@ export default function DashboardPage() {
         </>
     )
 }
+
