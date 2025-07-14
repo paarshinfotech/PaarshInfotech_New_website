@@ -4,7 +4,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart"
-import { Pie, PieChart, Line, LineChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
 import { Users, Briefcase, FileText, MessageSquare, ArrowRight } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -12,30 +12,20 @@ import Link from "next/link"
 import { ContactViewModal } from "@/components/admin/contacts/ContactViewModal"
 import type { Contact } from "@/app/(admin)/admin/contacts/page"
 
-const trafficSourceData = [
-  { source: "Organic", visitors: 2475, fill: "var(--color-organic)" },
-  { source: "Social", visitors: 3856, fill: "var(--color-social)" },
-  { source: "Referral", visitors: 1123, fill: "var(--color-referral)" },
-  { source: "Direct", visitors: 980, fill: "var(--color-direct)" },
+const userDemographicsData = [
+  { country: "USA", value: 45, fill: "var(--color-usa)" },
+  { country: "India", value: 25, fill: "var(--color-india)" },
+  { country: "UK", value: 15, fill: "var(--color-uk)" },
+  { country: "Canada", value: 10, fill: "var(--color-canada)" },
+  { country: "Other", value: 5, fill: "var(--color-other)" },
 ]
-const trafficSourceConfig = {
-  visitors: { label: "Visitors" },
-  organic: { label: "Organic", color: "hsl(var(--chart-1))" },
-  social: { label: "Social", color: "hsl(var(--chart-2))" },
-  referral: { label: "Referral", color: "hsl(var(--chart-3))" },
-  direct: { label: "Direct", color: "hsl(var(--chart-4))" },
-} satisfies ChartConfig
-
-const engagementRateData = [
-  { date: "2024-01", rate: 58 },
-  { date: "2024-02", rate: 62 },
-  { date: "2024-03", rate: 65 },
-  { date: "2024-04", rate: 60 },
-  { date: "2024-05", rate: 70 },
-  { date: "2024-06", rate: 72 },
-]
-const engagementRateConfig = {
-  rate: { label: "Engagement Rate", color: "hsl(var(--chart-1))" },
+const userDemographicsConfig = {
+    value: { label: "Users" },
+    usa: { label: "USA", color: "hsl(var(--chart-1))" },
+    india: { label: "India", color: "hsl(var(--chart-2))" },
+    uk: { label: "UK", color: "hsl(var(--chart-3))" },
+    canada: { label: "Canada", color: "hsl(var(--chart-4))" },
+    other: { label: "Other", color: "hsl(var(--chart-5))" },
 } satisfies ChartConfig
 
 const recentContacts: Contact[] = [
@@ -106,35 +96,21 @@ export default function DashboardPage() {
                     </Card>
                 </div>
                 
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
+                <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-3">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Traffic Sources</CardTitle>
-                            <CardDescription>How users find your site.</CardDescription>
+                            <CardTitle>User Demographics</CardTitle>
+                            <CardDescription>Distribution of users by country.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <ChartContainer config={trafficSourceConfig} className="min-h-[250px] w-full">
-                                <PieChart>
-                                    <ChartTooltip content={<ChartTooltipContent nameKey="visitors" />} />
-                                    <Pie data={trafficSourceData} dataKey="visitors" nameKey="source" />
-                                </PieChart>
-                            </ChartContainer>
-                        </CardContent>
-                    </Card>
-                    
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Engagement Rate</CardTitle>
-                            <CardDescription>User engagement trend.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <ChartContainer config={engagementRateConfig} className="min-h-[250px] w-full">
-                                <LineChart data={engagementRateData} margin={{ top: 5, right: 20, left: -10, bottom: 0 }}>
-                                    <CartesianGrid vertical={false} />
-                                    <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
-                                    <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
-                                    <Line type="monotone" dataKey="rate" stroke="var(--color-rate)" strokeWidth={2} dot={true} />
-                                </LineChart>
+                            <ChartContainer config={userDemographicsConfig} className="min-h-[300px] w-full">
+                               <BarChart data={userDemographicsData} layout="vertical" margin={{ right: 10 }}>
+                                    <CartesianGrid horizontal={false} />
+                                    <XAxis type="number" hide />
+                                    <XAxis dataKey="country" type="category" tickLine={false} axisLine={false} />
+                                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                    <Bar dataKey="value" layout="vertical" radius={5} />
+                                </BarChart>
                             </ChartContainer>
                         </CardContent>
                     </Card>
