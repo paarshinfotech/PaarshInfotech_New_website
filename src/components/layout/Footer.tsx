@@ -1,12 +1,13 @@
 import Link from "next/link";
+import { servicesData } from "@/lib/servicesData";
 
 export function Footer() {
   return (
     <footer className="bg-secondary text-secondary-foreground border-t">
       <div className="container py-12 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
-          <div className="space-y-4">
+          <div className="space-y-4 md:col-span-2 lg:col-span-1">
             <h3 className="text-xl font-bold text-primary">Paarsh Infotech</h3>
             <p className="text-sm">
               Your complete technology partner for fast, scalable, and reliable software solutions. We are the emerging tech experts.
@@ -25,6 +26,21 @@ export function Footer() {
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
             </ul>
           </div>
+          
+          {/* Services Links */}
+          <div>
+            <h4 className="font-semibold mb-4">Services</h4>
+            <ul className="space-y-2 text-sm">
+              {servicesData.map((service) => (
+                <li key={service.slug}>
+                  <Link href={`/services/${service.slug}`} className="hover:text-primary transition-colors">
+                    {service.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
 
           {/* Contact Info */}
           <div>
