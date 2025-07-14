@@ -19,7 +19,6 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters."),
@@ -125,8 +124,8 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex-grow overflow-y-hidden flex flex-col">
-            <ScrollArea className="flex-grow pr-6 -mr-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex-grow flex flex-col overflow-hidden">
+            <div className="flex-grow overflow-y-auto pr-6 -mr-6">
               <div className="space-y-6 py-4 ">
                   <FormField control={form.control} name="title" render={({ field }) => (
                     <FormItem>
@@ -257,8 +256,8 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
                       )} />
                   </div>
               </div>
-            </ScrollArea>
-            <DialogFooter className="pt-4 border-t mt-auto">
+            </div>
+            <DialogFooter className="pt-4 border-t mt-auto flex-shrink-0">
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
