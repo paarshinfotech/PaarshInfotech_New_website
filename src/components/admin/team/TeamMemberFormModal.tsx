@@ -15,7 +15,7 @@ import type { TeamMember } from "@/app/(admin)/admin/team/page";
 const formSchema = z.object({
   name: z.string().min(2, "Name is required."),
   role: z.string().min(2, "Role is required."),
-  avatar: z.string().url("Must be a valid URL.").optional().or(z.literal('')),
+  avatar: z.any().optional(),
 });
 
 type MemberFormValues = z.infer<typeof formSchema>;
@@ -34,28 +34,37 @@ export function TeamMemberFormModal({ isOpen, onOpenChange, onSave, member }: Te
     defaultValues: {
       name: "",
       role: "",
-      avatar: "",
     },
   });
 
   useEffect(() => {
     if (member) {
-      form.reset(member);
+      form.reset({
+        name: member.name,
+        role: member.role,
+        avatar: null, // Reset file input
+      });
     } else {
-      form.reset({ name: "", role: "", avatar: "" });
+      form.reset({ name: "", role: "", avatar: null });
     }
   }, [member, form, isOpen]);
 
   const onSubmit = (values: MemberFormValues) => {
     setIsSubmitting(true);
-    // Simulate API call
+    // In a real app, you would handle file upload to a storage service (e.g., Firebase Storage)
+    // and get back a URL. For this simulation, we'll use a placeholder if a new file is selected.
     setTimeout(() => {
+        const newAvatarUrl = values.avatar && values.avatar.length > 0
+            ? "https://placehold.co/40x40.png" // Placeholder for new upload
+            : member?.avatar; // Keep old avatar if no new one is uploaded
+
         const dataToSave = {
-            ...values,
+            name: values.name,
+            role: values.role,
             id: member?.id || Date.now(),
-            avatar: values.avatar || "https://placehold.co/40x40.png"
+            avatar: newAvatarUrl || "https://placehold.co/40x40.png"
         };
-        onSave(dataToSave);
+        onSave(dataToSave as TeamMember);
         setIsSubmitting(false);
         onOpenChange(false);
     }, 1000)
@@ -100,8 +109,14 @@ export function TeamMemberFormModal({ isOpen, onOpenChange, onSave, member }: Te
                 name="avatar"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Avatar URL</FormLabel>
-                    <FormControl><Input placeholder="https://..." {...field} /></FormControl>
+                    <FormLabel>Avatar</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => field.onChange(e.target.files)}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
