@@ -1,10 +1,13 @@
 
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart"
-import { Bar, BarChart, CartesianGrid, XAxis, Pie, PieChart, Line, LineChart } from "recharts"
-import { TrendingUp, Users, Smartphone, Globe, Briefcase, FileText, MessageSquare } from "lucide-react"
+import { BarChart, CartesianGrid, XAxis, Pie, PieChart, Line, LineChart } from "recharts"
+import { TrendingUp, Users, Smartphone, Globe, Briefcase, FileText, MessageSquare, ArrowRight } from "lucide-react"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import Link from "next/link"
 
 const siteTrafficData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -45,22 +48,11 @@ const engagementRateConfig = {
   rate: { label: "Engagement Rate", color: "hsl(var(--chart-1))" },
 } satisfies ChartConfig
 
-const newContactsData = [
-  { month: "January", contacts: 18 },
-  { month: "February", contacts: 30 },
-  { month: "March", contacts: 23 },
-  { month: "April", contacts: 27 },
-  { month: "May", contacts: 20 },
-  { month: "June", contacts: 32 },
+const recentContacts = [
+    { name: "John Doe", email: "john@example.com", subject: "Web Development Inquiry", date: "2 hours ago" },
+    { name: "Jane Smith", email: "jane@example.com", subject: "Question about AI services", date: "1 day ago" },
+    { name: "Peter Jones", email: "peter@example.com", subject: "Partnership Proposal", date: "2 days ago" },
 ]
-
-const newContactsConfig = {
-  contacts: {
-    label: "Contacts",
-    color: "hsl(var(--primary))",
-  },
-} satisfies ChartConfig
-
 
 export default function DashboardPage() {
     return (
@@ -115,7 +107,7 @@ export default function DashboardPage() {
                 </Card>
             </div>
             
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
                 <Card className="lg:col-span-2">
                     <CardHeader>
                         <CardTitle>Site Traffic - Last 6 Months</CardTitle>
@@ -127,8 +119,8 @@ export default function DashboardPage() {
                                 <CartesianGrid vertical={false} />
                                 <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={(value) => value.slice(0, 3)} />
                                 <ChartTooltip content={<ChartTooltipContent />} />
-                                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-                                <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                                <BarChart dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                                <BarChart dataKey="mobile" fill="var(--color-mobile)" radius={4} />
                             </BarChart>
                         </ChartContainer>
                     </CardContent>
@@ -166,30 +158,44 @@ export default function DashboardPage() {
                     </CardContent>
                 </Card>
                 
-                <Card className="lg:col-span-4">
+                <Card className="lg:col-span-2">
                     <CardHeader>
-                        <CardTitle>New Contacts per Month</CardTitle>
-                        <CardDescription>Tracks new messages received via contact form.</CardDescription>
+                        <CardTitle>Recent Contact Requests</CardTitle>
+                        <CardDescription>A quick view of the latest messages.</CardDescription>
                     </CardHeader>
-                    <CardContent className="pl-2">
-                        <ChartContainer config={newContactsConfig} className="h-[300px] w-full">
-                           <BarChart data={newContactsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                <CartesianGrid vertical={false} />
-                                <XAxis
-                                    dataKey="month"
-                                    tickLine={false}
-                                    tickMargin={10}
-                                    axisLine={false}
-                                    tickFormatter={(value) => value.slice(0, 3)}
-                                />
-                                <ChartTooltip
-                                    cursor={false}
-                                    content={<ChartTooltipContent indicator="dot" />}
-                                />
-                                <Bar dataKey="contacts" fill="var(--color-contacts)" radius={8} />
-                            </BarChart>
-                        </ChartContainer>
+                    <CardContent className="p-0">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>From</TableHead>
+                                    <TableHead>Subject</TableHead>
+                                    <TableHead className="text-right">Action</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {recentContacts.map((contact) => (
+                                    <TableRow key={contact.email}>
+                                        <TableCell>
+                                            <div className="font-medium">{contact.name}</div>
+                                            <div className="text-sm text-muted-foreground">{contact.email}</div>
+                                        </TableCell>
+                                        <TableCell>{contact.subject}</TableCell>
+                                        <TableCell className="text-right">
+                                            <Button variant="outline" size="sm">View</Button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     </CardContent>
+                     <CardFooter className="justify-end pt-4">
+                        <Button asChild variant="ghost" size="sm">
+                            <Link href="/admin/contacts">
+                                View All
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                            </Link>
+                        </Button>
+                    </CardFooter>
                 </Card>
             </div>
         </div>
