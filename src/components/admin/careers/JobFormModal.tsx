@@ -121,7 +121,7 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
             <DialogHeader>
               <DialogTitle>{job ? "Edit Job Opening" : "Add New Job Opening"}</DialogTitle>
               <DialogDescription>
-                Fill out the details for the job posting. You can schedule it to be published in the future.
+                Fill out the details for the job posting. Click save when you're done.
               </DialogDescription>
             </DialogHeader>
             <ScrollArea className="max-h-[70vh] p-1 pr-6">
@@ -248,7 +248,7 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
                                   </SelectContent>
                               </Select>
                               <FormDescription>
-                                  'Scheduled' status will be auto-set if Publish Date is in the future.
+                                  'Scheduled' is auto-set if date is in the future.
                               </FormDescription>
                               <FormMessage />
                           </FormItem>

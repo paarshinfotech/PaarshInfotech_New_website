@@ -12,6 +12,7 @@ import type { Job } from "@/app/(admin)/admin/careers/page";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Eye } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ApplicantsViewModalProps {
   isOpen: boolean;
@@ -34,7 +35,7 @@ export function ApplicantsViewModal({ isOpen, onOpenChange, job }: ApplicantsVie
           </DialogDescription>
         </DialogHeader>
         {job.applicants.length > 0 && (
-          <div className="max-h-[60vh] overflow-y-auto">
+          <ScrollArea className="max-h-[60vh] rounded-md border">
             <Table>
                 <TableHeader>
                     <TableRow>
@@ -60,7 +61,7 @@ export function ApplicantsViewModal({ isOpen, onOpenChange, job }: ApplicantsVie
                     ))}
                 </TableBody>
             </Table>
-          </div>
+          </ScrollArea>
         )}
       </DialogContent>
     </Dialog>

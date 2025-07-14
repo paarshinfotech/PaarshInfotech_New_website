@@ -28,8 +28,8 @@ export function DeleteConfirmationDialog({ isOpen, onOpenChange, onConfirm, item
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete{" "}
-            <span className="font-semibold">{itemName}</span> and remove its data from our servers.
+            This action cannot be undone. This will permanently delete the item:{" "}
+            <span className="font-semibold">{itemName}</span>.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
