@@ -5,7 +5,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, Pie, PieChart, Line, LineChart } from "recharts"
 import { Users, Briefcase, FileText, MessageSquare, ArrowRight } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
@@ -47,6 +47,33 @@ const recentContacts: Contact[] = [
     { id: 2, name: "Jane Smith", email: "jane@example.com", subject: "Question about AI services", date: "2024-05-19", status: "Read", message: "Could you provide more details on your AI and ML offerings?" },
     { id: 3, name: "Peter Jones", email: "peter@example.com", subject: "Partnership Proposal", date: "2024-05-18", status: "Archived", message: "We are a marketing agency interested in a strategic partnership." },
 ]
+
+const engagementRateData = [
+  { date: "2024-01", rate: 58 },
+  { date: "2024-02", rate: 62 },
+  { date: "2024-03", rate: 65 },
+  { date: "2024-04", rate: 60 },
+  { date: "2024-05", rate: 70 },
+  { date: "2024-06", rate: 72 },
+]
+const engagementRateConfig = {
+  rate: { label: "Engagement Rate", color: "hsl(var(--chart-1))" },
+} satisfies ChartConfig
+
+const trafficSourceData = [
+  { source: "Organic", visitors: 2475, fill: "var(--color-organic)" },
+  { source: "Social", visitors: 3856, fill: "var(--color-social)" },
+  { source: "Referral", visitors: 1123, fill: "var(--color-referral)" },
+  { source: "Direct", visitors: 980, fill: "var(--color-direct)" },
+]
+const trafficSourceConfig = {
+  visitors: { label: "Visitors" },
+  organic: { label: "Organic", color: "hsl(var(--chart-1))" },
+  social: { label: "Social", color: "hsl(var(--chart-2))" },
+  referral: { label: "Referral", color: "hsl(var(--chart-3))" },
+  direct: { label: "Direct", color: "hsl(var(--chart-4))" },
+} satisfies ChartConfig
+
 
 export default function DashboardPage() {
     const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
@@ -106,6 +133,40 @@ export default function DashboardPage() {
                         <CardContent>
                             <div className="text-2xl font-bold">6</div>
                             <p className="text-xs text-muted-foreground">All systems operational</p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Engagement Rate</CardTitle>
+                            <CardDescription>User engagement over the last 6 months.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <ChartContainer config={engagementRateConfig} className="min-h-[250px] w-full">
+                                <LineChart data={engagementRateData} margin={{ top: 5, right: 20, left: -10, bottom: 0 }}>
+                                    <CartesianGrid vertical={false} />
+                                    <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
+                                    <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
+                                    <Line type="monotone" dataKey="rate" stroke="var(--color-rate)" strokeWidth={2} dot={true} />
+                                </LineChart>
+                            </ChartContainer>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Traffic Sources</CardTitle>
+                            <CardDescription>How users are finding your site.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <ChartContainer config={trafficSourceConfig} className="min-h-[250px] w-full">
+                                <PieChart>
+                                    <ChartTooltip content={<ChartTooltipContent nameKey="visitors" />} />
+                                    <Pie data={trafficSourceData} dataKey="visitors" nameKey="source" />
+                                </PieChart>
+                            </ChartContainer>
                         </CardContent>
                     </Card>
                 </div>
@@ -198,3 +259,6 @@ export default function DashboardPage() {
     )
 }
 
+
+
+    
