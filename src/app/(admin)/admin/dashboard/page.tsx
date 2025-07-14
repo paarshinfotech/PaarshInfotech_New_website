@@ -1,22 +1,51 @@
 
 "use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { ArrowUpRight, Briefcase, FileText, MessageSquare, Users } from "lucide-react";
-import Link from "next/link";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart"
+import { Bar, BarChart, CartesianGrid, XAxis, Pie, PieChart, Line, LineChart } from "recharts"
+import { TrendingUp, Users, Smartphone, Globe, Briefcase, FileText, MessageSquare } from "lucide-react"
 
-const stats = [
-    { title: "Total Contacts", value: "3", icon: MessageSquare },
-    { title: "Open Positions", value: "7", icon: FileText },
-    { title: "Active Services", value: "6", icon: Briefcase },
-    { title: "Team Members", value: "4", icon: Users },
+const siteTrafficData = [
+  { month: "January", desktop: 186, mobile: 80 },
+  { month: "February", desktop: 305, mobile: 200 },
+  { month: "March", desktop: 237, mobile: 120 },
+  { month: "April", desktop: 73, mobile: 190 },
+  { month: "May", desktop: 209, mobile: 130 },
+  { month: "June", desktop: 214, mobile: 140 },
 ]
+const siteTrafficConfig = {
+  desktop: { label: "Desktop", color: "hsl(var(--chart-1))" },
+  mobile: { label: "Mobile", color: "hsl(var(--chart-2))" },
+} satisfies ChartConfig
 
-const chartData = [
+const trafficSourceData = [
+  { source: "Organic", visitors: 2475, fill: "var(--color-organic)" },
+  { source: "Social", visitors: 3856, fill: "var(--color-social)" },
+  { source: "Referral", visitors: 1123, fill: "var(--color-referral)" },
+  { source: "Direct", visitors: 980, fill: "var(--color-direct)" },
+]
+const trafficSourceConfig = {
+  visitors: { label: "Visitors" },
+  organic: { label: "Organic", color: "hsl(var(--chart-1))" },
+  social: { label: "Social", color: "hsl(var(--chart-2))" },
+  referral: { label: "Referral", color: "hsl(var(--chart-3))" },
+  direct: { label: "Direct", color: "hsl(var(--chart-4))" },
+} satisfies ChartConfig
+
+const engagementRateData = [
+  { date: "2024-01", rate: 58 },
+  { date: "2024-02", rate: 62 },
+  { date: "2024-03", rate: 65 },
+  { date: "2024-04", rate: 60 },
+  { date: "2024-05", rate: 70 },
+  { date: "2024-06", rate: 72 },
+]
+const engagementRateConfig = {
+  rate: { label: "Engagement Rate", color: "hsl(var(--chart-1))" },
+} satisfies ChartConfig
+
+const newContactsData = [
   { month: "January", contacts: 18 },
   { month: "February", contacts: 30 },
   { month: "March", contacts: 23 },
@@ -25,51 +54,126 @@ const chartData = [
   { month: "June", contacts: 32 },
 ]
 
-const chartConfig = {
+const newContactsConfig = {
   contacts: {
     label: "Contacts",
     color: "hsl(var(--primary))",
   },
-}
+} satisfies ChartConfig
 
-const recentContacts = [
-    { name: "John Doe", email: "john@example.com", avatar: "https://placehold.co/40x40.png" },
-    { name: "Jane Smith", email: "jane@example.com", avatar: "https://placehold.co/40x40.png" },
-    { name: "Peter Jones", email: "peter@example.com", avatar: "https://placehold.co/40x40.png" },
-]
 
 export default function DashboardPage() {
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
             <div className="flex items-center justify-between space-y-2">
                 <div>
                     <h1 className="text-3xl font-bold">Dashboard</h1>
-                    <p className="text-muted-foreground">Here's a quick overview of your website.</p>
+                    <p className="text-muted-foreground">A comprehensive overview of your website's performance.</p>
                 </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                {stats.map(stat => (
-                    <Card key={stat.title}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                            <stat.icon className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stat.value}</div>
-                        </CardContent>
-                    </Card>
-                ))}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Visitors</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">12,345</div>
+                        <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">New Contacts</CardTitle>
+                        <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">+150</div>
+                        <p className="text-xs text-muted-foreground">+12.5% this month</p>
+                    </CardContent>
+                </Card>
+                 <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Open Positions</CardTitle>
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">7</div>
+                        <p className="text-xs text-muted-foreground">2 new this week</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Active Services</CardTitle>
+                        <Briefcase className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">6</div>
+                        <p className="text-xs text-muted-foreground">All systems operational</p>
+                    </CardContent>
+                </Card>
             </div>
+            
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                <Card className="lg:col-span-2">
+                    <CardHeader>
+                        <CardTitle>Site Traffic - Last 6 Months</CardTitle>
+                        <CardDescription>Desktop vs. Mobile</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ChartContainer config={siteTrafficConfig} className="min-h-[250px] w-full">
+                            <BarChart accessibilityLayer data={siteTrafficData}>
+                                <CartesianGrid vertical={false} />
+                                <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={(value) => value.slice(0, 3)} />
+                                <ChartTooltip content={<ChartTooltipContent />} />
+                                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                                <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                            </BarChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
 
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-                <Card className="col-span-4">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Traffic Sources</CardTitle>
+                         <CardDescription>How users find your site.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ChartContainer config={trafficSourceConfig} className="min-h-[250px] w-full">
+                            <PieChart>
+                                <ChartTooltip content={<ChartTooltipContent nameKey="visitors" />} />
+                                <Pie data={trafficSourceData} dataKey="visitors" nameKey="source" />
+                            </PieChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
+                
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Engagement Rate</CardTitle>
+                        <CardDescription>User engagement trend.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <ChartContainer config={engagementRateConfig} className="min-h-[250px] w-full">
+                            <LineChart data={engagementRateData} margin={{ top: 5, right: 20, left: -10, bottom: 0 }}>
+                                <CartesianGrid vertical={false} />
+                                <XAxis dataKey="date" tickLine={false} axisLine={false} tickMargin={8} />
+                                <ChartTooltip content={<ChartTooltipContent indicator="line" />} />
+                                <Line type="monotone" dataKey="rate" stroke="var(--color-rate)" strokeWidth={2} dot={true} />
+                            </LineChart>
+                        </ChartContainer>
+                    </CardContent>
+                </Card>
+                
+                <Card className="lg:col-span-4">
                     <CardHeader>
                         <CardTitle>New Contacts per Month</CardTitle>
+                        <CardDescription>Tracks new messages received via contact form.</CardDescription>
                     </CardHeader>
                     <CardContent className="pl-2">
-                        <ChartContainer config={chartConfig} className="h-[300px] w-full">
-                           <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <ChartContainer config={newContactsConfig} className="h-[300px] w-full">
+                           <BarChart data={newContactsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <CartesianGrid vertical={false} />
                                 <XAxis
                                     dataKey="month"
@@ -86,34 +190,6 @@ export default function DashboardPage() {
                             </BarChart>
                         </ChartContainer>
                     </CardContent>
-                </Card>
-                <Card className="col-span-3">
-                    <CardHeader>
-                        <CardTitle>Recent Contacts</CardTitle>
-                        <CardDescription>You have {recentContacts.length} new messages.</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        {recentContacts.map(contact => (
-                            <div key={contact.email} className="flex items-center">
-                                <Avatar className="h-9 w-9">
-                                    <AvatarImage src={contact.avatar} alt="Avatar" />
-                                    <AvatarFallback>{contact.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div className="ml-4 space-y-1">
-                                    <p className="text-sm font-medium leading-none">{contact.name}</p>
-                                    <p className="text-sm text-muted-foreground">{contact.email}</p>
-                                </div>
-                            </div>
-                        ))}
-                    </CardContent>
-                    <div className="p-6 pt-2">
-                         <Button size="sm" className="w-full" asChild>
-                            <Link href="/admin/contacts">
-                                View All
-                                <ArrowUpRight className="h-4 w-4 ml-2" />
-                            </Link>
-                        </Button>
-                    </div>
                 </Card>
             </div>
         </div>
