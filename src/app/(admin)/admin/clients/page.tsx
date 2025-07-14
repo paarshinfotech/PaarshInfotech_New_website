@@ -2,6 +2,7 @@
 'use client';
 
 import { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -11,10 +12,10 @@ import { ClientFormModal } from "@/components/admin/clients/ClientFormModal";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 
 const initialClients = [
-  { id: 1, name: "TechCorp", industry: "Technology", since: "2021" },
-  { id: 2, name: "HealthFirst", industry: "Healthcare", since: "2022" },
-  { id: 3, name: "Urban Apparel", industry: "E-commerce", since: "2020" },
-  { id: 4, name: "Innovate Corp", industry: "SaaS", since: "2023" },
+  { id: 1, name: "TechCorp", industry: "Technology", since: "2021", logo: "https://placehold.co/40x40.png" },
+  { id: 2, name: "HealthFirst", industry: "Healthcare", since: "2022", logo: "https://placehold.co/40x40.png" },
+  { id: 3, name: "Urban Apparel", industry: "E-commerce", since: "2020", logo: "https://placehold.co/40x40.png" },
+  { id: 4, name: "Innovate Corp", industry: "SaaS", since: "2023", logo: "https://placehold.co/40x40.png" },
 ];
 
 export default function ClientsManagementPage() {
@@ -46,13 +47,22 @@ export default function ClientsManagementPage() {
         setSelectedClient(null);
     }
 
-    const handleSave = (clientData: typeof initialClients[0]) => {
-        if (selectedClient && clientData.id) {
+    const handleSave = (clientData: any) => {
+        const newLogoUrl = clientData.logo && typeof clientData.logo !== 'string'
+            ? "https://placehold.co/40x40.png"
+            : clientData.logo;
+
+        const dataToSave = {
+            ...clientData,
+            logo: newLogoUrl
+        };
+
+        if (selectedClient && dataToSave.id) {
             // Edit
-            setClients(clients.map(c => c.id === clientData.id ? clientData : c));
+            setClients(clients.map(c => c.id === dataToSave.id ? { ...c, ...dataToSave } : c));
         } else {
             // Add
-            setClients([...clients, { ...clientData, id: Date.now() }]);
+            setClients([...clients, { ...dataToSave, id: Date.now() }]);
         }
         setIsModalOpen(false);
         setSelectedClient(null);
@@ -76,6 +86,7 @@ export default function ClientsManagementPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead className="w-[80px]">Logo</TableHead>
                                 <TableHead>Client Name</TableHead>
                                 <TableHead>Industry</TableHead>
                                 <TableHead>Client Since</TableHead>
@@ -85,6 +96,9 @@ export default function ClientsManagementPage() {
                         <TableBody>
                             {clients.map((client) => (
                                 <TableRow key={client.id}>
+                                     <TableCell>
+                                        <Image src={client.logo} alt={client.name} width={40} height={40} className="rounded-md object-contain" />
+                                    </TableCell>
                                     <TableCell className="font-medium">{client.name}</TableCell>
                                     <TableCell>{client.industry}</TableCell>
                                     <TableCell>{client.since}</TableCell>

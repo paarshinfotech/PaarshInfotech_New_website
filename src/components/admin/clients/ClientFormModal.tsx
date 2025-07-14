@@ -15,6 +15,7 @@ const formSchema = z.object({
   name: z.string().min(2, "Client name is required."),
   industry: z.string().min(2, "Industry is required."),
   since: z.string().regex(/^\d{4}$/, "Must be a valid year."),
+  logo: z.any().optional(),
 });
 
 type ClientFormValues = z.infer<typeof formSchema>;
@@ -23,7 +24,7 @@ interface ClientFormModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   onSave: (data: any) => void;
-  client: { id: number; name: string; industry: string; since: string; } | null;
+  client: { id: number; name: string; industry: string; since: string; logo: string; } | null;
 }
 
 export function ClientFormModal({ isOpen, onOpenChange, onSave, client }: ClientFormModalProps) {
@@ -39,17 +40,27 @@ export function ClientFormModal({ isOpen, onOpenChange, onSave, client }: Client
 
   useEffect(() => {
     if (client) {
-      form.reset(client);
+      form.reset({
+          name: client.name,
+          industry: client.industry,
+          since: client.since,
+          logo: null,
+      });
     } else {
-      form.reset({ name: "", industry: "", since: "" });
+      form.reset({ name: "", industry: "", since: "", logo: null });
     }
   }, [client, form, isOpen]);
 
   const onSubmit = (values: ClientFormValues) => {
     setIsSubmitting(true);
-    // Simulate API call
+    // Simulate API call for upload
     setTimeout(() => {
-        onSave({ ...values, id: client?.id });
+        const dataToSave = {
+            ...values,
+            id: client?.id,
+            logo: values.logo && values.logo.length > 0 ? values.logo : client?.logo,
+        };
+        onSave(dataToSave);
         setIsSubmitting(false);
         onOpenChange(false);
     }, 1000)
@@ -96,6 +107,23 @@ export function ClientFormModal({ isOpen, onOpenChange, onSave, client }: Client
                   <FormItem>
                     <FormLabel>Client Since (Year)</FormLabel>
                     <FormControl><Input placeholder="e.g. 2021" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <FormField
+                control={form.control}
+                name="logo"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Client Logo</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="file" 
+                        accept="image/*"
+                        onChange={(e) => field.onChange(e.target.files)}
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
