@@ -58,26 +58,28 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
   });
 
   useEffect(() => {
-    if (job) {
-      form.reset({
-        title: job.title,
-        location: job.location,
-        type: job.type,
-        status: job.status,
-        description: job.description,
-        skills: job.skills,
-        publishDate: job.publishDate,
-      });
-    } else {
-      form.reset({
-        title: "",
-        location: "",
-        type: "Full-Time",
-        status: "Open",
-        description: "",
-        skills: [],
-        publishDate: new Date(),
-      });
+    if (isOpen) {
+        if (job) {
+        form.reset({
+            title: job.title,
+            location: job.location,
+            type: job.type,
+            status: job.status,
+            description: job.description,
+            skills: job.skills,
+            publishDate: job.publishDate,
+        });
+        } else {
+        form.reset({
+            title: "",
+            location: "",
+            type: "Full-Time",
+            status: "Open",
+            description: "",
+            skills: [],
+            publishDate: new Date(),
+        });
+        }
     }
   }, [job, form, isOpen]);
   
@@ -115,17 +117,17 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
+      <DialogContent className="sm:max-w-2xl flex flex-col max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle>{job ? "Edit Job Opening" : "Add New Job Opening"}</DialogTitle>
+          <DialogDescription>
+            Fill out the details for the job posting. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <DialogHeader>
-              <DialogTitle>{job ? "Edit Job Opening" : "Add New Job Opening"}</DialogTitle>
-              <DialogDescription>
-                Fill out the details for the job posting. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            <ScrollArea className="max-h-[70vh] p-1 pr-6">
-              <div className="grid gap-4 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex-grow overflow-y-hidden flex flex-col">
+            <ScrollArea className="flex-grow pr-6 -mr-6">
+              <div className="space-y-6 py-4 ">
                   <FormField control={form.control} name="title" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Job Title</FormLabel>
@@ -134,7 +136,7 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
                     </FormItem>
                   )} />
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField control={form.control} name="location" render={({ field }) => (
                           <FormItem>
                               <FormLabel>Location</FormLabel>
@@ -146,7 +148,7 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
                           <FormItem>
                               <FormLabel>Type</FormLabel>
                               <FormControl>
-                                  <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex items-center space-x-2 pt-2">
+                                  <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex items-center space-x-4 pt-2">
                                       <FormItem className="flex items-center space-x-2 space-y-0">
                                           <FormControl><RadioGroupItem value="Full-Time" /></FormControl>
                                           <FormLabel className="font-normal">Full-Time</FormLabel>
@@ -197,7 +199,7 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
                     </FormItem>
                   )} />
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <FormField control={form.control} name="publishDate" render={({ field }) => (
                           <FormItem className="flex flex-col">
                               <FormLabel>Publish Date</FormLabel>
@@ -207,12 +209,12 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
                                           <Button
                                               variant={"outline"}
                                               className={cn(
-                                                  "w-full pl-3 text-left font-normal",
+                                                  "w-full justify-start text-left font-normal",
                                                   !field.value && "text-muted-foreground"
                                               )}
                                           >
+                                              <CalendarIcon className="mr-2 h-4 w-4" />
                                               {field.value ? (format(field.value, "PPP")) : (<span>Pick a date</span>)}
-                                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                           </Button>
                                       </FormControl>
                                   </PopoverTrigger>
@@ -256,7 +258,7 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
                   </div>
               </div>
             </ScrollArea>
-            <DialogFooter className="pt-4 border-t">
+            <DialogFooter className="pt-4 border-t mt-auto">
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
