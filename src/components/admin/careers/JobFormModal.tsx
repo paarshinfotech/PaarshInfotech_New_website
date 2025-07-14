@@ -124,7 +124,7 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
                 Fill out the details for the job posting. You can schedule it to be published in the future.
               </DialogDescription>
             </DialogHeader>
-            <ScrollArea className="max-h-[70vh] pr-6">
+            <ScrollArea className="max-h-[70vh] p-1 pr-6">
               <div className="grid gap-4 py-4">
                   <FormField control={form.control} name="title" render={({ field }) => (
                     <FormItem>
