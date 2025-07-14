@@ -3,24 +3,11 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartConfig } from "@/components/ui/chart"
-import { BarChart, CartesianGrid, XAxis, Pie, PieChart, Line, LineChart } from "recharts"
-import { TrendingUp, Users, Smartphone, Globe, Briefcase, FileText, MessageSquare, ArrowRight } from "lucide-react"
+import { Pie, PieChart, Line, LineChart, CartesianGrid, XAxis } from "recharts"
+import { Users, Briefcase, FileText, MessageSquare, ArrowRight } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-
-const siteTrafficData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
-const siteTrafficConfig = {
-  desktop: { label: "Desktop", color: "hsl(var(--chart-1))" },
-  mobile: { label: "Mobile", color: "hsl(var(--chart-2))" },
-} satisfies ChartConfig
 
 const trafficSourceData = [
   { source: "Organic", visitors: 2475, fill: "var(--color-organic)" },
@@ -108,24 +95,6 @@ export default function DashboardPage() {
             </div>
             
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2">
-                <Card className="lg:col-span-2">
-                    <CardHeader>
-                        <CardTitle>Site Traffic - Last 6 Months</CardTitle>
-                        <CardDescription>Desktop vs. Mobile</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <ChartContainer config={siteTrafficConfig} className="min-h-[250px] w-full">
-                            <BarChart accessibilityLayer data={siteTrafficData}>
-                                <CartesianGrid vertical={false} />
-                                <XAxis dataKey="month" tickLine={false} tickMargin={10} axisLine={false} tickFormatter={(value) => value.slice(0, 3)} />
-                                <ChartTooltip content={<ChartTooltipContent />} />
-                                <BarChart dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-                                <BarChart dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-                            </BarChart>
-                        </ChartContainer>
-                    </CardContent>
-                </Card>
-
                 <Card>
                     <CardHeader>
                         <CardTitle>Traffic Sources</CardTitle>
