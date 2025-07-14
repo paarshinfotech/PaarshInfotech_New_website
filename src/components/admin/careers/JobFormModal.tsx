@@ -19,6 +19,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters."),
@@ -123,136 +124,138 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
                 Fill out the details for the job posting. You can schedule it to be published in the future.
               </DialogDescription>
             </DialogHeader>
-            <div className="grid gap-4 py-4 max-h-[70vh] overflow-y-auto pr-6">
-                <FormField control={form.control} name="title" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Job Title</FormLabel>
-                    <FormControl><Input placeholder="e.g. Senior React Developer" {...field} /></FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
-
-                <div className="grid grid-cols-2 gap-4">
-                     <FormField control={form.control} name="location" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Location</FormLabel>
-                            <FormControl><Input placeholder="e.g. Nashik, India" {...field} /></FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
-                     <FormField control={form.control} name="type" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Type</FormLabel>
-                            <FormControl>
-                                <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex items-center space-x-2 pt-2">
-                                    <FormItem className="flex items-center space-x-2 space-y-0">
-                                        <FormControl><RadioGroupItem value="Full-Time" /></FormControl>
-                                        <FormLabel className="font-normal">Full-Time</FormLabel>
-                                    </FormItem>
-                                    <FormItem className="flex items-center space-x-2 space-y-0">
-                                        <FormControl><RadioGroupItem value="Internship" /></FormControl>
-                                        <FormLabel className="font-normal">Internship</FormLabel>
-                                    </FormItem>
-                                </RadioGroup>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
-                </div>
-                
-                 <FormField control={form.control} name="description" render={({ field }) => (
+            <ScrollArea className="max-h-[70vh] pr-6">
+              <div className="grid gap-4 py-4">
+                  <FormField control={form.control} name="title" render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl><Textarea placeholder="Describe the role and responsibilities..." {...field} rows={5}/></FormControl>
-                        <FormMessage />
+                      <FormLabel>Job Title</FormLabel>
+                      <FormControl><Input placeholder="e.g. Senior React Developer" {...field} /></FormControl>
+                      <FormMessage />
                     </FormItem>
-                )} />
+                  )} />
 
-                <FormField control={form.control} name="skills" render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Skills</FormLabel>
-                     <FormControl>
-                        <div>
-                             <Input 
-                                placeholder="Type a skill and press Enter"
-                                value={skillInput}
-                                onChange={(e) => setSkillInput(e.target.value)}
-                                onKeyDown={handleSkillKeyDown}
-                             />
-                            <div className="mt-2 flex flex-wrap gap-2">
-                                {field.value.map((skill) => (
-                                    <Badge key={skill} variant="secondary">
-                                        {skill}
-                                        <button type="button" onClick={() => removeSkill(skill)} className="ml-2 rounded-full p-0.5 hover:bg-destructive/20">
-                                            <X className="h-3 w-3" />
-                                        </button>
-                                    </Badge>
-                                ))}
-                            </div>
-                        </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )} />
+                  <div className="grid grid-cols-2 gap-4">
+                      <FormField control={form.control} name="location" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Location</FormLabel>
+                              <FormControl><Input placeholder="e.g. Nashik, India" {...field} /></FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )} />
+                      <FormField control={form.control} name="type" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Type</FormLabel>
+                              <FormControl>
+                                  <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex items-center space-x-2 pt-2">
+                                      <FormItem className="flex items-center space-x-2 space-y-0">
+                                          <FormControl><RadioGroupItem value="Full-Time" /></FormControl>
+                                          <FormLabel className="font-normal">Full-Time</FormLabel>
+                                      </FormItem>
+                                      <FormItem className="flex items-center space-x-2 space-y-0">
+                                          <FormControl><RadioGroupItem value="Internship" /></FormControl>
+                                          <FormLabel className="font-normal">Internship</FormLabel>
+                                      </FormItem>
+                                  </RadioGroup>
+                              </FormControl>
+                              <FormMessage />
+                          </FormItem>
+                      )} />
+                  </div>
+                  
+                  <FormField control={form.control} name="description" render={({ field }) => (
+                      <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl><Textarea placeholder="Describe the role and responsibilities..." {...field} rows={5}/></FormControl>
+                          <FormMessage />
+                      </FormItem>
+                  )} />
 
-                <div className="grid grid-cols-2 gap-4">
-                     <FormField control={form.control} name="publishDate" render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                            <FormLabel>Publish Date</FormLabel>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <FormControl>
-                                        <Button
-                                            variant={"outline"}
-                                            className={cn(
-                                                "w-full pl-3 text-left font-normal",
-                                                !field.value && "text-muted-foreground"
-                                            )}
-                                        >
-                                            {field.value ? (format(field.value, "PPP")) : (<span>Pick a date</span>)}
-                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                        </Button>
-                                    </FormControl>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                        mode="single"
-                                        selected={field.value}
-                                        onSelect={field.onChange}
-                                        initialFocus
-                                    />
-                                </PopoverContent>
-                            </Popover>
-                             <FormDescription>
-                                The date this job will be visible to the public.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
+                  <FormField control={form.control} name="skills" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Skills</FormLabel>
+                      <FormControl>
+                          <div>
+                              <Input 
+                                  placeholder="Type a skill and press Enter"
+                                  value={skillInput}
+                                  onChange={(e) => setSkillInput(e.target.value)}
+                                  onKeyDown={handleSkillKeyDown}
+                              />
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                  {field.value.map((skill) => (
+                                      <Badge key={skill} variant="secondary">
+                                          {skill}
+                                          <button type="button" onClick={() => removeSkill(skill)} className="ml-2 rounded-full p-0.5 hover:bg-destructive/20">
+                                              <X className="h-3 w-3" />
+                                          </button>
+                                      </Badge>
+                                  ))}
+                              </div>
+                          </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )} />
 
-                    <FormField control={form.control} name="status" render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Status</FormLabel>
-                             <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a status" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    <SelectItem value="Open">Open</SelectItem>
-                                    <SelectItem value="Closed">Closed</SelectItem>
-                                    <SelectItem value="Scheduled">Scheduled</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormDescription>
-                                'Scheduled' status will be auto-set if Publish Date is in the future.
-                            </FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )} />
-                </div>
-            </div>
+                  <div className="grid grid-cols-2 gap-4">
+                      <FormField control={form.control} name="publishDate" render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                              <FormLabel>Publish Date</FormLabel>
+                              <Popover>
+                                  <PopoverTrigger asChild>
+                                      <FormControl>
+                                          <Button
+                                              variant={"outline"}
+                                              className={cn(
+                                                  "w-full pl-3 text-left font-normal",
+                                                  !field.value && "text-muted-foreground"
+                                              )}
+                                          >
+                                              {field.value ? (format(field.value, "PPP")) : (<span>Pick a date</span>)}
+                                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                          </Button>
+                                      </FormControl>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-auto p-0" align="start">
+                                      <Calendar
+                                          mode="single"
+                                          selected={field.value}
+                                          onSelect={field.onChange}
+                                          initialFocus
+                                      />
+                                  </PopoverContent>
+                              </Popover>
+                              <FormDescription>
+                                  The date this job will be visible to the public.
+                              </FormDescription>
+                              <FormMessage />
+                          </FormItem>
+                      )} />
+
+                      <FormField control={form.control} name="status" render={({ field }) => (
+                          <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                  <FormControl>
+                                      <SelectTrigger>
+                                          <SelectValue placeholder="Select a status" />
+                                      </SelectTrigger>
+                                  </FormControl>
+                                  <SelectContent>
+                                      <SelectItem value="Open">Open</SelectItem>
+                                      <SelectItem value="Closed">Closed</SelectItem>
+                                      <SelectItem value="Scheduled">Scheduled</SelectItem>
+                                  </SelectContent>
+                              </Select>
+                              <FormDescription>
+                                  'Scheduled' status will be auto-set if Publish Date is in the future.
+                              </FormDescription>
+                              <FormMessage />
+                          </FormItem>
+                      )} />
+                  </div>
+              </div>
+            </ScrollArea>
             <DialogFooter className="pt-4 border-t">
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={isSubmitting}>
@@ -266,4 +269,3 @@ export function JobFormModal({ isOpen, onOpenChange, onSave, job }: JobFormModal
     </Dialog>
   );
 }
-
