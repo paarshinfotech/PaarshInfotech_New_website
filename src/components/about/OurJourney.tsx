@@ -51,17 +51,19 @@ export default function OurJourney() {
         </div>
         
         <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-4 md:left-1/2 w-0.5 h-full bg-border -translate-x-1/2" aria-hidden="true"></div>
+          <div className="absolute left-4 md:left-1/2 w-0.5 h-full bg-border -translate-x-1/2" aria-hidden="true">
+            <div className="absolute top-0 w-3 h-3 bg-primary rounded-full -translate-x-[calc(50%-1px)]"></div>
+            <div className="absolute bottom-0 w-3 h-3 bg-primary rounded-full -translate-x-[calc(50%-1px)]"></div>
+          </div>
 
-          <div className="space-y-12">
+          <div className="space-y-16">
             {journeyMilestones.map((item, index) => (
               <div key={item.year} className="relative flex items-center md:justify-normal md:odd:flex-row-reverse group">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground absolute left-4 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 z-10 ring-8 ring-secondary">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary absolute left-4 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 z-10 ring-8 ring-secondary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
                   <item.Icon className="w-4 h-4" />
                 </div>
                 
-                <div className="w-full md:w-[calc(50%-2rem)] bg-background p-6 rounded-lg shadow-md border border-transparent md:group-odd:ml-auto md:group-even:mr-auto group-hover:border-accent transition-colors duration-300 ml-12 md:ml-0">
+                <div className="w-full md:w-[calc(50%-2.5rem)] bg-background p-6 rounded-lg shadow-md border border-transparent md:group-odd:ml-auto md:group-even:mr-auto group-hover:border-accent group-hover:shadow-lg transition-all duration-300 ml-14 md:ml-0">
                   <p className="text-accent font-bold text-lg mb-1">{item.year}</p>
                   <h3 className="text-xl font-bold text-primary mb-2">{item.title}</h3>
                   <p className="text-muted-foreground">{item.description}</p>
