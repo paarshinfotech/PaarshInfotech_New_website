@@ -49,7 +49,7 @@ export default function Testimonials() {
           <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
             {extendedTestimonials.map((testimonial, index) => (
               <div key={index} className="flex-shrink-0 w-full md:w-1/2 lg:w-[30%] p-4">
-                  <Card className="h-full bg-background shadow-lg flex flex-col p-8 transition-transform duration-300 hover:-translate-y-2 hover:shadow-2xl">
+                  <Card className="h-full bg-background shadow-md flex flex-col p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
                     <CardContent className="p-0 flex-grow">
                       <p className="text-foreground/80 mb-6 italic">"{testimonial.quote}"</p>
                     </CardContent>
