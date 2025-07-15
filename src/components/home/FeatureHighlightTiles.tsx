@@ -35,17 +35,17 @@ export default function FeatureHighlightTiles() {
             We're building a community dedicated to growth, learning, and making a real impact.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 -skew-y-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map(({ title, description, Icon }) => (
-            <Card key={title} className="group transform transition-all duration-300 ease-in-out hover:skew-y-0 hover:scale-105 hover:shadow-2xl hover:shadow-primary/20">
-              <CardHeader className="items-center text-center">
-                <div className="p-4 bg-primary/10 rounded-full mb-4 group-hover:bg-accent transition-colors">
-                  <Icon className="w-8 h-8 text-primary group-hover:text-accent-foreground" />
+            <Card key={title} className="group text-center p-6 transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 bg-background">
+              <CardHeader className="p-0 items-center">
+                <div className="p-4 bg-primary/10 rounded-full mb-6 transition-colors duration-300 group-hover:bg-accent">
+                  <Icon className="w-8 h-8 text-primary transition-colors duration-300 group-hover:text-accent-foreground" />
                 </div>
-                <CardTitle className="text-xl">{title}</CardTitle>
+                <CardTitle className="text-xl text-primary">{title}</CardTitle>
               </CardHeader>
-              <CardContent className="text-center text-muted-foreground">
-                <p>{description}</p>
+              <CardContent className="p-0 mt-4">
+                <p className="text-muted-foreground">{description}</p>
               </CardContent>
             </Card>
           ))}
