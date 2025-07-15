@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 const leaders = [
   {
@@ -30,25 +30,28 @@ export default function LeadershipTeam() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-5xl mx-auto">
           {leaders.map((leader) => (
-            <Card key={leader.name} className="overflow-hidden border-none shadow-xl transform transition-transform hover:-translate-y-2 duration-300">
-                <div className="grid md:grid-cols-2 items-center">
-                    <div className="relative w-full aspect-square">
-                        <Image
-                        src={leader.avatar}
-                        alt={`Portrait of ${leader.name}`}
-                        fill
-                        className="object-cover"
-                        data-ai-hint={leader.dataAiHint}
-                        />
-                    </div>
-                    <div className="p-8 bg-background h-full flex flex-col justify-center">
-                        <h3 className="text-2xl font-bold text-primary">{leader.name}</h3>
-                        <p className="text-base text-accent font-semibold mb-4">{leader.title}</p>
-                        <blockquote className="text-foreground/80 italic border-l-2 border-accent pl-4">
-                        {leader.quote}
-                        </blockquote>
-                    </div>
+            <Card 
+              key={leader.name} 
+              className="group flex flex-col items-center text-center p-8 bg-background shadow-lg hover:shadow-xl transition-shadow duration-300 hover:-translate-y-2"
+            >
+              <CardHeader className="p-0 items-center">
+                <div className="relative w-40 h-40 mb-6">
+                    <Image
+                    src={leader.avatar}
+                    alt={`Portrait of ${leader.name}`}
+                    fill
+                    className="object-cover rounded-full border-4 border-primary/10 transition-transform duration-300 group-hover:scale-105"
+                    data-ai-hint={leader.dataAiHint}
+                    />
                 </div>
+                <h3 className="text-2xl font-bold text-primary">{leader.name}</h3>
+                <p className="text-base text-accent font-semibold">{leader.title}</p>
+              </CardHeader>
+              <CardContent className="p-0 mt-6 flex-grow flex items-center">
+                <blockquote className="text-foreground/80 italic border-t-2 border-accent pt-6">
+                  "{leader.quote}"
+                </blockquote>
+              </CardContent>
             </Card>
           ))}
         </div>
