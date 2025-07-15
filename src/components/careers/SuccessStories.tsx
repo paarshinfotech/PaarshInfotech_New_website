@@ -1,15 +1,12 @@
+
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import Image from "next/image";
 import { successStoriesData } from "@/lib/careersData";
+
+// We duplicate the testimonials to create a seamless loop for the marquee effect.
+const extendedSuccessStories = [...successStoriesData, ...successStoriesData];
 
 export default function SuccessStories() {
   return (
@@ -21,18 +18,11 @@ export default function SuccessStories() {
             Hear from past interns and employees about their journey and growth at Paarsh Infotech.
           </p>
         </div>
-        <Carousel
-          opts={{
-            align: "start",
-            loop: true,
-          }}
-          className="w-full max-w-4xl mx-auto"
-        >
-          <CarouselContent>
-            {successStoriesData.map((story, index) => (
-              <CarouselItem key={index} className="md:basis-1/2">
-                <div className="p-4 h-full">
-                  <Card className="h-full bg-secondary/50 shadow-sm flex flex-col p-8">
+        <div className="relative w-full overflow-hidden group">
+          <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
+            {extendedSuccessStories.map((story, index) => (
+              <div key={index} className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4">
+                  <Card className="h-full bg-secondary/50 shadow-sm flex flex-col p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
                     <CardContent className="p-0 flex-grow">
                       <p className="text-foreground/80 mb-6 italic">"{story.quote}"</p>
                     </CardContent>
@@ -44,13 +34,11 @@ export default function SuccessStories() {
                         </div>
                     </div>
                   </Card>
-                </div>
-              </CarouselItem>
+              </div>
             ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+          </div>
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-background via-transparent to-background"></div>
+        </div>
       </div>
     </section>
   );
