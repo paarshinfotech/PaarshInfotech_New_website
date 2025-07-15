@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -62,6 +63,7 @@ export default function Testimonials() {
               </div>
             ))}
           </div>
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-secondary via-transparent to-secondary"></div>
         </div>
       </div>
     </section>
