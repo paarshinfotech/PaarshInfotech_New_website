@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { photoSliderImages } from "@/lib/mediaData";
+import { ImagePreviewModal } from "../common/ImagePreviewModal";
 
 export default function PhotoSlider() {
   return (
@@ -37,7 +38,8 @@ export default function PhotoSlider() {
             {photoSliderImages.map((image, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                    <div className="relative aspect-video rounded-lg overflow-hidden group">
+                  <ImagePreviewModal imgSrc={image.src} alt={image.alt}>
+                    <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer">
                       <Image
                         src={image.src}
                         alt={image.alt}
@@ -49,6 +51,7 @@ export default function PhotoSlider() {
                         <p className="text-white font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">{image.alt}</p>
                       </div>
                     </div>
+                  </ImagePreviewModal>
                 </div>
               </CarouselItem>
             ))}

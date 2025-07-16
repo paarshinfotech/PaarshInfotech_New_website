@@ -12,12 +12,9 @@ import SocialWall from "@/components/media/SocialWall";
 import MediaTestimonials from "@/components/media/MediaTestimonials";
 import CallToActionBox from "@/components/media/CallToActionBox";
 import { mediaCategories, mediaGalleryItems } from "@/lib/mediaData";
-import ImageLightbox from "@/components/media/ImageLightbox";
 
 export default function MediaPage() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const filteredMedia = useMemo(() => {
     if (activeCategory === "All") {
@@ -25,21 +22,6 @@ export default function MediaPage() {
     }
     return mediaGalleryItems.filter((item) => item.category === activeCategory);
   }, [activeCategory]);
-
-  const openLightbox = (index: number) => {
-    setSelectedImageIndex(index);
-    setLightboxOpen(true);
-  };
-
-  const handleNextImage = () => {
-    setSelectedImageIndex((prevIndex) => (prevIndex + 1) % filteredMedia.length);
-  };
-
-  const handlePrevImage = () => {
-    setSelectedImageIndex(
-      (prevIndex) => (prevIndex - 1 + filteredMedia.length) % filteredMedia.length
-    );
-  };
 
   return (
     <>
@@ -49,7 +31,7 @@ export default function MediaPage() {
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
       />
-      <MediaGalleryGrid items={filteredMedia} onImageClick={openLightbox} />
+      <MediaGalleryGrid items={filteredMedia} />
       <PhotoSlider />
       <BehindTheScenes />
       <EmployeeSpotlight />
@@ -57,15 +39,6 @@ export default function MediaPage() {
       <SocialWall />
       <MediaTestimonials />
       <CallToActionBox />
-
-      <ImageLightbox
-        isOpen={lightboxOpen}
-        onOpenChange={setLightboxOpen}
-        images={filteredMedia}
-        currentIndex={selectedImageIndex}
-        onNext={handleNextImage}
-        onPrev={handlePrevImage}
-      />
     </>
   );
 }

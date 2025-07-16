@@ -2,6 +2,7 @@ import { socialWallPosts } from "@/lib/mediaData";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import { ThumbsUp, MessageSquare, Share2 } from "lucide-react";
+import { ImagePreviewModal } from "../common/ImagePreviewModal";
 
 export default function SocialWall() {
   return (
@@ -33,15 +34,17 @@ export default function SocialWall() {
               <CardContent className="flex-grow space-y-4">
                 <p>{post.content}</p>
                 {post.image && (
-                   <div className="relative aspect-video rounded-lg overflow-hidden">
-                     <Image
-                      src={post.image}
-                      alt="Social media post image"
-                      fill
-                      className="object-cover"
-                      data-ai-hint={post.hint}
-                     />
-                   </div>
+                   <ImagePreviewModal imgSrc={post.image} alt="Social media post image">
+                    <div className="relative aspect-video rounded-lg overflow-hidden cursor-pointer">
+                      <Image
+                        src={post.image}
+                        alt="Social media post image"
+                        fill
+                        className="object-cover"
+                        data-ai-hint={post.hint}
+                      />
+                    </div>
+                   </ImagePreviewModal>
                 )}
               </CardContent>
               <CardFooter className="flex justify-around border-t pt-4 mt-4">
