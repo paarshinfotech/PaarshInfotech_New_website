@@ -6,61 +6,49 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { PlusCircle, MoreHorizontal, Edit, Trash2 } from "lucide-react";
-import Image from "next/image";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { TeamMemberFormModal } from "@/components/admin/team/TeamMemberFormModal";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
-import { teamMembers as initialTeamMembers, teamCategories as initialCategories, TeamMember, TeamCategory } from "@/lib/teamData";
+import { teamCategories as initialCategories, TeamCategory } from "@/lib/teamData";
+import { CategoryFormModal } from "@/components/admin/team/CategoryFormModal";
+import { Badge } from "@/components/ui/badge";
 
-export default function TeamManagementPage() {
-    const [teamMembers, setTeamMembers] = useState<TeamMember[]>(initialTeamMembers);
-    const [teamCategories, setTeamCategories] = useState<TeamCategory[]>(initialCategories);
+export default function TeamCategoriesPage() {
+    const [categories, setCategories] = useState<TeamCategory[]>(initialCategories);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-    const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
-
-    const getCategoryName = (categoryId: number) => {
-        return teamCategories.find(c => c.id === categoryId)?.name || 'Uncategorized';
-    };
+    const [selectedCategory, setSelectedCategory] = useState<TeamCategory | null>(null);
 
     const handleAdd = () => {
-        setSelectedMember(null);
+        setSelectedCategory(null);
         setIsModalOpen(true);
     };
 
-    const handleEdit = (member: TeamMember) => {
-        setSelectedMember(member);
+    const handleEdit = (category: TeamCategory) => {
+        setSelectedCategory(category);
         setIsModalOpen(true);
     };
     
-    const handleDelete = (member: TeamMember) => {
-        setSelectedMember(member);
+    const handleDelete = (category: TeamCategory) => {
+        setSelectedCategory(category);
         setIsDeleteAlertOpen(true);
     }
 
     const confirmDelete = () => {
-        if (selectedMember) {
-            setTeamMembers(teamMembers.filter(m => m.id !== selectedMember.id));
+        if (selectedCategory) {
+            setCategories(categories.filter(c => c.id !== selectedCategory.id));
         }
         setIsDeleteAlertOpen(false);
-        setSelectedMember(null);
+        setSelectedCategory(null);
     }
 
-    const handleSave = (memberData: any) => {
-        const dataToSave = {
-            ...memberData,
-            categoryId: Number(memberData.categoryId), // Ensure categoryId is a number
-        }
-
-        if (selectedMember && dataToSave.id) {
-            // Edit
-            setTeamMembers(teamMembers.map(m => m.id === dataToSave.id ? { ...m, ...dataToSave } : m));
+    const handleSave = (categoryData: any) => {
+        if (selectedCategory && categoryData.id) {
+            setCategories(categories.map(c => c.id === categoryData.id ? { ...c, ...categoryData } : c));
         } else {
-            // Add
-            setTeamMembers([...teamMembers, { ...dataToSave, id: Date.now() }]);
+            setCategories([...categories, { ...categoryData, id: Date.now() }]);
         }
         setIsModalOpen(false);
-        setSelectedMember(null);
+        setSelectedCategory(null);
     };
 
     return (
@@ -68,32 +56,32 @@ export default function TeamManagementPage() {
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle>Team Management</CardTitle>
-                        <CardDescription>Manage your company's team members.</CardDescription>
+                        <CardTitle>Team Categories</CardTitle>
+                        <CardDescription>Manage the roles and categories for your team members.</CardDescription>
                     </div>
                     <Button size="sm" onClick={handleAdd}>
                         <PlusCircle className="mr-2 h-4 w-4" />
-                        Add Member
+                        Add Category
                     </Button>
                 </CardHeader>
                 <CardContent>
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[80px]">Avatar</TableHead>
-                                <TableHead>Name</TableHead>
-                                <TableHead>Role / Category</TableHead>
+                                <TableHead>Category Name</TableHead>
+                                <TableHead>Allows Multiple Members</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {teamMembers.map((member) => (
-                                <TableRow key={member.id}>
+                            {categories.map((category) => (
+                                <TableRow key={category.id}>
+                                    <TableCell className="font-medium">{category.name}</TableCell>
                                     <TableCell>
-                                        <Image src={member.avatar} alt={member.name} width={40} height={40} className="rounded-full" />
+                                        <Badge variant={category.allowMultiple ? "default" : "secondary"}>
+                                            {category.allowMultiple ? "Yes" : "No (Single Member)"}
+                                        </Badge>
                                     </TableCell>
-                                    <TableCell className="font-medium">{member.name}</TableCell>
-                                    <TableCell>{getCategoryName(member.categoryId)}</TableCell>
                                     <TableCell className="text-right">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
@@ -104,11 +92,11 @@ export default function TeamManagementPage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <DropdownMenuItem onClick={() => handleEdit(member)}>
+                                                <DropdownMenuItem onClick={() => handleEdit(category)}>
                                                     <Edit className="mr-2 h-4 w-4" />
                                                     Edit
                                                 </DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => handleDelete(member)} className="text-destructive">
+                                                <DropdownMenuItem onClick={() => handleDelete(category)} className="text-destructive">
                                                      <Trash2 className="mr-2 h-4 w-4" />
                                                     Delete
                                                 </DropdownMenuItem>
@@ -121,19 +109,19 @@ export default function TeamManagementPage() {
                     </Table>
                 </CardContent>
             </Card>
-            <TeamMemberFormModal
+            
+            <CategoryFormModal
                 isOpen={isModalOpen}
                 onOpenChange={setIsModalOpen}
                 onSave={handleSave}
-                member={selectedMember}
-                categories={teamCategories}
-                teamMembers={teamMembers}
+                category={selectedCategory}
             />
+
             <DeleteConfirmationDialog 
                 isOpen={isDeleteAlertOpen}
                 onOpenChange={setIsDeleteAlertOpen}
                 onConfirm={confirmDelete}
-                itemName={selectedMember?.name || "the selected team member"}
+                itemName={selectedCategory?.name || "the selected category"}
             />
         </>
     )

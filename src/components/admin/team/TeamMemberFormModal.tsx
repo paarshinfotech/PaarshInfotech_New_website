@@ -10,11 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
-import type { TeamMember } from "@/app/(admin)/admin/team/page";
+import { TeamMember, TeamCategory } from "@/lib/teamData";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required."),
-  role: z.string().min(2, "Role is required."),
+  categoryId: z.string({ required_error: "Please select a category."}),
   avatar: z.any().optional(),
 });
 
@@ -23,17 +24,18 @@ type MemberFormValues = z.infer<typeof formSchema>;
 interface TeamMemberFormModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (data: TeamMember) => void;
+  onSave: (data: any) => void;
   member: TeamMember | null;
+  categories: TeamCategory[];
+  teamMembers: TeamMember[];
 }
 
-export function TeamMemberFormModal({ isOpen, onOpenChange, onSave, member }: TeamMemberFormModalProps) {
+export function TeamMemberFormModal({ isOpen, onOpenChange, onSave, member, categories, teamMembers }: TeamMemberFormModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm<MemberFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      role: "",
     },
   });
 
@@ -41,30 +43,36 @@ export function TeamMemberFormModal({ isOpen, onOpenChange, onSave, member }: Te
     if (member) {
       form.reset({
         name: member.name,
-        role: member.role,
-        avatar: null, // Reset file input
+        categoryId: String(member.categoryId),
+        avatar: null,
       });
     } else {
-      form.reset({ name: "", role: "", avatar: null });
+      form.reset({ name: "", categoryId: undefined, avatar: null });
     }
   }, [member, form, isOpen]);
 
+  const isCategoryFilled = (categoryId: number) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category || category.allowMultiple) {
+      return false; // Category allows multiple members or doesn't exist
+    }
+    // Check if another member already has this category
+    return teamMembers.some(m => m.categoryId === categoryId && m.id !== member?.id);
+  };
+
   const onSubmit = (values: MemberFormValues) => {
     setIsSubmitting(true);
-    // In a real app, you would handle file upload to a storage service (e.g., Firebase Storage)
-    // and get back a URL. For this simulation, we'll use a placeholder if a new file is selected.
     setTimeout(() => {
         const newAvatarUrl = values.avatar && values.avatar.length > 0
-            ? "https://placehold.co/40x40.png" // Placeholder for new upload
-            : member?.avatar; // Keep old avatar if no new one is uploaded
+            ? "https://placehold.co/40x40.png"
+            : member?.avatar;
 
         const dataToSave = {
-            name: values.name,
-            role: values.role,
-            id: member?.id || Date.now(),
+            ...values,
+            id: member?.id,
             avatar: newAvatarUrl || "https://placehold.co/40x40.png"
         };
-        onSave(dataToSave as TeamMember);
+        onSave(dataToSave);
         setIsSubmitting(false);
         onOpenChange(false);
     }, 1000)
@@ -95,11 +103,24 @@ export function TeamMemberFormModal({ isOpen, onOpenChange, onSave, member }: Te
               />
               <FormField
                 control={form.control}
-                name="role"
+                name="categoryId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <FormControl><Input placeholder="e.g. Software Engineer" {...field} /></FormControl>
+                    <FormLabel>Category</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a role / category" />
+                            </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            {categories.map(cat => (
+                                <SelectItem key={cat.id} value={String(cat.id)} disabled={isCategoryFilled(cat.id)}>
+                                    {cat.name} {isCategoryFilled(cat.id) && "(Filled)"}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

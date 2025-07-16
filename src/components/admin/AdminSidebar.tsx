@@ -20,6 +20,11 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import {
   BarChart2,
   Briefcase,
   FileText,
@@ -32,13 +37,13 @@ import {
   Image as ImageIcon,
   LogOut,
   Loader2,
-  Rss
+  Rss,
+  ChevronDown
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
-const navLinks = [
+const mainLinks = [
   { href: "/admin/dashboard", label: "Dashboard", icon: Home },
-  { href: "/admin/team", label: "Team", icon: Users },
   { href: "/admin/services", label: "Services", icon: Briefcase },
   { href: "/admin/clients", label: "Clients", icon: Package },
   { href: "/admin/careers", label: "Careers", icon: FileText },
@@ -48,12 +53,18 @@ const navLinks = [
   { href: "/admin/analytics", label: "Analytics", icon: BarChart2 },
 ];
 
+const teamLinks = [
+    { href: "/admin/team", label: "Members"},
+    { href: "/admin/team/categories", label: "Categories"},
+]
+
 const settingsLink = { href: "/admin/settings", label: "Settings", icon: Settings };
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const { logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const isTeamSectionOpen = pathname.startsWith('/admin/team');
   
   const handleLogout = () => {
     setIsLoggingOut(true);
@@ -64,15 +75,15 @@ export function AdminSidebar() {
     }, 1000)
   }
 
-  const NavLink = ({ href, label, icon: Icon }: typeof navLinks[0]) => {
-    const isActive = pathname.startsWith(href) && (href !== '/admin/dashboard' || pathname === '/admin/dashboard');
+  const NavLink = ({ href, label, icon: Icon, isSubItem = false }: { href: string; label: string; icon?: React.ElementType, isSubItem?: boolean }) => {
+    const isActive = pathname === href;
     return (
       <Link href={href} legacyBehavior passHref>
         <Button
           variant={isActive ? "secondary" : "ghost"}
-          className="w-full justify-start"
+          className={cn("w-full justify-start", isSubItem && "pl-10")}
         >
-          <Icon className="mr-2 h-4 w-4" />
+          {Icon && <Icon className="mr-2 h-4 w-4" />}
           {label}
         </Button>
       </Link>
@@ -86,7 +97,23 @@ export function AdminSidebar() {
         </div>
         <ScrollArea className="flex-1">
           <nav className="px-2 py-4 space-y-1">
-              {navLinks.map((link) => (
+              <NavLink {...mainLinks.find(l => l.label === 'Dashboard')!} />
+
+              <Collapsible defaultOpen={isTeamSectionOpen}>
+                <CollapsibleTrigger asChild>
+                    <Button variant="ghost" className="w-full justify-between">
+                        <span className="flex items-center gap-2">
+                            <Users className="h-4 w-4" /> Team
+                        </span>
+                        <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180"/>
+                    </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="space-y-1 pt-1">
+                    {teamLinks.map(link => <NavLink key={link.href} {...link} isSubItem/>)}
+                </CollapsibleContent>
+              </Collapsible>
+
+              {mainLinks.filter(l => l.label !== 'Dashboard').map((link) => (
                   <NavLink key={link.href} {...link} />
               ))}
           </nav>
