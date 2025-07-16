@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from "next/image";
@@ -11,6 +12,7 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Product } from "@/lib/productsData";
+import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 
 interface ProductGalleryProps {
     gallery: Product['gallery'];
@@ -35,17 +37,19 @@ export default function ProductGallery({ gallery }: ProductGalleryProps) {
             {gallery.map((image, index) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/1">
                 <div className="p-1">
-                  <Card>
-                    <CardContent className="flex aspect-video items-center justify-center p-0 relative rounded-lg overflow-hidden">
-                      <Image
-                        src={image.src}
-                        alt={image.alt}
-                        fill
-                        className="object-cover"
-                        data-ai-hint={image.hint}
-                      />
-                    </CardContent>
-                  </Card>
+                  <ImagePreviewModal imgSrc={image.src} alt={image.alt}>
+                    <Card className="cursor-pointer">
+                      <CardContent className="flex aspect-video items-center justify-center p-0 relative rounded-lg overflow-hidden">
+                        <Image
+                          src={image.src}
+                          alt={image.alt}
+                          fill
+                          className="object-cover"
+                          data-ai-hint={image.hint}
+                        />
+                      </CardContent>
+                    </Card>
+                  </ImagePreviewModal>
                 </div>
               </CarouselItem>
             ))}
