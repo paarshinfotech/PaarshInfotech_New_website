@@ -1,23 +1,39 @@
 
-import { socialWallPosts } from "@/lib/mediaData";
+'use client';
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import type { SocialPost } from "@/app/(admin)/admin/social/page";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import { ThumbsUp, MessageSquare, Share2 } from "lucide-react";
-import { ImagePreviewModal } from "../common/ImagePreviewModal";
+import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 
-export default function SocialWall() {
+interface SocialPostPreviewModalProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  post: SocialPost | null;
+}
+
+export function SocialPostPreviewModal({ isOpen, onOpenChange, post }: SocialPostPreviewModalProps) {
+  if (!post) return null;
+
   return (
-    <section className="py-16 md:py-24 bg-secondary">
-      <div className="container max-w-7xl">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">Catch Us on Social</h2>
-          <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto">
-            Stay connected and see what we're up to. Here's a glimpse of our latest updates.
-          </p>
-        </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {socialWallPosts.map((post) => (
-            <Card key={post.id} className="flex flex-col bg-background">
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md p-0">
+        <DialogHeader className="p-4 pb-0">
+          <DialogTitle>Post Preview</DialogTitle>
+          <DialogDescription>
+            This is how the post will appear on the media page.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="p-4">
+             <Card className="flex flex-col bg-background">
               <CardHeader className="flex flex-row items-center gap-4">
                 <Image
                   src="https://placehold.co/40x40.png"
@@ -33,7 +49,7 @@ export default function SocialWall() {
                 </div>
               </CardHeader>
               <CardContent className="flex-grow space-y-4">
-                <p className="whitespace-pre-wrap">{post.content}</p>
+                <p>{post.content}</p>
                 {post.image && (
                    <ImagePreviewModal imgSrc={post.image} alt="Social media post image">
                     <div className="relative aspect-video rounded-lg overflow-hidden cursor-pointer">
@@ -48,24 +64,23 @@ export default function SocialWall() {
                    </ImagePreviewModal>
                 )}
               </CardContent>
-              <CardFooter className="flex justify-around border-t pt-4 mt-auto">
-                 <div className="flex items-center gap-2 text-muted-foreground hover:text-primary cursor-pointer transition-colors">
+              <CardFooter className="flex justify-around border-t pt-4 mt-4">
+                 <div className="flex items-center gap-2 text-muted-foreground">
                     <ThumbsUp className="w-5 h-5" />
-                    <span className="text-sm font-medium">{post.likes}</span>
+                    <span className="text-sm">{post.likes}</span>
                  </div>
-                 <div className="flex items-center gap-2 text-muted-foreground hover:text-primary cursor-pointer transition-colors">
+                 <div className="flex items-center gap-2 text-muted-foreground">
                     <MessageSquare className="w-5 h-5" />
-                    <span className="text-sm font-medium">{post.comments}</span>
+                    <span className="text-sm">{post.comments}</span>
                  </div>
-                 <div className="flex items-center gap-2 text-muted-foreground hover:text-primary cursor-pointer transition-colors">
+                 <div className="flex items-center gap-2 text-muted-foreground">
                     <Share2 className="w-5 h-5" />
-                    <span className="text-sm font-medium">Share</span>
+                    <span className="text-sm">Share</span>
                  </div>
               </CardFooter>
             </Card>
-          ))}
         </div>
-      </div>
-    </section>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -31,7 +31,8 @@ import {
   Users,
   Image as ImageIcon,
   LogOut,
-  Loader2
+  Loader2,
+  Rss
 } from "lucide-react";
 
 const navLinks = [
@@ -41,6 +42,7 @@ const navLinks = [
   { href: "/admin/clients", label: "Clients", icon: Package },
   { href: "/admin/careers", label: "Careers", icon: FileText },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
+  { href: "/admin/social", label: "Social Posts", icon: Rss },
   { href: "/admin/contacts", label: "Contacts", icon: MessageSquare },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart2 },
 ];
@@ -62,7 +64,7 @@ export function AdminSidebar() {
   }
 
   const NavLink = ({ href, label, icon: Icon }: typeof navLinks[0]) => {
-    const isActive = pathname === href;
+    const isActive = pathname.startsWith(href) && (href !== '/admin/dashboard' || pathname === '/admin/dashboard');
     return (
       <Link href={href} legacyBehavior passHref>
         <Button

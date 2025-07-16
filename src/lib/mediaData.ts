@@ -1,3 +1,4 @@
+
 export const mediaCategories = ["All", "Office Culture", "Sports", "Parties", "Celebrations"] as const;
 
 export const mediaGalleryItems = [
@@ -62,21 +63,27 @@ export const socialWallPosts = [
     timestamp: "2 hours ago",
     content: "Thrilled to announce the launch of our new client project! A huge shoutout to the team for their hard work. #webdevelopment #success #teamwork",
     image: "https://placehold.co/600x400.png",
-    hint: "laptop screen"
+    hint: "laptop screen",
+    likes: 125,
+    comments: 12,
   },
   {
     id: 2,
     timestamp: "1 day ago",
-    content: "It's not all work and no play! The team enjoying a competitive game of cricket after work. 🏏 #worklifebalance #teamspirit",
+    content: "It's not all work and no play! The team enjoying a competitive game of cricket after work. \n🏏 #worklifebalance #teamspirit",
     image: "https://placehold.co/600x400.png",
-    hint: "cricket game"
+    hint: "cricket game",
+    likes: 240,
+    comments: 32,
   },
   {
     id: 3,
     timestamp: "3 days ago",
     content: "We're hiring! Looking for passionate developers to join our growing family. Check out our careers page for openings. #hiring #devjobs #techcareers",
     image: null,
-    hint: ""
+    hint: "",
+    likes: 98,
+    comments: 8,
   }
 ];
 
