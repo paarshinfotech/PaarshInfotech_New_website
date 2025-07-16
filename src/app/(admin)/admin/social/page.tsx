@@ -53,20 +53,24 @@ export default function SocialManagementPage() {
     const handleSave = (postData: any) => {
         const newImageUrl = postData.image && typeof postData.image !== 'string'
             ? "https://placehold.co/600x400.png"
-            : postData.image;
+            : postData.image || (postData.id ? posts.find(p => p.id === postData.id)?.image : null);
 
-        const dataToSave = {
-            ...postData,
-            image: newImageUrl
-        };
-
-        if (selectedPost && dataToSave.id) {
+        if (postData.id) {
             // Edit
-            setPosts(posts.map(p => p.id === dataToSave.id ? { ...p, ...dataToSave } : p));
+            setPosts(posts.map(p => p.id === postData.id ? { ...p, content: postData.content, image: newImageUrl } : p));
         } else {
             // Add
             const newId = Math.max(...posts.map(p => p.id), 0) + 1;
-            setPosts([...posts, { ...dataToSave, id: newId }]);
+            const newPost: SocialPost = {
+                id: newId,
+                content: postData.content,
+                image: newImageUrl,
+                timestamp: "Just now",
+                likes: 0,
+                comments: 0,
+                hint: "social media"
+            };
+            setPosts([newPost, ...posts]);
         }
         setIsFormModalOpen(false);
         setSelectedPost(null);

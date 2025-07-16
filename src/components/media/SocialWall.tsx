@@ -2,7 +2,7 @@
 import { socialWallPosts } from "@/lib/mediaData";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
-import { ThumbsUp, MessageSquare, Share2 } from "lucide-react";
+import { ThumbsUp, MessageSquare } from "lucide-react";
 import { ImagePreviewModal } from "../common/ImagePreviewModal";
 
 export default function SocialWall() {
@@ -48,18 +48,14 @@ export default function SocialWall() {
                    </ImagePreviewModal>
                 )}
               </CardContent>
-              <CardFooter className="flex justify-around border-t pt-4 mt-auto">
+              <CardFooter className="flex justify-start gap-8 border-t pt-4 mt-auto">
                  <div className="flex items-center gap-2 text-muted-foreground hover:text-primary cursor-pointer transition-colors">
                     <ThumbsUp className="w-5 h-5" />
-                    <span className="text-sm font-medium">{post.likes}</span>
+                    <span className="text-sm font-medium">{post.likes} Likes</span>
                  </div>
                  <div className="flex items-center gap-2 text-muted-foreground hover:text-primary cursor-pointer transition-colors">
                     <MessageSquare className="w-5 h-5" />
-                    <span className="text-sm font-medium">{post.comments}</span>
-                 </div>
-                 <div className="flex items-center gap-2 text-muted-foreground hover:text-primary cursor-pointer transition-colors">
-                    <Share2 className="w-5 h-5" />
-                    <span className="text-sm font-medium">Share</span>
+                    <span className="text-sm font-medium">{post.comments} Comments</span>
                  </div>
               </CardFooter>
             </Card>

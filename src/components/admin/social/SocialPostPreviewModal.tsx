@@ -11,7 +11,7 @@ import {
 import type { SocialPost } from "@/app/(admin)/admin/social/page";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
-import { ThumbsUp, MessageSquare, Share2 } from "lucide-react";
+import { ThumbsUp, MessageSquare } from "lucide-react";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 
 interface SocialPostPreviewModalProps {
@@ -64,18 +64,14 @@ export function SocialPostPreviewModal({ isOpen, onOpenChange, post }: SocialPos
                    </ImagePreviewModal>
                 )}
               </CardContent>
-              <CardFooter className="flex justify-around border-t pt-4 mt-4">
+              <CardFooter className="flex justify-start gap-8 border-t pt-4 mt-auto">
                  <div className="flex items-center gap-2 text-muted-foreground">
                     <ThumbsUp className="w-5 h-5" />
-                    <span className="text-sm">{post.likes}</span>
+                    <span className="text-sm">{post.likes} Likes</span>
                  </div>
                  <div className="flex items-center gap-2 text-muted-foreground">
                     <MessageSquare className="w-5 h-5" />
-                    <span className="text-sm">{post.comments}</span>
-                 </div>
-                 <div className="flex items-center gap-2 text-muted-foreground">
-                    <Share2 className="w-5 h-5" />
-                    <span className="text-sm">Share</span>
+                    <span className="text-sm">{post.comments} Comments</span>
                  </div>
               </CardFooter>
             </Card>

@@ -15,8 +15,6 @@ import { Textarea } from "@/components/ui/textarea";
 
 const formSchema = z.object({
   content: z.string().min(10, "Post content must be at least 10 characters.").max(280, "Post content cannot exceed 280 characters."),
-  likes: z.coerce.number().min(0, "Likes must be a positive number."),
-  comments: z.coerce.number().min(0, "Comments must be a positive number."),
   image: z.any().optional(),
 });
 
@@ -35,8 +33,6 @@ export function SocialPostFormModal({ isOpen, onOpenChange, onSave, post }: Soci
     resolver: zodResolver(formSchema),
     defaultValues: {
       content: "",
-      likes: 0,
-      comments: 0,
     },
   });
 
@@ -44,12 +40,10 @@ export function SocialPostFormModal({ isOpen, onOpenChange, onSave, post }: Soci
     if (post) {
       form.reset({
           content: post.content,
-          likes: post.likes,
-          comments: post.comments,
           image: null,
       });
     } else {
-      form.reset({ content: "", likes: 0, comments: 0, image: null });
+      form.reset({ content: "", image: null });
     }
   }, [post, form, isOpen]);
 
@@ -60,8 +54,6 @@ export function SocialPostFormModal({ isOpen, onOpenChange, onSave, post }: Soci
         const dataToSave = {
             ...values,
             id: post?.id,
-            timestamp: post?.timestamp || "Just now",
-            image: values.image && values.image.length > 0 ? values.image : post?.image,
         };
         onSave(dataToSave);
         setIsSubmitting(false);
@@ -92,30 +84,6 @@ export function SocialPostFormModal({ isOpen, onOpenChange, onSave, post }: Soci
                   </FormItem>
                 )}
               />
-              <div className="grid grid-cols-2 gap-4">
-                 <FormField
-                    control={form.control}
-                    name="likes"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Likes</FormLabel>
-                        <FormControl><Input type="number" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-                 <FormField
-                    control={form.control}
-                    name="comments"
-                    render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Comments</FormLabel>
-                        <FormControl><Input type="number" {...field} /></FormControl>
-                        <FormMessage />
-                    </FormItem>
-                    )}
-                />
-              </div>
               <FormField
                 control={form.control}
                 name="image"
