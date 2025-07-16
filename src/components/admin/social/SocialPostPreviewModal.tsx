@@ -52,12 +52,12 @@ export function SocialPostPreviewModal({ isOpen, onOpenChange, post }: SocialPos
                 <p>{post.content}</p>
                 {post.image && (
                    <ImagePreviewModal imgSrc={post.image} alt="Social media post image">
-                    <div className="relative aspect-video rounded-lg overflow-hidden cursor-pointer">
+                    <div className="relative h-96 w-full rounded-lg overflow-hidden cursor-pointer bg-muted/30">
                       <Image
                         src={post.image}
                         alt="Social media post image"
                         fill
-                        className="object-cover"
+                        className="object-contain"
                         data-ai-hint={post.hint}
                       />
                     </div>
