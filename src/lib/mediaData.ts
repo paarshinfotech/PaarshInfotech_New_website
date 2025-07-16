@@ -1,4 +1,5 @@
 
+
 export const mediaCategories = ["All", "Office Culture", "Sports", "Parties", "Celebrations"] as const;
 
 export const mediaGalleryItems = [
@@ -39,21 +40,36 @@ export const eventRecaps = [
     date: "December 15, 2023",
     description: "Our team attended and presented at the annual tech conference, sharing insights on modern web development.",
     image: "https://placehold.co/600x400.png",
-    hint: "tech conference"
+    hint: "tech conference",
+    gallery: [
+      { src: "https://placehold.co/800x600.png", alt: "Speaker on stage", hint: "conference speaker" },
+      { src: "https://placehold.co/800x600.png", alt: "Team at the conference", hint: "conference team" },
+      { src: "https://placehold.co/800x600.png", alt: "Networking session", hint: "professional networking" },
+    ],
   },
   {
     title: "Foundation Day Celebration",
     date: "November 05, 2023",
     description: "We celebrated another year of growth and success with our amazing team and their families.",
     image: "https://placehold.co/600x400.png",
-    hint: "company celebration"
+    hint: "company celebration",
+    gallery: [
+      { src: "https://placehold.co/800x600.png", alt: "Cake cutting ceremony", hint: "cake celebration" },
+      { src: "https://placehold.co/800x600.png", alt: "Group photo of the team", hint: "team photo" },
+      { src: "https://placehold.co/800x600.png", alt: "Fun activities", hint: "office games" },
+    ],
   },
   {
     title: "Interns Graduation Day",
     date: "September 30, 2023",
     description: "Bidding farewell to our talented batch of interns with a day of presentations, awards, and celebrations.",
     image: "https://placehold.co/600x400.png",
-    hint: "graduation ceremony"
+    hint: "graduation ceremony",
+    gallery: [
+      { src: "https://placehold.co/800x600.png", alt: "Interns giving presentations", hint: "student presentation" },
+      { src: "https://placehold.co/800x600.png", alt: "Receiving certificates", hint: "certificate award" },
+      { src: "https://placehold.co/800x600.png", alt: "Celebratory lunch", hint: "team lunch" },
+    ],
   }
 ];
 
