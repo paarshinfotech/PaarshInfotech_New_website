@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 
 interface ServiceOverviewProps {
   title: string;
@@ -18,9 +19,11 @@ export default function ServiceOverview({ title, overview, heroImage }: ServiceO
             {overview}
           </p>
         </div>
-        <div className="relative h-80 w-full rounded-lg overflow-hidden shadow-2xl">
-           <Image src={heroImage} alt={title} fill className="object-cover" data-ai-hint="service technology" />
-        </div>
+        <ImagePreviewModal imgSrc={heroImage} alt={title}>
+          <div className="relative h-80 w-full rounded-lg overflow-hidden shadow-2xl cursor-pointer">
+            <Image src={heroImage} alt={title} fill className="object-cover" data-ai-hint="service technology" />
+          </div>
+        </ImagePreviewModal>
       </div>
     </section>
   );

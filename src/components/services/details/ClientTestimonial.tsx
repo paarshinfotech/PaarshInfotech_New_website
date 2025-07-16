@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Quote } from "lucide-react";
+import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 
 interface ClientTestimonialProps {
   testimonial: {
@@ -22,7 +23,9 @@ export default function ClientTestimonial({ testimonial }: ClientTestimonialProp
               "{testimonial.quote}"
             </blockquote>
             <div className="mt-8 flex items-center justify-center gap-4">
-              <Image src={testimonial.avatar} alt={testimonial.name} width={56} height={56} className="rounded-full object-cover" data-ai-hint="person" />
+              <ImagePreviewModal imgSrc={testimonial.avatar} alt={testimonial.name}>
+                <Image src={testimonial.avatar} alt={testimonial.name} width={56} height={56} className="rounded-full object-cover cursor-pointer" data-ai-hint="person" />
+              </ImagePreviewModal>
               <div>
                 <p className="font-semibold text-primary text-lg">{testimonial.name}</p>
                 <p className="text-muted-foreground">{testimonial.role}</p>
