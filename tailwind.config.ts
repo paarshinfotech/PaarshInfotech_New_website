@@ -17,6 +17,9 @@ export default {
       },
     },
     extend: {
+      backgroundImage: {
+        'grid-pattern': "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='hsl(var(--primary))'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e\")",
+      },
       fontFamily: {
         body: ['Inter', 'sans-serif'],
         headline: ['Inter', 'sans-serif'],
@@ -100,11 +103,16 @@ export default {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-33.33%)' },
         },
+        'marquee-slow': {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-50%)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         marquee: 'marquee 40s linear infinite',
+        'marquee-slow': 'marquee-slow 80s linear infinite',
       },
     },
   },
