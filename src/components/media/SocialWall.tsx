@@ -48,7 +48,7 @@ export default function SocialWall() {
                    </ImagePreviewModal>
                 )}
               </CardContent>
-              <CardFooter className="flex justify-start gap-8 border-t pt-4 mt-auto">
+              <CardFooter className="flex justify-between items-center border-t pt-4 mt-auto">
                  <div className="flex items-center gap-2 text-muted-foreground hover:text-primary cursor-pointer transition-colors">
                     <ThumbsUp className="w-5 h-5" />
                     <span className="text-sm font-medium">{post.likes} Likes</span>
