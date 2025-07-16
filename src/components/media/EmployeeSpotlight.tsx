@@ -1,6 +1,8 @@
+
 import Image from "next/image";
 import { employeeSpotlight } from "@/lib/mediaData";
 import { Card } from "../ui/card";
+import { ImagePreviewModal } from "../common/ImagePreviewModal";
 
 export default function EmployeeSpotlight() {
   const { name, role, quote, avatar, hint } = employeeSpotlight;
@@ -15,15 +17,17 @@ export default function EmployeeSpotlight() {
           </p>
         </div>
         <Card className="grid md:grid-cols-3 gap-8 items-center p-8 shadow-lg bg-background">
-          <div className="relative aspect-square md:col-span-1">
-            <Image 
-              src={avatar}
-              alt={`Portrait of ${name}`}
-              fill 
-              className="object-cover rounded-lg shadow-md"
-              data-ai-hint={hint}
-            />
-          </div>
+          <ImagePreviewModal imgSrc={avatar} alt={`Portrait of ${name}`}>
+            <div className="relative aspect-square md:col-span-1 cursor-pointer">
+              <Image 
+                src={avatar}
+                alt={`Portrait of ${name}`}
+                fill 
+                className="object-cover rounded-lg shadow-md"
+                data-ai-hint={hint}
+              />
+            </div>
+          </ImagePreviewModal>
           <div className="md:col-span-2 space-y-4 text-center md:text-left">
             <blockquote className="text-xl italic text-foreground/80 border-l-4 border-accent pl-6 md:border-l-0 md:pl-0 md:border-t-4 md:pt-6">
               "{quote}"

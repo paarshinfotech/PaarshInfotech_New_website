@@ -1,5 +1,7 @@
+
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
+import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 
 const leaders = [
   {
@@ -35,15 +37,17 @@ export default function LeadershipTeam() {
               className="group grid md:grid-cols-3 items-center gap-8 p-8 bg-background shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
               <div className="flex justify-center md:col-span-1">
-                <div className="relative w-48 h-48">
-                    <Image
-                    src={leader.avatar}
-                    alt={`Portrait of ${leader.name}`}
-                    fill
-                    className="object-cover rounded-full border-4 border-primary/10 transition-all duration-300 group-hover:border-accent"
-                    data-ai-hint={leader.dataAiHint}
-                    />
-                </div>
+                <ImagePreviewModal imgSrc={leader.avatar} alt={`Portrait of ${leader.name}`}>
+                  <div className="relative w-48 h-48 cursor-pointer">
+                      <Image
+                      src={leader.avatar}
+                      alt={`Portrait of ${leader.name}`}
+                      fill
+                      className="object-cover rounded-full border-4 border-primary/10 transition-all duration-300 group-hover:border-accent"
+                      data-ai-hint={leader.dataAiHint}
+                      />
+                  </div>
+                </ImagePreviewModal>
               </div>
               <div className="md:col-span-2 text-center md:text-left">
                 <h3 className="text-3xl font-bold text-primary">{leader.name}</h3>

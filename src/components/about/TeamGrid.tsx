@@ -1,4 +1,6 @@
+
 import Image from "next/image";
+import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 
 const teamMembers = [
   { name: "Priya Sharma", role: "HR Manager", avatar: "https://placehold.co/200x200.png", hint: "professional woman" },
@@ -24,16 +26,18 @@ export default function TeamGrid() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {teamMembers.map((member) => (
             <div key={member.name} className="group relative flex flex-col items-center text-center">
-              <div className="relative w-44 h-44">
-                 <Image
-                  src={member.avatar}
-                  alt={member.name}
-                  width={176}
-                  height={176}
-                  className="rounded-full object-cover border-4 border-background shadow-lg transition-transform duration-300 group-hover:scale-110"
-                  data-ai-hint={member.hint}
-                />
-              </div>
+              <ImagePreviewModal imgSrc={member.avatar} alt={member.name}>
+                <div className="relative w-44 h-44 cursor-pointer">
+                  <Image
+                    src={member.avatar}
+                    alt={member.name}
+                    width={176}
+                    height={176}
+                    className="rounded-full object-cover border-4 border-background shadow-lg transition-transform duration-300 group-hover:scale-110"
+                    data-ai-hint={member.hint}
+                  />
+                </div>
+              </ImagePreviewModal>
               <div className="mt-4">
                 <h3 className="text-xl font-bold text-primary">{member.name}</h3>
                 <p className="text-sm text-accent font-semibold">{member.role}</p>
