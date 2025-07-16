@@ -1,10 +1,17 @@
 
+
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { Switch } from "@/components/ui/switch";
 
 export default function SettingsPage() {
+    const { settings, setSetting } = useSiteSettings();
+
     return (
         <div className="space-y-6 max-w-2xl">
             <div>
@@ -47,6 +54,38 @@ export default function SettingsPage() {
                         <Input id="confirm-password" type="password" />
                     </div>
                      <Button>Update Password</Button>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Frontend Visibility</CardTitle>
+                    <CardDescription>Control which sections are visible on the public website.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                            <Label>Show Leadership Section</Label>
+                            <p className="text-xs text-muted-foreground">
+                                Display the Chairman, CEO, and CFO on the About page.
+                            </p>
+                        </div>
+                        <Switch
+                            checked={settings.showLeadership}
+                            onCheckedChange={(checked) => setSetting('showLeadership', checked)}
+                        />
+                    </div>
+                    <div className="flex items-center justify-between rounded-lg border p-3 shadow-sm">
+                        <div className="space-y-0.5">
+                            <Label>Show Team Members Section</Label>
+                            <p className="text-xs text-muted-foreground">
+                                Display the grid of team members on the About page.
+                            </p>
+                        </div>
+                         <Switch
+                            checked={settings.showTeam}
+                            onCheckedChange={(checked) => setSetting('showTeam', checked)}
+                        />
+                    </div>
                 </CardContent>
             </Card>
         </div>

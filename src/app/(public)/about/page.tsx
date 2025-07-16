@@ -1,3 +1,6 @@
+
+'use client'
+
 import AboutHero from "@/components/about/AboutHero";
 import CompanyStatement from "@/components/about/CompanyStatement";
 import VisionStatement from "@/components/about/VisionStatement";
@@ -9,8 +12,11 @@ import LeadershipTeam from "@/components/about/LeadershipTeam";
 import CompanyCulture from "@/components/about/CompanyCulture";
 import Stats from "@/components/home/Stats";
 import OurJourney from "@/components/about/OurJourney";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 export default function AboutPage() {
+  const { settings } = useSiteSettings();
+
   return (
     <>
       <AboutHero />
@@ -20,8 +26,8 @@ export default function AboutPage() {
       <OurValues />
       <OurProcess />
       <Stats />
-      <LeadershipTeam />
-      <TeamGrid />
+      {settings.showLeadership && <LeadershipTeam />}
+      {settings.showTeam && <TeamGrid />}
       <CompanyCulture />
       <Testimonials />
     </>
