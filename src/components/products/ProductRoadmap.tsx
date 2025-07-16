@@ -1,6 +1,8 @@
 
 import { CheckCircle, Clock, Package, Rocket } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { Badge } from "../ui/badge";
+import { cn } from "@/lib/utils";
 
 const roadmapItems: {
   status: "Done" | "In Progress" | "Planned";
@@ -35,18 +37,17 @@ const roadmapItems: {
 ];
 
 export default function ProductRoadmap() {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Done": return "bg-green-500";
-      case "In Progress": return "bg-blue-500";
-      case "Planned": return "bg-gray-400";
-      default: return "bg-gray-400";
+    const getStatusVariant = (status: "Done" | "In Progress" | "Planned"): "default" | "secondary" | "outline" => {
+        switch (status) {
+            case "Done": return "default";
+            case "In Progress": return "secondary";
+            case "Planned": return "outline";
+        }
     }
-  };
 
   return (
     <section className="py-16 md:py-24 bg-secondary">
-      <div className="container max-w-5xl">
+      <div className="container max-w-7xl">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-primary">What's Next? Our Roadmap</h2>
           <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto">
@@ -55,24 +56,20 @@ export default function ProductRoadmap() {
         </div>
         
         <div className="relative">
-          <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-border -translate-x-1/2" aria-hidden="true" />
+          <div className="hidden md:block absolute top-12 left-0 w-full h-0.5 bg-border -translate-y-1/2" aria-hidden="true" />
           
-          <div className="space-y-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
             {roadmapItems.map((item, index) => (
-              <div key={index} className="relative flex items-start group pl-12">
-                <div className="absolute left-4 -translate-x-1/2 z-10 flex items-center justify-center">
-                  <span className={`w-3 h-3 rounded-full ${getStatusColor(item.status)} ring-8 ring-secondary`} />
-                </div>
-                
-                <div className="w-full">
-                  <div className="flex items-center gap-4">
-                     <item.Icon className="w-6 h-6 text-primary" />
-                     <div>
-                        <h3 className="text-xl font-bold text-primary">{item.title}</h3>
-                        <p className="text-sm font-semibold text-muted-foreground">{item.status}</p>
-                     </div>
+              <div key={index} className="relative flex flex-col items-center text-center group">
+                <div className="relative z-10 flex items-center justify-center w-24 h-24 bg-secondary rounded-full">
+                  <div className="flex items-center justify-center w-20 h-20 bg-primary/10 text-primary rounded-full ring-8 ring-primary/5 transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground group-hover:scale-105">
+                    <item.Icon className="w-8 h-8" />
                   </div>
-                  <p className="mt-2 text-muted-foreground">{item.description}</p>
+                </div>
+                <div className="mt-6 text-center">
+                    <Badge variant={getStatusVariant(item.status)} className="mb-2">{item.status}</Badge>
+                    <h3 className="text-xl font-bold text-primary mb-2">{item.title}</h3>
+                    <p className="text-muted-foreground text-sm">{item.description}</p>
                 </div>
               </div>
             ))}
