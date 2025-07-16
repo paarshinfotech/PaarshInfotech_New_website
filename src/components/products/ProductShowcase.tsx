@@ -60,7 +60,7 @@ export default function ProductShowcase() {
               </div>
 
               <Button asChild className="self-start">
-                <Link href="/quote">
+                <Link href={`/products/${activeProduct.id}`}>
                   Learn More <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </Button>
