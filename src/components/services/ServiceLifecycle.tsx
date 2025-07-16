@@ -1,3 +1,4 @@
+
 import { Search, PenTool, Code, Rocket, LifeBuoy } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -6,7 +7,7 @@ const processSteps: { title: string; description: string; Icon: LucideIcon }[] =
   { title: "2. Design", description: "Our team crafts intuitive UI/UX designs and a solid technical architecture for your project.", Icon: PenTool },
   { title: "3. Develop", description: "Following agile methodologies, our developers write clean, efficient, and scalable code.", Icon: Code },
   { title: "4. Deploy", description: "We handle the seamless deployment of your application to the cloud with rigorous testing.", Icon: Rocket },
-  { title: "5. Support", description: "Our partnership continues with ongoing support and maintenance to ensure long-term success.", Icon: LifeBuoy },
+  { title: "5. Dedicate", description: "Our partnership continues with ongoing support and maintenance to ensure long-term success.", Icon: LifeBuoy },
 ];
 
 export default function ServiceLifecycle() {

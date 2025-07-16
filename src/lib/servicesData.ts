@@ -1,3 +1,4 @@
+
 import { Code, Server, Smartphone, ShoppingCart, BrainCircuit, PenTool, Award, Zap, Gem, Users, Search, Rocket, LifeBuoy, TrendingUp, CheckCircle, BarChart } from 'lucide-react';
 import type { LucideIcon } from "lucide-react";
 
@@ -81,7 +82,7 @@ export const servicesData: Service[] = [
       { title: "Design", description: "Crafting intuitive UI/UX and technical architecture.", Icon: PenTool },
       { title: "Develop", description: "Writing clean, efficient, and scalable code.", Icon: Code },
       { title: "Deploy", description: "Seamless deployment with rigorous testing.", Icon: Rocket },
-      { title: "Support", description: "Ongoing support and maintenance for long-term success.", Icon: LifeBuoy },
+      { title: "Dedicate", description: "Ongoing support and maintenance for long-term success.", Icon: LifeBuoy },
     ],
     impact: [
       { title: "Increased User Engagement", metric: "+45%", description: "With intuitive UI/UX and fast load times.", Icon: Users },
@@ -132,7 +133,7 @@ export const servicesData: Service[] = [
       { title: "Architecture", description: "Designing a robust and scalable software blueprint.", Icon: PenTool },
       { title: "Implementation", description: "Coding the application with best practices.", Icon: Code },
       { title: "Deployment", description: "Smooth rollout into your production environment.", Icon: Rocket },
-      { title: "Maintenance", description: "Continuous support and evolution of the software.", Icon: LifeBuoy },
+      { title: "Dedicate", description: "Continuous support and evolution of the software.", Icon: LifeBuoy },
     ],
     impact: [
       { title: "Operational Efficiency", metric: "+40%", description: "By automating workflows and reducing manual tasks.", Icon: TrendingUp },
@@ -183,7 +184,7 @@ export const servicesData: Service[] = [
       { title: 'Design', description: 'Creating wireframes, mockups, and prototypes.', Icon: PenTool },
       { title: 'Development', description: 'Building and testing the application.', Icon: Code },
       { title: 'Launch', description: 'Deploying the app to the app stores.', Icon: Rocket },
-      { title: 'Growth', description: 'Analyzing usage and planning future updates.', Icon: LifeBuoy },
+      { title: 'Dedicate', description: 'Analyzing usage and planning future updates.', Icon: LifeBuoy },
     ],
     impact: [
       { title: 'Increased Customer Reach', metric: '+50%', description: 'By being present on both iOS and Android platforms.', Icon: Users },
@@ -234,7 +235,7 @@ export const servicesData: Service[] = [
       { title: 'Design', description: 'Creating a visually appealing and user-friendly storefront.', Icon: PenTool },
       { title: 'Development', description: 'Building the store and integrating all necessary features.', Icon: Code },
       { title: 'Launch', description: 'Going live and setting up marketing tools.', Icon: Rocket },
-      { title: 'Optimization', description: 'Analyzing data to improve conversions and performance.', Icon: LifeBuoy },
+      { title: 'Dedicate', description: 'Analyzing data to improve conversions and performance.', Icon: LifeBuoy },
     ],
     impact: [
       { title: 'Increased Online Sales', metric: '+70%', description: 'Through a seamless and optimized shopping experience.', Icon: TrendingUp },
@@ -285,7 +286,7 @@ export const servicesData: Service[] = [
       { title: 'Model Prototyping', description: 'Building and training initial models.', Icon: PenTool },
       { title: 'Development', description: 'Refining models and integrating them into applications.', Icon: Code },
       { title: 'Deployment', description: 'Making the AI system available to users.', Icon: Rocket },
-      { title: 'Monitoring', description: 'Continuously tracking model performance and retraining.', Icon: LifeBuoy },
+      { title: 'Dedicate', description: 'Continuously tracking model performance and retraining.', Icon: LifeBuoy },
     ],
     impact: [
       { title: 'Smarter Decision-Making', metric: '90%', description: 'of decisions are now data-driven and automated.', Icon: CheckCircle },
@@ -336,7 +337,7 @@ export const servicesData: Service[] = [
       { title: 'Define', description: 'Identifying user problems and design goals.', Icon: PenTool },
       { title: 'Ideate', description: 'Brainstorming and creating low-fidelity designs.', Icon: Code },
       { title: 'Prototype', description: 'Building interactive models for testing.', Icon: Rocket },
-      { title: 'Test', description: 'Gathering feedback to refine the final design.', Icon: LifeBuoy },
+      { title: 'Dedicate', description: 'Gathering feedback to refine the final design.', Icon: LifeBuoy },
     ],
     impact: [
       { title: 'Improved User Satisfaction', metric: '+65%', description: 'leading to higher retention and loyalty.', Icon: Users },
