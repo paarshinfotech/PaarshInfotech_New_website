@@ -8,20 +8,38 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function AdminLoginPage() {
     const [isLoading, setIsLoading] = useState(false);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
     const router = useRouter();
+    const { toast } = useToast();
+    const { login } = useAuth();
 
     const handleLogin = (event: React.FormEvent) => {
         event.preventDefault();
         setIsLoading(true);
 
-        // Simulate API call
         setTimeout(() => {
-            // In a real app, you'd handle auth state here (e.g., with Context or a library)
-            router.push('/admin/dashboard');
-        }, 1500);
+            const success = login(username, password);
+            if (success) {
+                toast({
+                    title: "Login Successful",
+                    description: "Redirecting to the dashboard...",
+                });
+                router.push('/admin/dashboard');
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: "Login Failed",
+                    description: "Invalid username or password. Please try again.",
+                });
+                setIsLoading(false);
+            }
+        }, 1000);
     }
 
     return (
@@ -36,12 +54,25 @@ export default function AdminLoginPage() {
                     </CardHeader>
                     <CardContent className="grid gap-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" placeholder="admin@example.com" required />
+                            <Label htmlFor="username">Username</Label>
+                            <Input 
+                                id="username" 
+                                type="text" 
+                                placeholder="admin" 
+                                required 
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                            />
                         </div>
                         <div className="grid gap-2">
                             <Label htmlFor="password">Password</Label>
-                            <Input id="password" type="password" required />
+                            <Input 
+                                id="password" 
+                                type="password" 
+                                required 
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
                         </div>
                     </CardContent>
                     <CardFooter>

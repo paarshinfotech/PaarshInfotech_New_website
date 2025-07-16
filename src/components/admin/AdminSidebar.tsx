@@ -2,7 +2,7 @@
 "use client"
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -17,7 +17,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
   BarChart2,
@@ -34,6 +33,7 @@ import {
   Loader2,
   Rss
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 const navLinks = [
   { href: "/admin/dashboard", label: "Dashboard", icon: Home },
@@ -51,16 +51,16 @@ const settingsLink = { href: "/admin/settings", label: "Settings", icon: Setting
 
 export function AdminSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
+  const { logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   
   const handleLogout = () => {
     setIsLoggingOut(true);
-    // Simulate API call for logout
     setTimeout(() => {
-        router.push('/admin/login');
+        logout();
+        // The layout effect will handle the redirect
         setIsLoggingOut(false);
-    }, 1500)
+    }, 1000)
   }
 
   const NavLink = ({ href, label, icon: Icon }: typeof navLinks[0]) => {
