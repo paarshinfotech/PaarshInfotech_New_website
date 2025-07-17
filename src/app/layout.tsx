@@ -7,6 +7,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/toaster';
 import { SiteSettingsProvider } from '@/hooks/useSiteSettings';
+import { StoreProvider } from '@/lib/StoreProvider';
 
 // Metadata cannot be exported from a client component.
 // We can define it here, but it won't be applied through this client component.
@@ -36,10 +37,12 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body bg-background text-foreground antialiased flex flex-col min-h-screen')}>
-        <SiteSettingsProvider>
-            {children}
-            <Toaster />
-        </SiteSettingsProvider>
+        <StoreProvider>
+          <SiteSettingsProvider>
+              {children}
+              <Toaster />
+          </SiteSettingsProvider>
+        </StoreProvider>
       </body>
     </html>
   );
