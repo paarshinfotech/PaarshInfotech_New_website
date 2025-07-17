@@ -1,3 +1,4 @@
+
 import { notFound } from 'next/navigation';
 import { productsData } from '@/lib/productsData';
 import type { Metadata } from 'next';
@@ -20,7 +21,7 @@ interface ProductSlugPageProps {
 }
 
 export async function generateStaticParams() {
-  return productsData.map((product) => ({
+  return productsData.filter(p => p.published).map((product) => ({
     slug: product.id,
   }));
 }
@@ -28,7 +29,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ProductSlugPageProps): Promise<Metadata> {
   const product = productsData.find((p) => p.id === params.slug);
 
-  if (!product) {
+  if (!product || !product.published) {
     return {
       title: 'Product Not Found',
     };
@@ -43,7 +44,7 @@ export async function generateMetadata({ params }: ProductSlugPageProps): Promis
 export default function ProductSlugPage({ params }: ProductSlugPageProps) {
   const product = productsData.find((p) => p.id === params.slug);
 
-  if (!product) {
+  if (!product || !product.published) {
     notFound();
   }
 

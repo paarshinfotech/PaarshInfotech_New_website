@@ -7,6 +7,7 @@ export interface Product {
     name: string;
     tagline: string;
     description: string;
+    published: boolean;
     Icon: LucideIcon;
     heroImage: string;
     gallery: { src: string; alt: string; hint: string; }[];
@@ -19,6 +20,7 @@ export const productsData: Product[] = [
         name: "Paarsh CRM",
         tagline: "Build Lasting Customer Relationships",
         description: "An all-in-one Customer Relationship Management platform designed to help you manage leads, close deals faster, and create exceptional customer experiences.",
+        published: true,
         Icon: Users,
         heroImage: "https://placehold.co/1200x800.png",
         gallery: [
@@ -37,6 +39,7 @@ export const productsData: Product[] = [
         name: "Paarsh HRMS",
         tagline: "Empower Your Workforce, Simplify HR",
         description: "A comprehensive Human Resource Management System that automates everything from recruitment and onboarding to payroll and performance management.",
+        published: true,
         Icon: Briefcase,
         heroImage: "https://placehold.co/1200x800.png",
         gallery: [
@@ -55,6 +58,7 @@ export const productsData: Product[] = [
         name: "Paarsh ERP",
         tagline: "Unify Your Business Operations",
         description: "An integrated Enterprise Resource Planning solution that brings together your finance, supply chain, manufacturing, and HR processes into a single, unified system.",
+        published: true,
         Icon: Layers,
         heroImage: "https://placehold.co/1200x800.png",
         gallery: [
@@ -73,6 +77,7 @@ export const productsData: Product[] = [
         name: "Paarsh E-Learn",
         tagline: "The Future of Digital Education",
         description: "A powerful Learning Management System (LMS) for educational institutions and corporate training, enabling you to create, manage, and deliver engaging online courses.",
+        published: true,
         Icon: GraduationCap,
         heroImage: "https://placehold.co/1200x800.png",
         gallery: [

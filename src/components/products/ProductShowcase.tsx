@@ -11,7 +11,18 @@ import { ArrowRight, Check } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function ProductShowcase() {
-  const [activeProduct, setActiveProduct] = useState(productsData[0]);
+  const publishedProducts = productsData.filter(p => p.published);
+  const [activeProduct, setActiveProduct] = useState(publishedProducts[0]);
+
+  if (publishedProducts.length === 0) {
+    return (
+      <section id="products" className="py-16 md:py-24 bg-background">
+        <div className="container max-w-7xl text-center">
+          <p className="text-muted-foreground">No products are currently available. Please check back later.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="products" className="py-16 md:py-24 bg-background">
@@ -24,7 +35,7 @@ export default function ProductShowcase() {
         </div>
 
         <div className="flex justify-center flex-wrap gap-2 mb-12">
-          {productsData.map((product) => (
+          {publishedProducts.map((product) => (
             <Button
               key={product.id}
               variant={activeProduct.id === product.id ? "default" : "outline"}

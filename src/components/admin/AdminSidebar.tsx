@@ -38,13 +38,15 @@ import {
   LogOut,
   Loader2,
   Rss,
-  ChevronDown
+  ChevronDown,
+  Layers
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const mainLinks = [
   { href: "/admin/dashboard", label: "Dashboard", icon: Home },
   { href: "/admin/services", label: "Services", icon: Briefcase },
+  { href: "/admin/products", label: "Products", icon: Layers },
   { href: "/admin/clients", label: "Clients", icon: Package },
   { href: "/admin/careers", label: "Careers", icon: FileText },
   { href: "/admin/media", label: "Media", icon: ImageIcon },
