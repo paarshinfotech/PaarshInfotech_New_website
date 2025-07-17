@@ -3,8 +3,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }), // Adjust if your API is elsewhere
-  tagTypes: ['Post', 'User'], // Define tags for caching
+  tagTypes: ['Post', 'User', 'DBStatus'], // Define tags for caching
   endpoints: (builder) => ({
+    getDbStatus: builder.query({
+      query: () => 'test-connection',
+      providesTags: ['DBStatus'],
+    }),
     getPosts: builder.query({
       query: () => 'posts',
       providesTags: ['Post'],
@@ -18,4 +22,4 @@ export const api = createApi({
   }),
 });
 
-export const { useGetPostsQuery, useGetPostQuery } = api;
+export const { useGetDbStatusQuery, useGetPostsQuery, useGetPostQuery } = api;
