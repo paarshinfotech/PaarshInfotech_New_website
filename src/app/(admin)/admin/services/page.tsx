@@ -12,6 +12,7 @@ import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationD
 import { servicesData } from "@/lib/servicesData";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Switch } from "@/components/ui/switch";
 
 export default function ServicesManagementPage() {
     const router = useRouter();
@@ -40,13 +41,18 @@ export default function ServicesManagementPage() {
         setSelectedService(null);
     }
 
+    const handleTogglePublished = (slug: string, published: boolean) => {
+        setServices(services.map(s => s.slug === slug ? { ...s, published } : s));
+    }
+
+
     return (
         <>
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle>Services Management</CardTitle>
-                        <CardDescription>Manage your company's service offerings.</CardDescription>
+                        <CardDescription>Manage your company's service offerings and their visibility.</CardDescription>
                     </div>
                     <Button size="sm" asChild>
                         <Link href="/admin/services/new">
@@ -71,7 +77,16 @@ export default function ServicesManagementPage() {
                                     <TableCell className="font-medium">{service.title}</TableCell>
                                     <TableCell>/services/{service.slug}</TableCell>
                                     <TableCell>
-                                        <Badge variant={service.title ? 'default' : 'secondary'}>Published</Badge>
+                                        <div className="flex items-center gap-2">
+                                            <Switch
+                                                id={`published-${service.slug}`}
+                                                checked={service.published}
+                                                onCheckedChange={(checked) => handleTogglePublished(service.slug, checked)}
+                                            />
+                                            <Badge variant={service.published ? 'default' : 'secondary'}>
+                                                {service.published ? 'Published' : 'Draft'}
+                                            </Badge>
+                                        </div>
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <DropdownMenu>

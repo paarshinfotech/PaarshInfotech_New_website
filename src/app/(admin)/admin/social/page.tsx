@@ -12,6 +12,8 @@ import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationD
 import { socialWallPosts as initialPosts } from "@/lib/mediaData";
 import { SocialPostFormModal } from "@/components/admin/social/SocialPostFormModal";
 import { SocialPostPreviewModal } from "@/components/admin/social/SocialPostPreviewModal";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 
 export type SocialPost = typeof initialPosts[0];
 
@@ -68,13 +70,18 @@ export default function SocialManagementPage() {
                 timestamp: "Just now",
                 likes: 0,
                 comments: 0,
-                hint: "social media"
+                hint: "social media",
+                published: true,
             };
             setPosts([newPost, ...posts]);
         }
         setIsFormModalOpen(false);
         setSelectedPost(null);
     };
+
+    const handleTogglePublished = (postId: number, published: boolean) => {
+        setPosts(posts.map(p => p.id === postId ? { ...p, published } : p));
+    }
 
 
     return (
@@ -83,7 +90,7 @@ export default function SocialManagementPage() {
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle>Social Posts Management</CardTitle>
-                        <CardDescription>Manage posts for the "Catch Us on Social" section.</CardDescription>
+                        <CardDescription>Manage posts for the "Catch Us on Social" section and their visibility.</CardDescription>
                     </div>
                     <Button size="sm" onClick={handleAdd}>
                         <PlusCircle className="mr-2 h-4 w-4" />
@@ -96,8 +103,7 @@ export default function SocialManagementPage() {
                             <TableRow>
                                 <TableHead>Content</TableHead>
                                 <TableHead className="w-[100px]">Image</TableHead>
-                                <TableHead>Likes</TableHead>
-                                <TableHead>Comments</TableHead>
+                                <TableHead>Status</TableHead>
                                 <TableHead>Date</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
@@ -109,8 +115,18 @@ export default function SocialManagementPage() {
                                     <TableCell>
                                         {post.image && <Image src={post.image} alt="Social Post" width={60} height={40} className="rounded-md object-cover" />}
                                     </TableCell>
-                                    <TableCell>{post.likes}</TableCell>
-                                    <TableCell>{post.comments}</TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            <Switch 
+                                                id={`published-${post.id}`}
+                                                checked={post.published}
+                                                onCheckedChange={(checked) => handleTogglePublished(post.id, checked)}
+                                            />
+                                            <Badge variant={post.published ? "default" : "secondary"}>
+                                                {post.published ? "Published" : "Draft"}
+                                            </Badge>
+                                        </div>
+                                    </TableCell>
                                     <TableCell>{post.timestamp}</TableCell>
                                     <TableCell className="text-right">
                                         <DropdownMenu>

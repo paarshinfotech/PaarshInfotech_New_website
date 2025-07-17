@@ -82,6 +82,7 @@ export const socialWallPosts = [
     hint: "laptop screen",
     likes: 125,
     comments: 12,
+    published: true,
   },
   {
     id: 2,
@@ -91,6 +92,7 @@ export const socialWallPosts = [
     hint: "cricket game",
     likes: 240,
     comments: 32,
+    published: true,
   },
   {
     id: 3,
@@ -100,6 +102,7 @@ export const socialWallPosts = [
     hint: "",
     likes: 98,
     comments: 8,
+    published: false,
   }
 ];
 

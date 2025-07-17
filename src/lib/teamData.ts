@@ -10,6 +10,7 @@ export interface TeamMember {
   name: string;
   categoryId: number;
   avatar: string;
+  published: boolean;
 }
 
 export const teamCategories: TeamCategory[] = [
@@ -24,9 +25,9 @@ export const teamCategories: TeamCategory[] = [
 ];
 
 export const teamMembers: TeamMember[] = [
-  { id: 1, name: "Kantilal Pagare", categoryId: 1, avatar: "https://placehold.co/40x40.png" },
-  { id: 2, name: "Tushar Pagare", categoryId: 2, avatar: "https://placehold.co/40x40.png" },
-  { id: 3, name: "Pratiksha Baviskar", categoryId: 3, avatar: "https://placehold.co/40x40.png" },
-  { id: 4, name: "Priya Sharma", categoryId: 4, avatar: "https://placehold.co/40x40.png" },
-  { id: 5, name: "Rajesh Kumar", categoryId: 5, avatar: "https://placehold.co/40x40.png" },
+  { id: 1, name: "Kantilal Pagare", categoryId: 1, avatar: "https://placehold.co/40x40.png", published: true },
+  { id: 2, name: "Tushar Pagare", categoryId: 2, avatar: "https://placehold.co/40x40.png", published: true },
+  { id: 3, name: "Pratiksha Baviskar", categoryId: 3, avatar: "https://placehold.co/40x40.png", published: true },
+  { id: 4, name: "Priya Sharma", categoryId: 4, avatar: "https://placehold.co/40x40.png", published: true },
+  { id: 5, name: "Rajesh Kumar", categoryId: 5, avatar: "https://placehold.co/40x40.png", published: false },
 ];

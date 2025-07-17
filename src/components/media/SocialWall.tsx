@@ -1,4 +1,5 @@
 
+
 import { socialWallPosts } from "@/lib/mediaData";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
@@ -6,6 +7,8 @@ import { ThumbsUp, MessageSquare } from "lucide-react";
 import { ImagePreviewModal } from "../common/ImagePreviewModal";
 
 export default function SocialWall() {
+  const publishedPosts = socialWallPosts.filter(p => p.published);
+  
   return (
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
@@ -16,7 +19,7 @@ export default function SocialWall() {
           </p>
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {socialWallPosts.map((post) => (
+          {publishedPosts.map((post) => (
             <Card key={post.id} className="flex flex-col bg-background">
               <CardHeader className="flex flex-row items-center gap-4">
                 <Image

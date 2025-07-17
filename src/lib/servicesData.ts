@@ -6,6 +6,7 @@ export interface Service {
   slug: string;
   title: string;
   description: string;
+  published: boolean;
   Icon: LucideIcon;
   overview: string;
   heroImage: string;
@@ -54,6 +55,7 @@ export const servicesData: Service[] = [
     slug: "web-development",
     title: "Web Development",
     description: "Creating responsive, powerful, and user-friendly websites tailored to your business needs.",
+    published: true,
     Icon: Code,
     overview: "We build high-performance websites that are not only visually stunning but also functionally robust. From corporate sites to complex web applications, our solutions are designed to engage your audience and drive business growth.",
     heroImage: "https://placehold.co/600x400.png",
@@ -105,6 +107,7 @@ export const servicesData: Service[] = [
     slug: "software-development",
     title: "Software Development",
     description: "Custom software solutions to streamline your operations and drive efficiency.",
+    published: true,
     Icon: Server,
     overview: "We engineer custom software solutions that solve complex business challenges. Our process focuses on scalability, reliability, and creating tools that empower your team and streamline your operations for maximum efficiency.",
     heroImage: "https://placehold.co/600x400.png",
@@ -156,6 +159,7 @@ export const servicesData: Service[] = [
     slug: 'mobile-app-development',
     title: 'Mobile App Development',
     description: 'Building native and cross-platform mobile apps for both iOS and Android platforms.',
+    published: true,
     Icon: Smartphone,
     overview: 'We create engaging and high-performance mobile applications for iOS and Android. Whether native or cross-platform, our apps deliver seamless user experiences, drive user retention, and help you connect with your customers on their favorite devices.',
     heroImage: 'https://placehold.co/600x400.png',
@@ -207,6 +211,7 @@ export const servicesData: Service[] = [
     slug: 'ecommerce-solutions',
     title: 'E-commerce Solutions',
     description: 'Develop feature-rich online stores to sell your products and services globally.',
+    published: true,
     Icon: ShoppingCart,
     overview: 'We provide comprehensive e-commerce solutions that enable you to sell products and services online. From beautiful storefronts to secure payment gateways and inventory management, we build platforms that drive sales and provide a seamless shopping experience.',
     heroImage: 'https://placehold.co/600x400.png',
@@ -258,6 +263,7 @@ export const servicesData: Service[] = [
     slug: 'ai-and-ml',
     title: 'AI and ML',
     description: 'Leveraging Artificial Intelligence and Machine Learning to build smart applications.',
+    published: true,
     Icon: BrainCircuit,
     overview: 'Harness the power of Artificial Intelligence and Machine Learning to unlock new possibilities. We build intelligent systems that can automate tasks, provide predictive insights, and create personalized experiences for your users.',
     heroImage: 'https://placehold.co/600x400.png',
@@ -309,6 +315,7 @@ export const servicesData: Service[] = [
     slug: 'ui-ux-design',
     title: 'UI/UX Design',
     description: 'Crafting intuitive and beautiful user interfaces that enhance user experience.',
+    published: false,
     Icon: PenTool,
     overview: 'We design digital experiences that are not only beautiful but also intuitive and user-friendly. Our UI/UX process is centered around understanding your users to create products that are engaging, easy to use, and aligned with your business goals.',
     heroImage: 'https://placehold.co/600x400.png',

@@ -11,6 +11,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { TeamMemberFormModal } from "@/components/admin/team/TeamMemberFormModal";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 import { teamMembers as initialTeamMembers, teamCategories as initialCategories, TeamMember, TeamCategory } from "@/lib/teamData";
+import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 
 export default function TeamManagementPage() {
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>(initialTeamMembers);
@@ -57,11 +59,15 @@ export default function TeamManagementPage() {
             setTeamMembers(teamMembers.map(m => m.id === dataToSave.id ? { ...m, ...dataToSave } : m));
         } else {
             // Add
-            setTeamMembers([...teamMembers, { ...dataToSave, id: Date.now() }]);
+            setTeamMembers([...teamMembers, { ...dataToSave, id: Date.now(), published: true }]);
         }
         setIsModalOpen(false);
         setSelectedMember(null);
     };
+
+    const handleTogglePublished = (memberId: number, published: boolean) => {
+        setTeamMembers(teamMembers.map(m => m.id === memberId ? { ...m, published } : m));
+    }
 
     return (
         <>
@@ -69,7 +75,7 @@ export default function TeamManagementPage() {
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle>Team Management</CardTitle>
-                        <CardDescription>Manage your company's team members.</CardDescription>
+                        <CardDescription>Manage your company's team members and their visibility.</CardDescription>
                     </div>
                     <Button size="sm" onClick={handleAdd}>
                         <PlusCircle className="mr-2 h-4 w-4" />
@@ -83,6 +89,7 @@ export default function TeamManagementPage() {
                                 <TableHead className="w-[80px]">Avatar</TableHead>
                                 <TableHead>Name</TableHead>
                                 <TableHead>Role / Category</TableHead>
+                                <TableHead>Status</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -94,6 +101,18 @@ export default function TeamManagementPage() {
                                     </TableCell>
                                     <TableCell className="font-medium">{member.name}</TableCell>
                                     <TableCell>{getCategoryName(member.categoryId)}</TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            <Switch 
+                                                id={`published-${member.id}`}
+                                                checked={member.published}
+                                                onCheckedChange={(checked) => handleTogglePublished(member.id, checked)}
+                                            />
+                                            <Badge variant={member.published ? "default" : "secondary"}>
+                                                {member.published ? "Visible" : "Hidden"}
+                                            </Badge>
+                                        </div>
+                                    </TableCell>
                                     <TableCell className="text-right">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>

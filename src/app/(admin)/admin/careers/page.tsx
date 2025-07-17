@@ -13,6 +13,7 @@ import { JobFormModal } from "@/components/admin/careers/JobFormModal";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 import { format } from "date-fns";
 import { ApplicantsViewModal } from "@/components/admin/careers/ApplicantsViewModal";
+import { Switch } from "@/components/ui/switch";
 
 export interface Applicant {
     id: number;
@@ -27,6 +28,7 @@ export interface Job {
   location: string;
   type: 'Full-Time' | 'Internship';
   status: 'Open' | 'Closed' | 'Scheduled';
+  published: boolean;
   applicants: Applicant[];
   description: string;
   skills: string[];
@@ -34,20 +36,20 @@ export interface Job {
 }
 
 const initialJobs: Job[] = [
-  { id: 1, title: "Senior React Developer", location: "Nashik, India", type: 'Full-Time', status: "Open", applicants: [
+  { id: 1, title: "Senior React Developer", location: "Nashik, India", type: 'Full-Time', status: "Open", published: true, applicants: [
       { id: 101, name: "Aarav Sharma", email: "aarav.s@example.com", resumeUrl: "#" },
       { id: 102, name: "Isha Gupta", email: "isha.g@example.com", resumeUrl: "#" },
   ], description: "We are looking for an experienced React developer to join our team.", skills: ["React", "TypeScript", "Next.js"], publishDate: new Date("2024-01-15") },
-  { id: 2, title: "Lead Python/Django Engineer", location: "Nashik, India", type: 'Full-Time', status: "Open", applicants: [
+  { id: 2, title: "Lead Python/Django Engineer", location: "Nashik, India", type: 'Full-Time', status: "Open", published: true, applicants: [
       { id: 201, name: "Rohan Verma", email: "rohan.v@example.com", resumeUrl: "#" },
   ], description: "Lead our backend team and work on exciting projects.", skills: ["Python", "Django", "PostgreSQL"], publishDate: new Date("2024-02-01") },
-  { id: 3, title: "UI/UX Designer", location: "Remote", type: 'Full-Time', status: "Closed", applicants: [], description: "Design beautiful and intuitive interfaces for our products.", skills: ["Figma", "Sketch", "User Research"], publishDate: new Date("2023-12-10") },
-  { id: 4, title: "Frontend Development Intern", location: "Nashik, India", type: 'Internship', status: "Open", applicants: [
+  { id: 3, title: "UI/UX Designer", location: "Remote", type: 'Full-Time', status: "Closed", published: false, applicants: [], description: "Design beautiful and intuitive interfaces for our products.", skills: ["Figma", "Sketch", "User Research"], publishDate: new Date("2023-12-10") },
+  { id: 4, title: "Frontend Development Intern", location: "Nashik, India", type: 'Internship', status: "Open", published: true, applicants: [
       { id: 401, name: "Priya Patel", email: "priya.p@example.com", resumeUrl: "#" },
       { id: 402, name: "Sameer Singh", email: "sameer.s@example.com", resumeUrl: "#" },
       { id: 403, name: "Anika Reddy", email: "anika.r@example.com", resumeUrl: "#" },
   ], description: "An exciting opportunity for aspiring frontend developers.", skills: ["HTML", "CSS", "JavaScript"], publishDate: new Date("2024-03-01") },
-  { id: 5, title: "Backend Development Intern", location: "Nashik, India", type: 'Internship', status: "Scheduled", applicants: [], description: "Learn backend development with Python and Django.", skills: ["Python", "SQL"], publishDate: new Date(new Date().getTime() + 10 * 24 * 60 * 60 * 1000) }, // 10 days from now
+  { id: 5, title: "Backend Development Intern", location: "Nashik, India", type: 'Internship', status: "Scheduled", published: true, applicants: [], description: "Learn backend development with Python and Django.", skills: ["Python", "SQL"], publishDate: new Date(new Date().getTime() + 10 * 24 * 60 * 60 * 1000) }, // 10 days from now
 ];
 
 
@@ -95,11 +97,15 @@ export default function CareersManagementPage() {
             setJobs(jobs.map(j => j.id === jobData.id ? { ...j, ...jobData } : j));
         } else {
             // Add
-            setJobs([...jobs, { ...jobData, id: Date.now(), applicants: [] }]);
+            setJobs([...jobs, { ...jobData, id: Date.now(), applicants: [], published: true }]);
         }
         setIsModalOpen(false);
         setSelectedJob(null);
     };
+
+    const handleTogglePublished = (jobId: number, published: boolean) => {
+        setJobs(jobs.map(j => j.id === jobId ? { ...j, published } : j));
+    }
 
     const getStatusVariant = (status: Job['status']) => {
         switch (status) {
@@ -115,9 +121,9 @@ export default function CareersManagementPage() {
             <TableHeader>
                 <TableRow>
                     <TableHead>Title</TableHead>
-                    <TableHead>Location</TableHead>
                     <TableHead>Applicants</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Published</TableHead>
                     <TableHead>Publish Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
@@ -125,14 +131,23 @@ export default function CareersManagementPage() {
             <TableBody>
                 {data.map((job) => (
                     <TableRow key={job.id}>
-                        <TableCell className="font-medium">{job.title}</TableCell>
-                        <TableCell>{job.location}</TableCell>
+                        <TableCell className="font-medium">
+                            <div>{job.title}</div>
+                            <div className="text-xs text-muted-foreground">{job.location}</div>
+                        </TableCell>
                         <TableCell>{job.applicants.length}</TableCell>
                         <TableCell>
                             <Badge variant={getStatusVariant(job.status)} className="capitalize">
                                 {job.status === 'Scheduled' && <CalendarClock className="mr-1.5 h-3 w-3" />}
                                 {job.status}
                             </Badge>
+                        </TableCell>
+                        <TableCell>
+                             <Switch 
+                                id={`published-${job.id}`}
+                                checked={job.published}
+                                onCheckedChange={(checked) => handleTogglePublished(job.id, checked)}
+                            />
                         </TableCell>
                          <TableCell>{format(job.publishDate, 'PP')}</TableCell>
                         <TableCell className="text-right">
@@ -145,7 +160,7 @@ export default function CareersManagementPage() {
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <DropdownMenuItem onClick={() => handleViewApplicants(job)}>
+                                    <DropdownMenuItem onClick={() => handleViewApplicants(job)} disabled={job.applicants.length === 0}>
                                         View Applicants
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => handleEdit(job)}>
@@ -171,7 +186,7 @@ export default function CareersManagementPage() {
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold">Careers Management</h1>
-                        <p className="text-muted-foreground">Manage job openings and internships.</p>
+                        <p className="text-muted-foreground">Manage job openings and control their visibility on the public site.</p>
                     </div>
                     <Button onClick={handleAdd}>
                         <PlusCircle className="mr-2 h-4 w-4" />

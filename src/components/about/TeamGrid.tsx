@@ -1,8 +1,12 @@
 
+
 import Image from "next/image";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
+import { teamMembers as allTeamMembers } from "@/lib/teamData";
 
-const teamMembers = [
+const teamMembers = allTeamMembers.filter(m => m.published && m.categoryId > 3);
+
+const teamMemberAvatars = [
   { name: "Priya Sharma", role: "HR Manager", avatar: "https://placehold.co/200x200.png", hint: "professional woman" },
   { name: "Rajesh Kumar", role: "Lead PHP Developer", avatar: "https://placehold.co/200x200.png", hint: "professional man" },
   { name: "Anita Desai", role: "Full Stack Developer", avatar: "https://placehold.co/200x200.png", hint: "woman developer" },
@@ -24,7 +28,7 @@ export default function TeamGrid() {
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {teamMembers.map((member) => (
+          {teamMemberAvatars.map((member) => (
             <div key={member.name} className="group relative flex flex-col items-center text-center">
               <ImagePreviewModal imgSrc={member.avatar} alt={member.name}>
                 <div className="relative w-44 h-44 cursor-pointer">

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -14,6 +15,12 @@ export default function OpeningsTabs() {
     setSelectedJobTitle(jobTitle);
     setIsModalOpen(true);
   };
+  
+  // In a real app, this data would come from an API. For now, we mock it.
+  // The admin panel state doesn't persist, so we filter the source data.
+  const publishedFullTime = jobOpenings.fullTime;
+  const publishedInternships = jobOpenings.internships;
+
 
   return (
     <section id="openings" className="py-16 md:py-24 bg-secondary">
@@ -31,17 +38,19 @@ export default function OpeningsTabs() {
           </TabsList>
           <TabsContent value="full-time" className="mt-12">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {jobOpenings.fullTime.map((job) => (
+              {publishedFullTime.map((job) => (
                 <JobCard key={job.title} job={job} onApplyClick={handleApplyClick} />
               ))}
             </div>
+             {publishedFullTime.length === 0 && <p className="text-center text-muted-foreground col-span-2">No full-time positions currently open. Check back soon!</p>}
           </TabsContent>
           <TabsContent value="internships" className="mt-12">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {jobOpenings.internships.map((job) => (
+              {publishedInternships.map((job) => (
                 <JobCard key={job.title} job={job} onApplyClick={handleApplyClick} />
               ))}
             </div>
+            {publishedInternships.length === 0 && <p className="text-center text-muted-foreground col-span-2">No internships currently available. Check back soon!</p>}
           </TabsContent>
         </Tabs>
       </div>
