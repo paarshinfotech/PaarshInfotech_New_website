@@ -21,11 +21,11 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const formSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters."),
-  location: z.string().min(2, "Location is required."),
+  title: z.string().min(3, "Title must be at least 3 characters.").max(100, "Title cannot exceed 100 characters."),
+  location: z.string().min(2, "Location is required.").max(50, "Location cannot exceed 50 characters."),
   type: z.enum(['Full-Time', 'Internship'], { required_error: "Job type is required." }),
   status: z.enum(['Open', 'Closed', 'Scheduled'], { required_error: "Status is required." }),
-  description: z.string().min(10, "Description is required."),
+  description: z.string().min(10, "Description is required.").max(500, "Description cannot exceed 500 characters."),
   skills: z.array(z.string()).min(1, "At least one skill is required."),
   publishDate: z.date({ required_error: "A publish date is required."}),
 });
