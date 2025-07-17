@@ -1,5 +1,6 @@
 
 
+
 export const mediaCategories = ["All", "Office Culture", "Sports", "Parties", "Celebrations"] as const;
 
 export interface MediaItem {
@@ -33,6 +34,15 @@ export interface EventRecap {
   hint: string;
   gallery: { src: string; alt: string; hint: string }[];
 }
+
+export interface EmployeeSpotlightItem {
+  name: string;
+  role: string;
+  quote: string;
+  avatar: string;
+  hint: string;
+}
+
 
 export const mediaGalleryItems: MediaItem[] = [
   { src: "https://placehold.co/600x600.png", alt: "Team Meeting", category: "Office Culture", hint: "team meeting" },
@@ -182,7 +192,7 @@ export const mediaTestimonials = [
   },
 ];
 
-export const employeeSpotlight = {
+export const employeeSpotlight: EmployeeSpotlightItem = {
   name: "Priya Sharma",
   role: "Lead UI/UX Designer",
   quote: "The best part about working here is the creative freedom and the supportive team. Every day brings a new opportunity to learn and create something amazing.",

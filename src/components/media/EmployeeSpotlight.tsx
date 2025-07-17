@@ -1,10 +1,14 @@
 
+'use client';
+
 import Image from "next/image";
-import { employeeSpotlight } from "@/lib/mediaData";
+import { employeeSpotlight as initialEmployeeSpotlight } from "@/lib/mediaData";
 import { Card } from "../ui/card";
 import { ImagePreviewModal } from "../common/ImagePreviewModal";
+import { useState } from "react";
 
 export default function EmployeeSpotlight() {
+  const [employeeSpotlight, setEmployeeSpotlight] = useState(initialEmployeeSpotlight);
   const { name, role, quote, avatar, hint } = employeeSpotlight;
 
   return (

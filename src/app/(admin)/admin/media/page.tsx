@@ -9,19 +9,22 @@ import {
   mediaGalleryItems as initialGalleryItems,
   photoSliderImages as initialSliderImages,
   behindTheScenesData as initialBtsData,
-  eventRecaps as initialEventRecaps
+  eventRecaps as initialEventRecaps,
+  employeeSpotlight as initialEmployeeSpotlight
 } from '@/lib/mediaData';
-import type { MediaItem, PhotoSliderImage, BehindTheScenesItem, EventRecap } from '@/lib/mediaData';
+import type { MediaItem, PhotoSliderImage, BehindTheScenesItem, EventRecap, EmployeeSpotlightItem } from '@/lib/mediaData';
 import { GalleryManagementTab } from '@/components/admin/media/tabs/GalleryManagementTab';
 import { SliderManagementTab } from '@/components/admin/media/tabs/SliderManagementTab';
 import { BtsManagementTab } from '@/components/admin/media/tabs/BtsManagementTab';
 import { EventsManagementTab } from '@/components/admin/media/tabs/EventsManagementTab';
+import { SpotlightManagementTab } from '@/components/admin/media/tabs/SpotlightManagementTab';
 
 export default function MediaManagementPage() {
     const [galleryItems, setGalleryItems] = useState<MediaItem[]>(initialGalleryItems);
     const [sliderImages, setSliderImages] = useState<PhotoSliderImage[]>(initialSliderImages);
     const [btsItems, setBtsItems] = useState<BehindTheScenesItem[]>(initialBtsData);
     const [eventRecaps, setEventRecaps] = useState<EventRecap[]>(initialEventRecaps);
+    const [spotlight, setSpotlight] = useState<EmployeeSpotlightItem>(initialEmployeeSpotlight);
 
     return (
         <div className="space-y-6">
@@ -31,11 +34,12 @@ export default function MediaManagementPage() {
             </div>
             
             <Tabs defaultValue="gallery">
-                <TabsList className="grid w-full grid-cols-4">
+                <TabsList className="grid w-full grid-cols-5">
                     <TabsTrigger value="gallery">Main Gallery</TabsTrigger>
                     <TabsTrigger value="slider">Photo Slider</TabsTrigger>
                     <TabsTrigger value="bts">Behind the Scenes</TabsTrigger>
                     <TabsTrigger value="events">Event Recaps</TabsTrigger>
+                    <TabsTrigger value="spotlight">Employee Spotlight</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="gallery" className="mt-6">
@@ -52,6 +56,10 @@ export default function MediaManagementPage() {
 
                 <TabsContent value="events" className="mt-6">
                     <EventsManagementTab items={eventRecaps} setItems={setEventRecaps} />
+                </TabsContent>
+
+                 <TabsContent value="spotlight" className="mt-6">
+                    <SpotlightManagementTab item={spotlight} setItem={setSpotlight} />
                 </TabsContent>
             </Tabs>
         </div>
