@@ -10,35 +10,33 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mediaCategories } from "@/lib/mediaData";
 
 const formSchema = z.object({
   alt: z.string().min(3, "Alt text must be at least 3 characters."),
-  category: z.string({ required_error: "Please select a category." }),
+  hint: z.string().min(2, "AI hint is required.").max(40, "Hint is too long."),
   image: z.any().refine((files) => files?.length === 1, "An image is required."),
 });
 
-type MediaFormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof formSchema>;
 
-interface MediaUploadModalProps {
+interface SliderImageFormModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (data: MediaFormValues) => void;
+  onSave: (data: FormValues) => void;
 }
 
-export function MediaUploadModal({ isOpen, onOpenChange, onSave }: MediaUploadModalProps) {
+export function SliderImageFormModal({ isOpen, onOpenChange, onSave }: SliderImageFormModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const form = useForm<MediaFormValues>({
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       alt: "",
+      hint: "",
     },
   });
 
-  const onSubmit = (values: MediaFormValues) => {
+  const onSubmit = (values: FormValues) => {
     setIsSubmitting(true);
-    // Simulate API call for upload
     setTimeout(() => {
         onSave(values);
         setIsSubmitting(false);
@@ -53,62 +51,33 @@ export function MediaUploadModal({ isOpen, onOpenChange, onSave }: MediaUploadMo
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Upload New Media</DialogTitle>
+              <DialogTitle>Add Image to Slider</DialogTitle>
               <DialogDescription>
-                Add a new image to your website's media gallery.
+                Upload a new image for the "Best Office Moments" carousel.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
-              <FormField
-                control={form.control}
-                name="image"
-                render={({ field }) => (
+              <FormField control={form.control} name="image" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Image File</FormLabel>
-                    <FormControl>
-                      <Input 
-                        type="file" 
-                        accept="image/*"
-                        onChange={(e) => field.onChange(e.target.files)}
-                      />
-                    </FormControl>
+                    <FormLabel>Image File (16:9 ratio recommended)</FormLabel>
+                    <FormControl><Input type="file" accept="image/*" onChange={(e) => field.onChange(e.target.files)}/></FormControl>
                     <FormMessage />
                   </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="alt"
-                render={({ field }) => (
+              )} />
+              <FormField control={form.control} name="alt" render={({ field }) => (
                   <FormItem>
                     <FormLabel>Alt Text</FormLabel>
                     <FormControl><Input placeholder="e.g., Team celebrating a milestone" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
+              )} />
+              <FormField control={form.control} name="hint" render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a category" />
-                            </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            {mediaCategories.filter(c => c !== 'All').map(cat => (
-                                <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                    <FormLabel>AI Hint</FormLabel>
+                    <FormControl><Input placeholder="e.g., company anniversary" {...field} /></FormControl>
                     <FormMessage />
                   </FormItem>
-                )}
-              />
+              )} />
             </div>
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>

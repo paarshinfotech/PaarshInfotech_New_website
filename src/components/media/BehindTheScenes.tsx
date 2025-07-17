@@ -1,25 +1,6 @@
-import Image from "next/image";
 
-const behindTheScenesData = [
-  {
-    image: "https://placehold.co/600x400.png",
-    hint: "team brainstorming",
-    title: "Daily Standups & Brainstorms",
-    description: "Where great ideas are born. Our daily huddles are collaborative, energetic, and focused on solving challenges together."
-  },
-  {
-    image: "https://placehold.co/600x400.png",
-    hint: "developer coding",
-    title: "Deep Focus Work",
-    description: "We value focused time to code, design, and create. Our workspace is designed to help everyone do their best work without distractions."
-  },
-  {
-    image: "https://placehold.co/600x400.png",
-    hint: "client presentation",
-    title: "Client Collaboration",
-    description: "Partnership is key. We work closely with our clients, involving them in the process to ensure we build solutions that truly meet their needs."
-  }
-];
+import Image from "next/image";
+import { behindTheScenesData } from "@/lib/mediaData";
 
 export default function BehindTheScenes() {
   return (

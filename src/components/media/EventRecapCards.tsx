@@ -14,7 +14,7 @@ export default function EventRecapCards() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [activeGallery, setActiveGallery] = useState<{src: string, alt: string}[]>([]);
 
-  const openLightbox = (gallery: {src: string, alt: string}[], index: number) => {
+  const openLightbox = (gallery: {src: string, alt: string, hint: string}[], index: number) => {
     setActiveGallery(gallery);
     setCurrentImageIndex(index);
     setLightboxOpen(true);
