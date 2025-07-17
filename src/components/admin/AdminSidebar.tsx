@@ -39,7 +39,8 @@ import {
   Loader2,
   Rss,
   ChevronDown,
-  Layers
+  Layers,
+  Star
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -52,6 +53,7 @@ const mainLinks = [
   { href: "/admin/media", label: "Media", icon: ImageIcon },
   { href: "/admin/social", label: "Social Posts", icon: Rss },
   { href: "/admin/contacts", label: "Contacts", icon: MessageSquare },
+  { href: "/admin/feedback", label: "Feedback", icon: Star },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart2 },
 ];
 
