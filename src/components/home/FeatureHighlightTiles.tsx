@@ -50,7 +50,7 @@ export default function FeatureHighlightTiles() {
           {features.map(({ title, description, Icon }) => (
             <div
               key={title}
-              className="group relative rounded-xl border border-primary/10 bg-background/50 p-6 text-center shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 backdrop-blur-sm overflow-hidden"
+              className="group relative rounded-md border border-primary/10 bg-background/50 p-6 text-center shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 backdrop-blur-sm overflow-hidden"
             >
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(400px_circle_at_var(--x,_0)_var(--y,_0),_hsl(var(--primary)/_0.2),_transparent_80%)]"></div>
               <div className="relative z-10 flex flex-col items-center h-full">
