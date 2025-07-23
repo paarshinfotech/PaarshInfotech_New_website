@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import { servicesData } from "@/lib/servicesData";
 
-import { LuArrowRight, LuCheck } from "react-icons/lu";
+import { ArrowRight, Check } from "lucide-react";
 
 export default function ServicesGrid() {
   const publishedServices = servicesData.filter((s) => s.published);
@@ -54,7 +54,7 @@ export default function ServicesGrid() {
                         key={offering.title}
                         className="flex items-center gap-3"
                       >
-                        <LuCheck className="w-5 h-5 text-primary flex-shrink-0" />
+                        <Check className="w-5 h-5 text-primary flex-shrink-0" />
                         <span>{offering.title}</span>
                       </li>
                     ))}
@@ -64,7 +64,7 @@ export default function ServicesGrid() {
                   <div className="relative inline-flex items-center justify-center font-semibold text-primary group-hover:text-primary-foreground transition-colors duration-300 overflow-hidden w-full text-center mt-4 rounded-md">
                     <span className="relative z-10 flex items-center py-2">
                       Learn More
-                      <LuArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
                     </span>
                     <div className="absolute inset-0 bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
                   </div>

@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState } from "react";
 import Image from "next/image";
-import { FiPlayCircle } from "react-icons/fi";
+import { PlayCircle } from "lucide-react";
 import { VideoPlayerModal } from "@/components/common/VideoPlayerModal";
 
 export default function CompanyIntroVideo() {
@@ -34,7 +35,7 @@ export default function CompanyIntroVideo() {
               data-ai-hint="office presentation"
             />
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-              <FiPlayCircle className="w-20 h-20 text-white/80 transform transition-all duration-300 group-hover:scale-110 group-hover:text-white" />
+              <PlayCircle className="w-20 h-20 text-white/80 transform transition-all duration-300 group-hover:scale-110 group-hover:text-white" />
             </div>
             <div className="absolute bottom-0 left-0 p-6">
               <p className="text-xl md:text-2xl font-semibold text-white italic drop-shadow-lg">

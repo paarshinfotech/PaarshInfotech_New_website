@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LuBriefcase, LuZap, LuUsers, LuHeartHandshake } from "react-icons/lu";
+import { LuBriefcase, LuZap, LuUsers, LuHeartHandshake } from "lucide-react";
 import type { ComponentType } from "react";
 
 const features: {

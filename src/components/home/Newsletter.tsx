@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { LuSend } from "react-icons/lu";
+import { Send as LuSend } from "lucide-react";
 
 export default function Newsletter() {
   return (
