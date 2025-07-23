@@ -32,7 +32,7 @@ const testimonials = [
 ];
 
 // We duplicate the testimonials to create a seamless loop for the marquee effect.
-const extendedTestimonials = [...testimonials, ...testimonials, ...testimonials];
+const extendedTestimonials = [...testimonials, ...testimonials];
 
 
 export default function Testimonials() {
