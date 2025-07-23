@@ -23,8 +23,19 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { LuLoader } from "react-icons/lu";
-import type { SocialPost } from "@/app/(admin)/admin/social/page";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+
+export interface SocialPost {
+  _id?: string;
+  content: string;
+  image: string | null;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  hint: string;
+  published: boolean;
+}
 
 const formSchema = z.object({
   content: z
@@ -32,6 +43,7 @@ const formSchema = z.object({
     .min(10, "Post content must be at least 10 characters.")
     .max(280, "Post content cannot exceed 280 characters."),
   image: z.any().optional(),
+  published: z.boolean().optional(),
 });
 
 type PostFormValues = z.infer<typeof formSchema>;
@@ -39,7 +51,7 @@ type PostFormValues = z.infer<typeof formSchema>;
 interface SocialPostFormModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (data: any) => void;
+  onSave: (data: PostFormValues & { _id?: string }) => void;
   post: SocialPost | null;
 }
 
@@ -54,32 +66,48 @@ export function SocialPostFormModal({
     resolver: zodResolver(formSchema),
     defaultValues: {
       content: "",
+      image: null,
+      published: true,
     },
   });
 
   useEffect(() => {
-    if (post) {
-      form.reset({
-        content: post.content,
-        image: null,
-      });
-    } else {
-      form.reset({ content: "", image: null });
+    if (isOpen) {
+      if (post) {
+        form.reset({
+          content: post.content,
+          image: null,
+          published: post.published,
+        });
+      } else {
+        form.reset({
+          content: "",
+          image: null,
+          published: true,
+        });
+      }
     }
   }, [post, form, isOpen]);
 
-  const onSubmit = (values: PostFormValues) => {
+  const onSubmit = async (values: PostFormValues) => {
     setIsSubmitting(true);
-    // Simulate API call for upload
-    setTimeout(() => {
+    try {
       const dataToSave = {
         ...values,
-        id: post?.id,
+        _id: post?._id,
+        image:
+          typeof values.image === "string"
+            ? values.image
+            : values.image && values.image[0]
+            ? "https://placehold.co/600x400.png"
+            : null,
+        published: values.published ?? post?.published ?? true,
       };
-      onSave(dataToSave);
+      await onSave(dataToSave);
+    } finally {
       setIsSubmitting(false);
       onOpenChange(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -129,6 +157,26 @@ export function SocialPostFormModal({
                       />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="published"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                      <FormLabel>Published</FormLabel>
+                      <p className="text-sm text-muted-foreground">
+                        Make this post visible on the site.
+                      </p>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
                   </FormItem>
                 )}
               />

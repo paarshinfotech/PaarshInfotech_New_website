@@ -7,7 +7,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import type { SocialPost } from "@/app/(admin)/admin/social/page";
 import {
   Card,
   CardContent,
@@ -15,10 +14,20 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import Image from "next/image";
-
 import { LuThumbsUp, LuMessageSquare } from "react-icons/lu";
-
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
+import { formatDistanceToNow } from "date-fns";
+
+export interface SocialPost {
+  _id: string;
+  content: string;
+  image: string | null;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  hint: string;
+  published: boolean;
+}
 
 interface SocialPostPreviewModalProps {
   isOpen: boolean;
@@ -56,7 +65,9 @@ export function SocialPostPreviewModal({
               <div>
                 <p className="font-bold text-primary">Paarsh Infotech</p>
                 <p className="text-sm text-muted-foreground">
-                  {post.timestamp}
+                  {formatDistanceToNow(new Date(post.timestamp), {
+                    addSuffix: true,
+                  })}
                 </p>
               </div>
             </CardHeader>

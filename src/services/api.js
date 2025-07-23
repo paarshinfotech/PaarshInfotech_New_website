@@ -163,6 +163,36 @@ export const api = createApi({
         return job?.applicants || [];
       },
     }),
+
+    // ================================================== Social Post Endpoints ================================================== //
+
+    getSocialPosts: builder.query({
+      query: () => "/social-post",
+      providesTags: ["SocialPost"],
+    }),
+    addSocialPost: builder.mutation({
+      query: (post) => ({
+        url: "/social-post",
+        method: "POST",
+        body: post,
+      }),
+      invalidatesTags: ["SocialPost"],
+    }),
+    updateSocialPost: builder.mutation({
+      query: ({ _id, ...post }) => ({
+        url: `/social-post/${_id}`,
+        method: "PUT",
+        body: { _id, ...post },
+      }),
+      invalidatesTags: ["SocialPost"],
+    }),
+    deleteSocialPost: builder.mutation({
+      query: (_id) => ({
+        url: `/social-post/${_id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["SocialPost"],
+    }),
   }),
 });
 
@@ -193,4 +223,9 @@ export const {
 
   useAddApplicantMutation,
   useGetApplicantsByJobQuery,
+
+  useGetSocialPostsQuery,
+  useAddSocialPostMutation,
+  useUpdateSocialPostMutation,
+  useDeleteSocialPostMutation,
 } = api;

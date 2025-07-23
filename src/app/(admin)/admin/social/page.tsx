@@ -18,13 +18,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { GoPlusCircle } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { FaTrashCan } from "react-icons/fa6";
 import { IoEyeOutline } from "react-icons/io5";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,20 +31,45 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
-import { socialWallPosts as initialPosts } from "@/lib/mediaData";
 import { SocialPostFormModal } from "@/components/admin/social/SocialPostFormModal";
 import { SocialPostPreviewModal } from "@/components/admin/social/SocialPostPreviewModal";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import {
+  useGetSocialPostsQuery,
+  useAddSocialPostMutation,
+  useUpdateSocialPostMutation,
+  useDeleteSocialPostMutation,
+} from "../../../../services/api";
+import { format, formatDistanceToNow } from "date-fns";
 
-export type SocialPost = (typeof initialPosts)[0];
+export interface SocialPost {
+  _id: string;
+  content: string;
+  image: string | null;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  hint: string;
+  published: boolean;
+}
 
 export default function SocialManagementPage() {
-  const [posts, setPosts] = useState(initialPosts);
+  const { toast } = useToast();
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<SocialPost | null>(null);
+
+  const {
+    data: posts = [],
+    isLoading: postsLoading,
+    error: postsError,
+  } = useGetSocialPostsQuery(undefined);
+  const [addSocialPost] = useAddSocialPostMutation();
+  const [updateSocialPost] = useUpdateSocialPostMutation();
+  const [deleteSocialPost] = useDeleteSocialPostMutation();
 
   const handleAdd = () => {
     setSelectedPost(null);
@@ -68,52 +91,106 @@ export default function SocialManagementPage() {
     setIsDeleteAlertOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (selectedPost) {
-      setPosts(posts.filter((c) => c.id !== selectedPost.id));
+      try {
+        await deleteSocialPost(selectedPost._id).unwrap();
+        toast({
+          title: "Post Deleted",
+          description: `Post has been deleted successfully.`,
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to delete post.",
+          variant: "destructive",
+        });
+      }
     }
     setIsDeleteAlertOpen(false);
     setSelectedPost(null);
   };
 
-  const handleSave = (postData: any) => {
-    const newImageUrl =
-      postData.image && typeof postData.image !== "string"
-        ? "https://placehold.co/600x400.png"
-        : postData.image ||
-          (postData.id ? posts.find((p) => p.id === postData.id)?.image : null);
-
-    if (postData.id) {
-      // Edit
-      setPosts(
-        posts.map((p) =>
-          p.id === postData.id
-            ? { ...p, content: postData.content, image: newImageUrl }
-            : p
-        )
-      );
-    } else {
-      // Add
-      const newId = Math.max(...posts.map((p) => p.id), 0) + 1;
-      const newPost: SocialPost = {
-        id: newId,
-        content: postData.content,
-        image: newImageUrl,
-        timestamp: "Just now",
-        likes: 0,
-        comments: 0,
-        hint: "social media",
-        published: true,
+  const handleSave = async (postData: {
+    content: string;
+    image?: FileList | string | null;
+    published?: boolean;
+  }) => {
+    try {
+      const dataToSave = {
+        ...postData,
+        image:
+          typeof postData.image === "string"
+            ? postData.image
+            : postData.image && postData.image[0]
+            ? "https://placehold.co/600x400.png"
+            : null,
+        likes: selectedPost?.likes || 0,
+        comments: selectedPost?.comments || 0,
+        hint: selectedPost?.hint || "social media",
+        published: postData.published ?? selectedPost?.published ?? true,
       };
-      setPosts([newPost, ...posts]);
+
+      if (selectedPost) {
+        await updateSocialPost({
+          _id: selectedPost._id,
+          ...dataToSave,
+        }).unwrap();
+        toast({
+          title: "Post Updated",
+          description: `Post has been updated successfully.`,
+        });
+      } else {
+        await addSocialPost(dataToSave).unwrap();
+        toast({
+          title: "Post Created",
+          description: `Post has been created successfully.`,
+        });
+      }
+      setIsFormModalOpen(false);
+      setSelectedPost(null);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: `Failed to ${selectedPost ? "update" : "create"} post.`,
+        variant: "destructive",
+      });
     }
-    setIsFormModalOpen(false);
-    setSelectedPost(null);
   };
 
-  const handleTogglePublished = (postId: number, published: boolean) => {
-    setPosts(posts.map((p) => (p.id === postId ? { ...p, published } : p)));
+  const handleTogglePublished = async (postId: string, published: boolean) => {
+    try {
+      const post = posts.find((p: SocialPost) => p._id === postId);
+      if (!post) return;
+      await updateSocialPost({
+        _id: postId,
+        content: post.content,
+        image: post.image,
+        likes: post.likes,
+        comments: post.comments,
+        hint: post.hint,
+        published,
+      }).unwrap();
+      toast({
+        title: "Status Updated",
+        description: `Post's visibility has been updated.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update visibility status.",
+        variant: "destructive",
+      });
+    }
   };
+
+  if (postsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (postsError) {
+    return <div>Error: Failed to load posts</div>;
+  }
 
   return (
     <>
@@ -137,14 +214,16 @@ export default function SocialManagementPage() {
               <TableRow>
                 <TableHead>Content</TableHead>
                 <TableHead className="w-[100px]">Image</TableHead>
+                <TableHead>Likes</TableHead>
+                <TableHead>Comments</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {posts.map((post) => (
-                <TableRow key={post.id}>
+              {posts.map((post: SocialPost) => (
+                <TableRow key={post._id}>
                   <TableCell className="max-w-xs truncate">
                     {post.content}
                   </TableCell>
@@ -159,13 +238,15 @@ export default function SocialManagementPage() {
                       />
                     )}
                   </TableCell>
+                  <TableCell>{post.likes}</TableCell>
+                  <TableCell>{post.comments}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Switch
-                        id={`published-${post.id}`}
+                        id={`published-${post._id}`}
                         checked={post.published}
                         onCheckedChange={(checked) =>
-                          handleTogglePublished(post.id, checked)
+                          handleTogglePublished(post._id, checked)
                         }
                       />
                       <Badge variant={post.published ? "default" : "secondary"}>
@@ -173,7 +254,11 @@ export default function SocialManagementPage() {
                       </Badge>
                     </div>
                   </TableCell>
-                  <TableCell>{post.timestamp}</TableCell>
+                  <TableCell>
+                    {formatDistanceToNow(new Date(post.timestamp), {
+                      addSuffix: true,
+                    })}
+                  </TableCell>
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -226,7 +311,7 @@ export default function SocialManagementPage() {
         isOpen={isDeleteAlertOpen}
         onOpenChange={setIsDeleteAlertOpen}
         onConfirm={confirmDelete}
-        itemName={`Post #${selectedPost?.id}`}
+        itemName={`Post #${selectedPost?._id}`}
       />
     </>
   );
