@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -24,7 +25,6 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-import { FiBarChart2, FiHome, FiRss, FiImage } from "react-icons/fi";
 import {
   BarChart2,
   Briefcase,
@@ -41,21 +41,8 @@ import {
   Rss,
   ChevronDown,
   Layers,
-  Star
+  Star,
 } from "lucide-react";
-  LuBriefcase,
-  LuFileText,
-  LuLayers,
-  LuMessageSquare,
-  LuPackage,
-  LuSettings,
-  LuUsers,
-  LuLogOut,
-  LuMenu,
-  LuChevronDown,
-  LuLoader,
-
-} from "react-icons/lu";
 
 import { useAuth } from "@/hooks/useAuth";
 
@@ -70,15 +57,6 @@ const mainLinks = [
   { href: "/admin/contacts", label: "Contacts", icon: MessageSquare },
   { href: "/admin/feedback", label: "Feedback", icon: Star },
   { href: "/admin/analytics", label: "Analytics", icon: BarChart2 },
-  { href: "/admin/dashboard", label: "Dashboard", icon: FiHome },
-  { href: "/admin/services", label: "Services", icon: LuBriefcase },
-  { href: "/admin/products", label: "Products", icon: LuLayers },
-  { href: "/admin/clients", label: "Clients", icon: LuPackage },
-  { href: "/admin/careers", label: "Careers", icon: LuFileText },
-  { href: "/admin/media", label: "Media", icon: FiImage },
-  { href: "/admin/social", label: "Social Posts", icon: FiRss },
-  { href: "/admin/contacts", label: "Contacts", icon: LuMessageSquare },
-  { href: "/admin/analytics", label: "Analytics", icon: FiBarChart2 },
 ];
 
 const teamLinks = [
@@ -89,7 +67,7 @@ const teamLinks = [
 const settingsLink = {
   href: "/admin/settings",
   label: "Settings",
-  icon: LuSettings,
+  icon: Settings,
 };
 
 export function AdminSidebar() {
@@ -145,9 +123,9 @@ export function AdminSidebar() {
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="w-full justify-between">
                 <span className="flex items-center gap-2">
-                  <LuUsers className="h-4 w-4" /> Team
+                  <Users className="h-4 w-4" /> Team
                 </span>
-                <LuChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+                <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
               </Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="space-y-1 pt-1">
@@ -169,7 +147,7 @@ export function AdminSidebar() {
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="ghost" className="w-full justify-start">
-              <LuLogOut className="mr-2 h-4 w-4" />
+              <LogOut className="mr-2 h-4 w-4" />
               Log Out
             </Button>
           </AlertDialogTrigger>
@@ -186,7 +164,7 @@ export function AdminSidebar() {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={handleLogout} disabled={isLoggingOut}>
                 {isLoggingOut && (
-                  <LuLoader className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Continue
               </AlertDialogAction>
@@ -206,7 +184,7 @@ export function AdminSidebar() {
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon">
-              <LuMenu className="h-5 w-5" />
+              <Menu className="h-5 w-5" />
               <span className="sr-only">Open menu</span>
             </Button>
           </SheetTrigger>
