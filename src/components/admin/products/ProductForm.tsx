@@ -23,7 +23,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 import { GoPlusCircle } from "react-icons/go";
-import {LuLoader, LuTrash2, } from "react-icons/lu";
+import { ImSpinner2 } from "react-icons/im";
+import { FaTrash } from "react-icons/fa";
 
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/productsData";
@@ -119,7 +120,7 @@ export function ProductForm({ product }: ProductFormProps) {
           </h1>
           <Button type="submit" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting && (
-              <LuLoader className="mr-2 h-4 w-4 animate-spin" />
+              <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
             )}
             Save {product ? "Changes" : "Product"}
           </Button>
@@ -251,7 +252,7 @@ export function ProductForm({ product }: ProductFormProps) {
                   size="icon"
                   onClick={() => removeFeature(index)}
                 >
-                  <LuTrash2 className="h-4 w-4" />
+                  <FaTrash className="h-4 w-4" />
                 </Button>
               </div>
             ))}
@@ -328,7 +329,7 @@ export function ProductForm({ product }: ProductFormProps) {
                   size="icon"
                   onClick={() => removeGallery(index)}
                 >
-                  <LuTrash2 className="h-4 w-4" />
+                  <FaTrash className="h-4 w-4" />
                 </Button>
               </div>
             ))}

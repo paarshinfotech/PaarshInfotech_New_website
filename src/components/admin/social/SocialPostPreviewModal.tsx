@@ -14,7 +14,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { LuThumbsUp, LuMessageSquare } from "react-icons/lu";
+import { FaThumbsUp, FaComment } from "react-icons/fa";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 import { formatDistanceToNow } from "date-fns";
 
@@ -92,11 +92,11 @@ export function SocialPostPreviewModal({
             </CardContent>
             <CardFooter className="flex justify-start gap-8 border-t pt-4 mt-auto">
               <div className="flex items-center gap-2 text-muted-foreground">
-                <LuThumbsUp className="w-5 h-5" />
+                <FaThumbsUp className="w-5 h-5" />
                 <span className="text-sm">{post.likes} Likes</span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
-                <LuMessageSquare className="w-5 h-5" />
+                <FaComment className="w-5 h-5" />
                 <span className="text-sm">{post.comments} Comments</span>
               </div>
             </CardFooter>

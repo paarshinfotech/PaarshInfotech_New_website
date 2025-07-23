@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from "react";
@@ -9,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { LuLoader } from "react-icons/lu";
+import { ImSpinner2 } from "react-icons/im";
 
 const formSchema = z.object({
   alt: z.string().min(3, "Alt text must be at least 3 characters."),
@@ -82,7 +81,7 @@ export function SliderImageFormModal({ isOpen, onOpenChange, onSave }: SliderIma
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <LuLoader className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}
                 Upload
               </Button>
             </DialogFooter>

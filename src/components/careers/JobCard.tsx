@@ -9,7 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-import { LuMapPin, LuBriefcase, LuClock, LuSparkles } from "react-icons/lu";
+import { FaMapMarkerAlt, FaBriefcase, FaClock, FaLightbulb } from "react-icons/fa";
 
 interface Job {
   title: string;
@@ -32,11 +32,11 @@ export default function JobCard({ job, onApplyClick }: JobCardProps) {
         <CardTitle>{job.title}</CardTitle>
         <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground pt-2">
           <div className="flex items-center gap-1.5">
-            <LuBriefcase className="w-4 h-4" />
+            <FaBriefcase className="w-4 h-4" />
             <span>{job.experience}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <LuMapPin className="w-4 h-4" />
+            <FaMapMarkerAlt className="w-4 h-4" />
             <span>{job.location}</span>
           </div>
         </div>
@@ -45,7 +45,7 @@ export default function JobCard({ job, onApplyClick }: JobCardProps) {
         <p className="text-muted-foreground text-sm">{job.description}</p>
         <div>
           <h4 className="font-semibold mb-2 text-primary flex items-center gap-2">
-            <LuSparkles className="w-4 h-4 text-accent" />
+            <FaLightbulb className="w-4 h-4 text-accent" />
             Skills
           </h4>
           <div className="flex flex-wrap gap-2">
@@ -59,7 +59,7 @@ export default function JobCard({ job, onApplyClick }: JobCardProps) {
       </CardContent>
       <CardFooter className="flex justify-between items-center mt-auto">
         <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-          <LuClock className="w-4 h-4" />
+          <FaClock className="w-4 h-4" />
           Posted {job.posted}
         </p>
         <Button onClick={() => onApplyClick(job.title)}>Apply Now</Button>

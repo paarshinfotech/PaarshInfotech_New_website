@@ -1,10 +1,9 @@
-
 'use client';
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { LuPlus, LuTrash2 } from "react-icons/lu";
+import { FaPlus, FaTrash } from "react-icons/fa";
 import Image from "next/image";
 import { ImagePreviewModal } from '@/components/common/ImagePreviewModal';
 import type { PhotoSliderImage } from '@/lib/mediaData';
@@ -54,7 +53,7 @@ export function SliderManagementTab({ items, setItems }: SliderManagementTabProp
                         <CardDescription>Manage images for the "Best Office Moments" carousel.</CardDescription>
                     </div>
                      <Button onClick={() => setIsModalOpen(true)}>
-                        <LuPlus className="h-4 w-4" />
+                        <FaPlus className="h-4 w-4" />
                         Add Image
                     </Button>
                 </CardHeader>
@@ -72,7 +71,7 @@ export function SliderManagementTab({ items, setItems }: SliderManagementTabProp
                                 </CardHeader>
                                 <CardFooter className="p-2 md:p-4 pt-0 flex justify-end items-center">
                                     <Button variant="destructive" size="icon" className="h-7 w-7 opacity-50 group-hover:opacity-100" onClick={() => handleDelete(item)}>
-                                        <LuTrash2 className="h-4 w-4"/>
+                                        <FaTrash className="h-4 w-4"/>
                                     </Button>
                                 </CardFooter>
                             </Card>

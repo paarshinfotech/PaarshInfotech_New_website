@@ -23,7 +23,8 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { LuLoader, LuCalendar } from "react-icons/lu";
+import { ImSpinner2 } from "react-icons/im";
+import { FaCalendarAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 
 
@@ -117,7 +118,7 @@ export function JobFormModal({
           status: job.status,
           description: job.description,
           skills: job.skills,
-          publishDate: job.publishDate,
+          publishDate: new Date(job.publishDate),
         });
       } else {
         form.reset({
@@ -157,7 +158,7 @@ export function JobFormModal({
     setTimeout(() => {
       const dataToSave = {
         ...values,
-        id: job?.id,
+        id: job?._id,
         // In a real app, you might re-calculate this on the server
         status:
           values.publishDate > new Date() && values.status !== "Closed"
@@ -326,7 +327,7 @@ export function JobFormModal({
                                   !field.value && "text-muted-foreground"
                                 )}
                               >
-                                <LuCalendar className="mr-2 h-4 w-4" />
+                                <FaCalendarAlt className="mr-2 h-4 w-4" />
                                 {field.value ? (
                                   format(field.value, "PPP")
                                 ) : (
@@ -393,7 +394,7 @@ export function JobFormModal({
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && (
-                  <LuLoader className="mr-2 h-4 w-4 animate-spin" />
+                  <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Save Job
               </Button>

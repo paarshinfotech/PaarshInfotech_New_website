@@ -26,12 +26,7 @@ import {
   LineChart,
 } from "recharts";
 
-import {
-  LuUsersRound,
-  LuBriefcase,
-  LuMessageSquare,
-  LuFileText,
-} from "react-icons/lu";
+import { FaUsers, FaBriefcase, FaRegCommentDots, FaRegFileAlt } from "react-icons/fa";
 import { GoArrowRight } from "react-icons/go";
 
 import {
@@ -160,7 +155,7 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium">
                 Total Visitors
               </CardTitle>
-              <LuUsersRound className="h-4 w-4 text-muted-foreground" />
+              <FaUsers className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">12,345</div>
@@ -174,7 +169,7 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium">
                 New Contacts
               </CardTitle>
-              <LuMessageSquare className="h-4 w-4 text-muted-foreground" />
+              <FaRegCommentDots className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">+150</div>
@@ -186,7 +181,7 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium">
                 Open Positions
               </CardTitle>
-              <LuFileText className="h-4 w-4 text-muted-foreground" />
+              <FaRegFileAlt className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">7</div>
@@ -198,7 +193,7 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium">
                 Active Services
               </CardTitle>
-              <LuBriefcase className="h-4 w-4 text-muted-foreground" />
+              <FaBriefcase className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">6</div>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -7,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { LuLoader } from "react-icons/lu";
+import { ImSpinner2 } from "react-icons/im";
 import Image from "next/image";
 import type { EmployeeSpotlightItem } from '@/lib/mediaData';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -110,7 +109,7 @@ export function SpotlightManagementTab({ item, setItem }: SpotlightManagementTab
                                 )} />
 
                                  <Button type="submit" disabled={isSubmitting}>
-                                    {isSubmitting && <LuLoader className="mr-2 h-4 w-4 animate-spin" />}
+                                    {isSubmitting && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}
                                     Save Changes
                                 </Button>
                             </div>

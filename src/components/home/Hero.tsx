@@ -1,9 +1,8 @@
-
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Star, Briefcase } from 'lucide-react';
+import { FaArrowRight, FaStar, FaBriefcase } from "react-icons/fa";
 
 export default function Hero() {
   return (
@@ -16,7 +15,7 @@ export default function Hero() {
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
           <div className="text-center md:text-left">
             <Badge variant="outline" className="mb-4 border-primary/20 bg-primary/5 text-primary font-semibold">
-              <Star className="w-4 h-4 mr-2" />
+              <FaStar className="w-4 h-4 mr-2" />
               Welcome to Paarsh Infotech
             </Badge>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-primary mb-6">
@@ -29,7 +28,7 @@ export default function Hero() {
               <Button asChild size="lg" className="w-full sm:w-auto shadow-lg shadow-primary/20 hover:shadow-xl transition-shadow">
                 <Link href="/quote">
                   Get A Quote
-                  <ArrowRight className="ml-2 w-4 h-4" />
+                  <FaArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
@@ -38,11 +37,11 @@ export default function Hero() {
             </div>
              <div className="flex justify-center md:justify-start space-x-8 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                    <Briefcase className="w-4 h-4 text-primary" />
+                    <FaBriefcase className="w-4 h-4 text-primary" />
                     <span className="font-medium">200+ Projects Completed</span>
                 </div>
                  <div className="flex items-center gap-2">
-                    <Star className="w-4 h-4 text-primary" />
+                    <FaStar className="w-4 h-4 text-primary" />
                     <span className="font-medium">150+ Happy Clients</span>
                 </div>
             </div>

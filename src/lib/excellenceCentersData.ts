@@ -4,7 +4,7 @@ import {
   LuAward,
   LuUsers,
   LuLightbulb,
-  LuCode2,
+  LuCode,
   LuClipboardCheck,
   LuBriefcase,
   LuFlag,
@@ -71,7 +71,7 @@ export const programsOffered = [
     title: "Full-Stack Web Development",
     description:
       "Master both front-end and back-end technologies to build complete web applications.",
-    Icon: LuCode2,
+    Icon: LuCode,
     tags: ["React", "Node.js", "Python"],
   },
   {

@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { IconType } from "react-icons"; // Import IconType for react-icons
-import { LuSmile, LuBriefcase, LuClock, LuUsers } from "react-icons/lu";
+import { IconType } from "react-icons";
+import { FaSmile, FaBriefcase, FaClock, FaUsers } from "react-icons/fa";
 
 const stats: { value: number; label: string; Icon: IconType }[] = [
-  { value: 150, label: "Happy Clients", Icon: LuSmile  },
-  { value: 200, label: "Projects Completed", Icon: LuBriefcase },
-  { value: 9000, label: "Hours of Support", Icon: LuClock },
-  { value: 25, label: "Hard Workers", Icon: LuUsers },
+  { value: 150, label: "Happy Clients", Icon: FaSmile  },
+  { value: 200, label: "Projects Completed", Icon: FaBriefcase },
+  { value: 9000, label: "Hours of Support", Icon: FaClock },
+  { value: 25, label: "Hard Workers", Icon: FaUsers },
 ];
 
 function CountUp({ end }: { end: number }) {
