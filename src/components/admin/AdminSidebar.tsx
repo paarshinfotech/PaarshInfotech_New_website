@@ -26,6 +26,23 @@ import {
 
 import { FiBarChart2, FiHome, FiRss, FiImage } from "react-icons/fi";
 import {
+  BarChart2,
+  Briefcase,
+  FileText,
+  Home,
+  Menu,
+  MessageSquare,
+  Package,
+  Settings,
+  Users,
+  Image as ImageIcon,
+  LogOut,
+  Loader2,
+  Rss,
+  ChevronDown,
+  Layers,
+  Star
+} from "lucide-react";
   LuBriefcase,
   LuFileText,
   LuLayers,
@@ -43,6 +60,16 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 
 const mainLinks = [
+  { href: "/admin/dashboard", label: "Dashboard", icon: Home },
+  { href: "/admin/services", label: "Services", icon: Briefcase },
+  { href: "/admin/products", label: "Products", icon: Layers },
+  { href: "/admin/clients", label: "Clients", icon: Package },
+  { href: "/admin/careers", label: "Careers", icon: FileText },
+  { href: "/admin/media", label: "Media", icon: ImageIcon },
+  { href: "/admin/social", label: "Social Posts", icon: Rss },
+  { href: "/admin/contacts", label: "Contacts", icon: MessageSquare },
+  { href: "/admin/feedback", label: "Feedback", icon: Star },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart2 },
   { href: "/admin/dashboard", label: "Dashboard", icon: FiHome },
   { href: "/admin/services", label: "Services", icon: LuBriefcase },
   { href: "/admin/products", label: "Products", icon: LuLayers },
