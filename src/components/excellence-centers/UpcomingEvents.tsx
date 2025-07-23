@@ -3,6 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { upcomingEvents } from "@/lib/excellenceCentersData";
 import { Button } from "../ui/button";
 import { LuCalendar, LuClock, LuMapPin, LuArrowRight } from "react-icons/lu";
+import { Badge } from "@/components/ui/badge";
 
 export default function UpcomingEvents() {
   return (
