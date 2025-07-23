@@ -1,3 +1,4 @@
+
 import { LuBriefcase, LuZap, LuUsers, LuHeartHandshake } from "react-icons/lu";
 import type { IconType } from "react-icons";
 
@@ -51,10 +52,10 @@ export default function FeatureHighlightTiles() {
               key={title}
               className="group relative rounded-xl border border-primary/10 bg-background/50 p-6 text-center shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 backdrop-blur-sm overflow-hidden"
             >
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(400px_circle_at_var(--x,_0)_var(--y,_0),_hsl(var(--accent)/_0.2),_transparent_80%)]"></div>
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(400px_circle_at_var(--x,_0)_var(--y,_0),_hsl(var(--primary)/_0.2),_transparent_80%)]"></div>
               <div className="relative z-10 flex flex-col items-center h-full">
-                <div className="p-4 bg-primary/10 rounded-full mb-6 transition-all duration-300 group-hover:scale-110 group-hover:bg-accent">
-                  <Icon className="w-8 h-8 text-primary transition-colors duration-300 group-hover:text-accent-foreground" />
+                <div className="p-4 bg-primary/10 rounded-full mb-6 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary">
+                  <Icon className="w-8 h-8 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
                 </div>
                 <h3 className="text-xl font-bold text-primary mb-3">{title}</h3>
                 <p className="text-muted-foreground flex-grow">
