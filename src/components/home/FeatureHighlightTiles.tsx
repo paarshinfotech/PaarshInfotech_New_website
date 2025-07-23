@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LuBriefcase, LuZap, LuUsers, LuHeartHandshake } from "lucide-react";
-import type { ComponentType } from "react";
+import { LuBriefcase, LuZap, LuUsers, LuHeartHandshake } from "react-icons/lu";
+import type { IconType } from "react-icons";
 
 const features: {
   title: string;
   description: string;
-  Icon: ComponentType<{ className?: string }>;
+  Icon: IconType;
 }[] = [
   {
     title: "Internship Opportunities",
