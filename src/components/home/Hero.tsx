@@ -8,8 +8,11 @@ export default function Hero() {
   return (
     <section className="relative bg-secondary overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-      <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute -top-32 -right-32 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+      {/* Animated Blobs */}
+      <div className="absolute top-0 -left-4 w-72 h-72 bg-primary/10 rounded-full filter blur-3xl opacity-70 animate-blob"></div>
+      <div className="absolute top-0 -right-4 w-72 h-72 bg-accent/10 rounded-full filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+      <div className="absolute -bottom-8 left-20 w-72 h-72 bg-primary/10 rounded-full filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+      <div className="absolute -bottom-8 -right-20 w-72 h-72 bg-accent/10 rounded-full filter blur-3xl opacity-70 animate-blob animation-delay-6000"></div>
       
       <div className="container relative z-10 py-24 md:py-32">
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
