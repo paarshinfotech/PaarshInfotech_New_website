@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import { LuMenu, LuX, LuPhone, LuMail } from "react-icons/lu";
 
@@ -30,18 +30,6 @@ const navLinks = [
 export function Header() {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const isHomePage = pathname === "/";
-  const isTransparent = isHomePage && !isScrolled && !isMobileMenuOpen;
 
   const NavLink = ({ href, label }: { href: string; label: string }) => {
     const isActive = pathname === href;
@@ -50,12 +38,7 @@ export function Header() {
         href={href}
         className={cn(
           "text-sm font-medium transition-colors hover:text-primary",
-          isActive
-            ? "text-primary"
-            : isTransparent
-            ? "text-white hover:text-white/80"
-            : "text-foreground/80",
-          isMobileMenuOpen && "text-foreground/80"
+          isActive ? "text-primary" : "text-foreground/80"
         )}
         onClick={() => setIsMobileMenuOpen(false)}
       >
@@ -67,20 +50,12 @@ export function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full border-b transition-colors duration-300",
-        isTransparent
-          ? "border-transparent bg-transparent"
-          : "border-border/40 bg-secondary/95 backdrop-blur supports-[backdrop-filter]:bg-secondary/60"
+        "sticky top-0 z-50 w-full border-b border-border/40 bg-secondary/95 backdrop-blur supports-[backdrop-filter]:bg-secondary/60"
       )}
     >
       <div className="container flex h-16 max-w-7xl items-center justify-between">
         <Link href="/" className="mr-6 flex items-center space-x-2">
-          <span
-            className={cn(
-              "font-bold text-lg transition-colors",
-              isTransparent ? "text-white" : "text-primary"
-            )}
-          >
+          <span className="font-bold text-lg text-primary">
             Paarsh Infotech
           </span>
         </Link>
@@ -92,25 +67,12 @@ export function Header() {
             ))}
           </nav>
           <div className="flex items-center space-x-2">
-            <Button
-              asChild
-              className={cn(
-                isTransparent &&
-                  "bg-white/90 text-primary hover:bg-white"
-              )}
-            >
+            <Button asChild>
               <Link href="/quote">Get A Quote</Link>
             </Button>
             <Popover>
               <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className={cn(
-                    isTransparent &&
-                      "border-white/50 text-white hover:bg-white/10 hover:text-white"
-                  )}
-                >
+                <Button variant="outline" size="icon">
                   <LuPhone className="h-4 w-4" />
                   <span className="sr-only">Contact Information</span>
                 </Button>
@@ -143,14 +105,7 @@ export function Header() {
 
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild className="md:hidden">
-            <Button
-              variant="outline"
-              size="icon"
-              className={cn(
-                isTransparent &&
-                  "border-white/50 text-white hover:bg-white/10 hover:text-white"
-              )}
-            >
+            <Button variant="outline" size="icon">
               <LuMenu className="h-5 w-5" />
               <span className="sr-only">Open menu</span>
             </Button>
