@@ -99,9 +99,13 @@ export default {
             height: '0',
           },
         },
-        marquee: {
-          '0%': { transform: 'translateX(0%)' },
-          '100%': { transform: 'translateX(-50%)' },
+        'marquee-left': {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
+        },
+        'marquee-right': {
+            from: { transform: 'translateX(-50%)' },
+            to: { transform: 'translateX(0)' },
         },
         'marquee-slow': {
           '0%': { transform: 'translateX(0%)' },
@@ -125,7 +129,8 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        marquee: 'marquee 40s linear infinite',
+        'marquee-left': 'marquee-left 60s linear infinite',
+        'marquee-right': 'marquee-right 60s linear infinite',
         'marquee-slow': 'marquee-slow 80s linear infinite',
         blob: 'blob 7s infinite',
       },
