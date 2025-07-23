@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { LuArrowRight } from "react-icons/lu";
+
 import type { Product } from "@/lib/productsData";
 
 interface ProductHeroProps {
@@ -29,7 +30,7 @@ export default function ProductHero({ product }: ProductHeroProps) {
           <Button asChild size="lg">
             <Link href="/quote">
               Request a Demo
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <LuArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline">

@@ -13,7 +13,9 @@ export default function ContactInfoCards() {
               </div>
               <div className="mt-4">
                 <h3 className="text-xl font-bold text-primary">{info.title}</h3>
-                <p className="text-muted-foreground break-all mt-1">{info.value}</p>
+                <p className="text-muted-foreground break-all mt-1">
+                  {info.value}
+                </p>
               </div>
             </div>
           </Card>

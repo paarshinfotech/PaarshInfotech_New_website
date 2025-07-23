@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -15,18 +14,19 @@ export default function OpeningsTabs() {
     setSelectedJobTitle(jobTitle);
     setIsModalOpen(true);
   };
-  
+
   // In a real app, this data would come from an API. For now, we mock it.
   // The admin panel state doesn't persist, so we filter the source data.
   const publishedFullTime = jobOpenings.fullTime;
   const publishedInternships = jobOpenings.internships;
 
-
   return (
     <section id="openings" className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">Current Openings</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-primary">
+            Current Openings
+          </h2>
           <p className="mt-4 text-lg text-foreground/70">
             Find the role that's right for you and start your journey with us.
           </p>
@@ -39,22 +39,38 @@ export default function OpeningsTabs() {
           <TabsContent value="full-time" className="mt-12">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {publishedFullTime.map((job) => (
-                <JobCard key={job.title} job={job} onApplyClick={handleApplyClick} />
+                <JobCard
+                  key={job.title}
+                  job={job}
+                  onApplyClick={handleApplyClick}
+                />
               ))}
             </div>
-             {publishedFullTime.length === 0 && <p className="text-center text-muted-foreground col-span-2">No full-time positions currently open. Check back soon!</p>}
+            {publishedFullTime.length === 0 && (
+              <p className="text-center text-muted-foreground col-span-2">
+                No full-time positions currently open. Check back soon!
+              </p>
+            )}
           </TabsContent>
           <TabsContent value="internships" className="mt-12">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {publishedInternships.map((job) => (
-                <JobCard key={job.title} job={job} onApplyClick={handleApplyClick} />
+                <JobCard
+                  key={job.title}
+                  job={job}
+                  onApplyClick={handleApplyClick}
+                />
               ))}
             </div>
-            {publishedInternships.length === 0 && <p className="text-center text-muted-foreground col-span-2">No internships currently available. Check back soon!</p>}
+            {publishedInternships.length === 0 && (
+              <p className="text-center text-muted-foreground col-span-2">
+                No internships currently available. Check back soon!
+              </p>
+            )}
           </TabsContent>
         </Tabs>
       </div>
-      <ApplicationModal 
+      <ApplicationModal
         jobTitle={selectedJobTitle}
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}

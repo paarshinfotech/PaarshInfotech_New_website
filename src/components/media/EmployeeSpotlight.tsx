@@ -1,5 +1,4 @@
-
-'use client';
+"use client";
 
 import Image from "next/image";
 import { employeeSpotlight as initialEmployeeSpotlight } from "@/lib/mediaData";
@@ -8,14 +7,18 @@ import { ImagePreviewModal } from "../common/ImagePreviewModal";
 import { useState } from "react";
 
 export default function EmployeeSpotlight() {
-  const [employeeSpotlight, setEmployeeSpotlight] = useState(initialEmployeeSpotlight);
+  const [employeeSpotlight, setEmployeeSpotlight] = useState(
+    initialEmployeeSpotlight
+  );
   const { name, role, quote, avatar, hint } = employeeSpotlight;
 
   return (
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-5xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">Employee Spotlight</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-primary">
+            Employee Spotlight
+          </h2>
           <p className="mt-4 text-lg text-foreground/70">
             Celebrating the people who make Paarsh Infotech great.
           </p>
@@ -23,10 +26,10 @@ export default function EmployeeSpotlight() {
         <Card className="grid md:grid-cols-3 gap-8 items-center p-8 shadow-lg bg-background">
           <ImagePreviewModal imgSrc={avatar} alt={`Portrait of ${name}`}>
             <div className="relative aspect-square md:col-span-1 cursor-pointer">
-              <Image 
+              <Image
                 src={avatar}
                 alt={`Portrait of ${name}`}
-                fill 
+                fill
                 className="object-cover rounded-lg shadow-md"
                 data-ai-hint={hint}
               />

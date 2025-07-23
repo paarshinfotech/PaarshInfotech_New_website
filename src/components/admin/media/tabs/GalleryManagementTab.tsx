@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { LuPlus, LuTrash2 } from "react-icons/lu";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { MediaUploadModal } from '@/components/admin/media/MediaUploadModal';
@@ -22,13 +22,16 @@ export function GalleryManagementTab({ items, setItems }: GalleryManagementTabPr
     const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<MediaItem | null>(null);
 
-    const handleSave = (item: Omit<MediaItem, 'src' | 'hint'> & { image: FileList }) => {
-        // In a real app, you'd upload the image and get a URL.
+    const handleSave = (data: { 
+        alt: string; 
+        category: string; 
+        image?: any; 
+    }) => {
         const newItem: MediaItem = {
             src: "https://placehold.co/600x600.png",
-            alt: item.alt,
-            category: item.category as any, // Zod ensures this is valid
-            hint: item.alt.toLowerCase(),
+            alt: data.alt,
+            category: data.category as "All" | "Office Culture" | "Sports" | "Parties" | "Celebrations",
+            hint: data.alt.toLowerCase(),
         }
         setItems(prev => [newItem, ...prev]);
         setIsModalOpen(false);
@@ -56,7 +59,7 @@ export function GalleryManagementTab({ items, setItems }: GalleryManagementTabPr
                         <CardDescription>Manage images for the filterable gallery on the Media page.</CardDescription>
                     </div>
                      <Button onClick={() => setIsModalOpen(true)}>
-                        <PlusCircle className="mr-2 h-4 w-4" />
+                        <LuPlus className="h-4 w-4" />
                         Upload Media
                     </Button>
                 </CardHeader>
@@ -75,7 +78,7 @@ export function GalleryManagementTab({ items, setItems }: GalleryManagementTabPr
                                 <CardFooter className="p-2 md:p-4 pt-0 flex justify-between items-center">
                                     <Badge variant="outline">{item.category}</Badge>
                                     <Button variant="destructive" size="icon" className="h-7 w-7 opacity-50 group-hover:opacity-100" onClick={() => handleDelete(item)}>
-                                        <Trash2 className="h-4 w-4"/>
+                                        <LuTrash2 className="h-4 w-4"/>
                                     </Button>
                                 </CardFooter>
                             </Card>

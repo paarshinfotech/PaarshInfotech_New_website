@@ -1,12 +1,12 @@
 import { Card, CardTitle, CardContent } from "@/components/ui/card";
-import { ShoppingBag, Landmark, HeartPulse, Building } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+import { LuShoppingBag, LuLandmark, LuHeartPulse, LuBuilding } from "react-icons/lu";
+import type { IconType } from "react-icons";
 
-const useCases: { title: string; Icon: LucideIcon }[] = [
-    { title: "Retail & E-commerce", Icon: ShoppingBag },
-    { title: "Financial Services", Icon: Landmark },
-    { title: "Healthcare", Icon: HeartPulse },
-    { title: "Real Estate", Icon: Building },
+const useCases: { title: string; Icon: IconType }[] = [
+    { title: "Retail & E-commerce", Icon: LuShoppingBag },
+    { title: "Financial Services", Icon: LuLandmark },
+    { title: "Healthcare", Icon: LuHeartPulse },
+    { title: "Real Estate", Icon: LuBuilding },
 ];
 
 export default function UseCases() {

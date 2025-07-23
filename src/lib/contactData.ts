@@ -1,21 +1,21 @@
-import { Phone, Mail, Linkedin, Twitter, Instagram, Facebook } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+import { LuPhone, LuMail, LuLinkedin, LuTwitter, LuInstagram, LuFacebook } from 'react-icons/lu';
+import type { IconType } from 'react-icons';
 
 export const contactInfo = [
   {
-    Icon: Phone,
+    Icon: LuPhone,
     title: "Phone",
     value: "+91 98609 88343",
     href: "tel:+919860988343",
   },
   {
-    Icon: Mail,
+    Icon: LuMail,
     title: "Primary Email",
     value: "info@paarshinfotech.com",
     href: "mailto:info@paarshinfotech.com",
   },
   {
-    Icon: Mail,
+    Icon: LuMail,
     title: "Secondary Email",
     value: "paarshinfotech@gmail.com",
     href: "mailto:paarshinfotech@gmail.com",
@@ -85,9 +85,9 @@ export const contactFAQs = [
     }
 ];
 
-export const socialLinks: { name: string, Icon: LucideIcon, href: string }[] = [
-    { name: "LinkedIn", Icon: Linkedin, href: "#" },
-    { name: "Facebook", Icon: Facebook, href: "#" },
-    { name: "Twitter", Icon: Twitter, href: "#" },
-    { name: "Instagram", Icon: Instagram, href: "#" },
+export const socialLinks: { name: string, Icon: IconType, href: string }[] = [
+    { name: "LinkedIn", Icon: LuLinkedin, href: "#" },
+    { name: "Facebook", Icon: LuFacebook, href: "#" },
+    { name: "Twitter", Icon: LuTwitter, href: "#" },
+    { name: "Instagram", Icon: LuInstagram, href: "#" },
 ];

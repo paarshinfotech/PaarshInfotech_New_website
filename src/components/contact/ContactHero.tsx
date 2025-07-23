@@ -6,7 +6,9 @@ export default function ContactHero() {
           Let’s Connect – We’re Here to Help
         </h1>
         <p className="mt-6 text-lg md:text-xl text-foreground/80">
-          We'd love to hear from you. Whether you have a question about our services, careers, or anything else, our team is ready to answer all your questions.
+          We'd love to hear from you. Whether you have a question about our
+          services, careers, or anything else, our team is ready to answer all
+          your questions.
         </p>
       </div>
     </section>

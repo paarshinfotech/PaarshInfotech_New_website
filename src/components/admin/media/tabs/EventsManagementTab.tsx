@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, Edit, Trash2 } from "lucide-react";
+import { LuPlus, LuPencil, LuTrash2 } from "react-icons/lu";
 import Image from "next/image";
 import { ImagePreviewModal } from '@/components/common/ImagePreviewModal';
 import type { EventRecap } from '@/lib/mediaData';
@@ -45,15 +45,29 @@ export function EventsManagementTab({ items, setItems }: EventsManagementTabProp
         setSelectedItem(null);
     }
 
-    const handleSave = (data: EventRecap & { imageFile?: FileList, galleryFiles?: FileList[] }) => {
-        const { imageFile, galleryFiles, ...eventData } = data;
+    const handleSave = (data: { 
+        title: string;
+        hint: string;
+        date: string;
+        description: string;
+        gallery: { alt: string; hint: string; src: string; }[];
+        id?: number;
+        imageFile?: any;
+    }) => {
+        const { imageFile, ...eventData } = data;
 
         if (selectedItem && eventData.id) {
-            // Edit
-            setItems(items.map(i => i.id === eventData.id ? { ...i, ...eventData } : i));
+            setItems(items.map(i => i.id === eventData.id ? { 
+                ...i, 
+                ...eventData,
+                image: "https://placehold.co/800x600.png" // Placeholder for new image
+            } : i));
         } else {
-            // Add new
-            setItems([...items, { ...eventData, id: Date.now() }]);
+            setItems([...items, { 
+                ...eventData, 
+                id: Date.now(),
+                image: "https://placehold.co/800x600.png" // Placeholder for new image
+            }]);
         }
         setIsModalOpen(false);
         setSelectedItem(null);
@@ -69,7 +83,7 @@ export function EventsManagementTab({ items, setItems }: EventsManagementTabProp
                         <CardDescription>Manage the event cards and their individual galleries.</CardDescription>
                     </div>
                      <Button onClick={handleAdd}>
-                        <PlusCircle className="mr-2 h-4 w-4" />
+                        <LuPlus className="mr-2 h-4 w-4" />
                         Add Event
                     </Button>
                 </CardHeader>
@@ -92,10 +106,10 @@ export function EventsManagementTab({ items, setItems }: EventsManagementTabProp
                                 </CardContent>
                                 <CardFooter className="justify-end gap-2">
                                     <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleEdit(item)}>
-                                        <Edit className="h-4 w-4"/>
+                                        <LuPencil className="h-4 w-4"/>
                                     </Button>
                                     <Button variant="destructive" size="icon" className="h-8 w-8" onClick={() => handleDelete(item)}>
-                                        <Trash2 className="h-4 w-4"/>
+                                        <LuTrash2 className="h-4 w-4"/>
                                     </Button>
                                 </CardFooter>
                             </Card>

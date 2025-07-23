@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Loader2 } from "lucide-react";
+import { LuLoader } from "react-icons/lu";
 
 const formSchema = z.object({
   alt: z.string().min(3, "Alt text must be at least 3 characters."),
@@ -82,7 +82,7 @@ export function SliderImageFormModal({ isOpen, onOpenChange, onSave }: SliderIma
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && <LuLoader className="mr-2 h-4 w-4 animate-spin" />}
                 Upload
               </Button>
             </DialogFooter>

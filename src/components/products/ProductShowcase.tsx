@@ -7,7 +7,8 @@ import { productsData } from "@/lib/productsData";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { LuArrowRight, LuCheck } from "react-icons/lu";
+
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function ProductShowcase() {
@@ -60,7 +61,7 @@ export default function ProductShowcase() {
                 {activeProduct.features.slice(0, 3).map(feature => (
                     <div key={feature.title} className="flex items-start gap-3">
                         <div className="flex-shrink-0 mt-1 p-1 bg-primary/10 rounded-full">
-                           <Check className="w-4 h-4 text-primary" />
+                           <LuCheck className="w-4 h-4 text-primary" />
                         </div>
                         <div>
                             <p className="font-semibold">{feature.title}</p>
@@ -72,7 +73,7 @@ export default function ProductShowcase() {
 
               <Button asChild className="self-start">
                 <Link href={`/products/${activeProduct.id}`}>
-                  Learn More <ArrowRight className="ml-2 w-4 h-4" />
+                  Learn More <LuArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </Button>
             </div>

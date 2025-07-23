@@ -1,5 +1,4 @@
-
-'use client';
+"use client";
 
 import {
   AlertDialog,
@@ -21,7 +20,12 @@ interface DeleteConfirmationDialogProps {
   itemName: string;
 }
 
-export function DeleteConfirmationDialog({ isOpen, onOpenChange, onConfirm, itemName }: DeleteConfirmationDialogProps) {
+export function DeleteConfirmationDialog({
+  isOpen,
+  onOpenChange,
+  onConfirm,
+  itemName,
+}: DeleteConfirmationDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent>
@@ -34,7 +38,10 @@ export function DeleteConfirmationDialog({ isOpen, onOpenChange, onConfirm, item
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm} className={cn(buttonVariants({ variant: "destructive" }))}>
+          <AlertDialogAction
+            onClick={onConfirm}
+            className={cn(buttonVariants({ variant: "destructive" }))}
+          >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>

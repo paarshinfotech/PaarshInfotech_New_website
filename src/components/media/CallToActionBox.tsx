@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { LuArrowRight } from "react-icons/lu";
 
 export default function CallToActionBox() {
   return (
@@ -16,7 +16,7 @@ export default function CallToActionBox() {
           <Button asChild size="lg" variant="secondary">
             <Link href="/careers">
               Join Our Team
-              <ArrowRight className="ml-2" />
+              <LuArrowRight className="ml-2" />
             </Link>
           </Button>
         </div>

@@ -11,7 +11,9 @@ export default function ContactFAQs() {
     <section className="py-16 md:py-24 bg-background">
       <div className="container max-w-4xl">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">Frequently Asked Questions</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-primary">
+            Frequently Asked Questions
+          </h2>
           <p className="mt-4 text-lg text-foreground/70">
             Find quick answers to common questions.
           </p>

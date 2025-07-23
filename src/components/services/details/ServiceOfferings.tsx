@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Check } from "lucide-react";
+import { LuCheck } from "react-icons/lu";
 
 interface ServiceOfferingsProps {
   offerings: {
@@ -22,7 +22,7 @@ export default function ServiceOfferings({ offerings }: ServiceOfferingsProps) {
           {offerings.map((offering) => (
             <div key={offering.title} className="flex gap-4 items-start">
                <div className="flex-shrink-0 mt-1.5 p-1 bg-primary/10 rounded-full">
-                  <Check className="w-5 h-5 text-primary" />
+                  <LuCheck className="w-5 h-5 text-primary" />
                </div>
                <div>
                   <h3 className="text-xl font-bold text-primary mb-2">{offering.title}</h3>

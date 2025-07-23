@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { Loader2, PlusCircle, Trash2 } from "lucide-react";
+import { LuLoader, LuCirclePlus, LuTrash2 } from "react-icons/lu";
 import type { EventRecap } from "@/lib/mediaData";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -138,11 +138,11 @@ export function EventRecapFormModal({ isOpen, onOpenChange, onSave, item }: Even
                                         <FormItem><FormLabel className="text-xs">AI Hint</FormLabel><FormControl><Input {...field} className="h-8"/></FormControl><FormMessage /></FormItem>
                                     )} />
                                 </div>
-                                <Button type="button" variant="destructive" size="icon" className="h-8 w-8" onClick={() => remove(index)}><Trash2 className="h-4 w-4" /></Button>
+                                <Button type="button" variant="destructive" size="icon" className="h-8 w-8" onClick={() => remove(index)}><LuTrash2 className="h-4 w-4" /></Button>
                             </div>
                         ))}
                          <Button type="button" variant="outline" className="w-full" onClick={() => append({ src: 'https://placehold.co/800x600.png', alt: '', hint: '' })}>
-                            <PlusCircle className="mr-2 h-4 w-4" /> Add Gallery Image
+                            <LuCirclePlus className="mr-2 h-4 w-4" /> Add Gallery Image
                         </Button>
                       </div>
                       <FormMessage>{form.formState.errors.gallery?.message}</FormMessage>
@@ -152,7 +152,7 @@ export function EventRecapFormModal({ isOpen, onOpenChange, onSave, item }: Even
             <DialogFooter className="pt-4 border-t mt-auto flex-shrink-0">
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && <LuLoader className="mr-2 h-4 w-4 animate-spin" />}
                 Save Changes
               </Button>
             </DialogFooter>

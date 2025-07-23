@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { LuLoader } from "react-icons/lu";
 import { getSmartReply } from "@/app/actions";
 
 const services = [
@@ -59,7 +59,7 @@ export function QuoteForm() {
     });
     
     if(reply.success) {
-        setSmartReply(reply.content);
+        setSmartReply(reply.content || '');
     } else {
         setError(reply.error || 'An unexpected error occurred.');
     }
@@ -129,7 +129,7 @@ export function QuoteForm() {
               )} />
               
               <Button type="submit" disabled={isLoading}>
-                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isLoading && <LuLoader className="mr-2 h-4 w-4 animate-spin" />}
                 Get Quote & AI Reply
               </Button>
             </form>

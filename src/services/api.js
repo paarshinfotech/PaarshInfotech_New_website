@@ -1,25 +1,196 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
-  reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }), // Adjust if your API is elsewhere
-  tagTypes: ['Post', 'User', 'DBStatus'], // Define tags for caching
+  reducerPath: "api",
+  baseQuery: fetchBaseQuery({ baseUrl: "/api" }), // Adjust if your API is elsewhere
+  tagTypes: ["Post", "User", "DBStatus", "TeamCategory"], // Define tags for caching
   endpoints: (builder) => ({
+    // ================================================== DB Connection Endpoints ================================================== //
+
     getDbStatus: builder.query({
-      query: () => 'test-connection',
-      providesTags: ['DBStatus'],
+      query: () => "test-connection",
+      providesTags: ["DBStatus"],
     }),
     getPosts: builder.query({
-      query: () => 'posts',
-      providesTags: ['Post'],
+      query: () => "posts",
+      providesTags: ["Post"],
     }),
     getPost: builder.query({
-        query: (id) => `posts/${id}`,
-        providesTags: (result, error, id) => [{ type: 'Post', id }],
+      query: (id) => `posts/${id}`,
+      providesTags: (result, error, id) => [{ type: "Post", id }],
     }),
-    // Add mutations for creating, updating, deleting data
-    // e.g. addPost: builder.mutation(...)
+
+    // ================================================== Category Endpoints ================================================== //
+
+    getCategories: builder.query({
+      query: () => "/team-category",
+      providesTags: ["TeamCategory"],
+    }),
+    addCategory: builder.mutation({
+      query: (category) => ({
+        url: "/team-category",
+        method: "POST",
+        body: category,
+      }),
+      invalidatesTags: ["TeamCategory"],
+    }),
+    updateCategory: builder.mutation({
+      query: ({ _id, ...category }) => ({
+        url: `/team-category`,
+        method: "PUT",
+        body: { _id, ...category },
+      }),
+      invalidatesTags: ["TeamCategory"],
+    }),
+    deleteCategory: builder.mutation({
+      query: (_id) => ({
+        url: `/team-category`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["TeamCategory"],
+    }),
+
+    // ================================================== Team Member Endpoints ================================================== //
+
+    getMembers: builder.query({
+      query: () => "/team-member",
+      providesTags: ["TeamMember"],
+    }),
+    addMember: builder.mutation({
+      query: (member) => ({
+        url: "/team-member",
+        method: "POST",
+        body: member,
+      }),
+      invalidatesTags: ["TeamMember"],
+    }),
+    updateMember: builder.mutation({
+      query: ({ _id, ...member }) => ({
+        url: `/team-member`,
+        method: "PUT",
+        body: { _id, ...member },
+      }),
+      invalidatesTags: ["TeamMember"],
+    }),
+    deleteMember: builder.mutation({
+      query: (_id) => ({
+        url: `/team-member`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["TeamMember"],
+    }),
+
+    // ================================================== Client Endpoints ================================================== //
+
+    getClients: builder.query({
+      query: () => "/client",
+      providesTags: ["Client"],
+    }),
+    addClient: builder.mutation({
+      query: (client) => ({
+        url: "/client",
+        method: "POST",
+        body: client,
+      }),
+      invalidatesTags: ["Client"],
+    }),
+    updateClient: builder.mutation({
+      query: ({ _id, ...client }) => ({
+        url: `/client`,
+        method: "PUT",
+        body: { _id, ...client },
+      }),
+      invalidatesTags: ["Client"],
+    }),
+    deleteClient: builder.mutation({
+      query: (_id) => ({
+        url: `/client`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["Client"],
+    }),
+
+    // ================================================== Job Endpoints ================================================== //
+
+    getJobs: builder.query({
+      query: () => "/job",
+      providesTags: ["Job"],
+    }),
+    addJob: builder.mutation({
+      query: (job) => ({
+        url: "/job",
+        method: "POST",
+        body: job,
+      }),
+      invalidatesTags: ["Job"],
+    }),
+    updateJob: builder.mutation({
+      query: ({ _id, ...job }) => ({
+        url: `/job`,
+        method: "PUT",
+        body: { _id, ...job },
+      }),
+      invalidatesTags: ["Job"],
+    }),
+    deleteJob: builder.mutation({
+      query: (_id) => ({
+        url: `/job`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["Job", "Applicant"],
+    }),
+
+    // ================================================== Applicant Endpoints ================================================== //
+
+    addApplicant: builder.mutation({
+      query: ({ jobId, ...applicant }) => ({
+        url: `/job/${jobId}/applicants`,
+        method: "POST",
+        body: applicant,
+      }),
+      invalidatesTags: ["Job", "Applicant"],
+    }),
+
+    getApplicantsByJob: builder.query({
+      query: (jobId) => `/job?populateApplicants=true&id=${jobId}`,
+      providesTags: ["Applicant"],
+      transformResponse: (response) => {
+        const job = Array.isArray(response) ? response[0] : response;
+        return job?.applicants || [];
+      },
+    }),
   }),
 });
 
-export const { useGetDbStatusQuery, useGetPostsQuery, useGetPostQuery } = api;
+export const {
+  useGetDbStatusQuery,
+  useGetPostsQuery,
+  useGetPostQuery,
+
+  useGetCategoriesQuery,
+  useAddCategoryMutation,
+  useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
+
+  useGetMembersQuery,
+  useAddMemberMutation,
+  useUpdateMemberMutation,
+  useDeleteMemberMutation,
+
+  useGetClientsQuery,
+  useAddClientMutation,
+  useUpdateClientMutation,
+  useDeleteClientMutation,
+
+  useGetJobsQuery,
+  useAddJobMutation,
+  useUpdateJobMutation,
+  useDeleteJobMutation,
+
+  useAddApplicantMutation,
+  useGetApplicantsByJobQuery,
+} = api;

@@ -1,5 +1,5 @@
-import { Lightbulb, Code, Users, Rocket } from 'lucide-react';
-import type { LucideIcon } from "lucide-react";
+import { LuLightbulb, LuCode, LuUsers, LuRocket } from 'react-icons/lu';
+import type { IconType } from 'react-icons';
 
 export const jobOpenings = {
   fullTime: [
@@ -97,11 +97,11 @@ export const successStoriesData = [
   },
 ];
 
-export const growthOpportunitiesData: { title: string; description: string; Icon: LucideIcon }[] = [
-    { title: "Live Project Experience", description: "Gain invaluable hands-on experience by contributing to real-world client projects from day one.", Icon: Code },
-    { title: "Expert Mentorship", description: "Learn from the best. Our senior developers provide dedicated mentorship and guidance.", Icon: Users },
-    { title: "Skill Development Workshops", description: "Participate in regular training sessions on the latest technologies and industry best practices.", Icon: Lightbulb },
-    { title: "Clear Career Pathways", description: "We provide a clear roadmap for growth, from intern to junior and senior roles within the company.", Icon: Rocket },
+export const growthOpportunitiesData: { title: string; description: string; Icon: IconType }[] = [
+    { title: "Live Project Experience", description: "Gain invaluable hands-on experience by contributing to real-world client projects from day one.", Icon: LuCode },
+    { title: "Expert Mentorship", description: "Learn from the best. Our senior developers provide dedicated mentorship and guidance.", Icon: LuUsers },
+    { title: "Skill Development Workshops", description: "Participate in regular training sessions on the latest technologies and industry best practices.", Icon: LuLightbulb },
+    { title: "Clear Career Pathways", description: "We provide a clear roadmap for growth, from intern to junior and senior roles within the company.", Icon: LuRocket },
 ];
 
 export const faqsData = [

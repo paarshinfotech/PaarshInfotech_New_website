@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { LuArrowRight } from "react-icons/lu";
 
 export default function ProductCTA() {
   return (
@@ -16,7 +16,7 @@ export default function ProductCTA() {
           <Button asChild size="lg" variant="secondary">
             <Link href="/quote">
               Request a Demo
-              <ArrowRight className="ml-2" />
+              <LuArrowRight className="ml-2" />
             </Link>
           </Button>
           <Button asChild size="lg" variant="outline" className="bg-primary hover:bg-primary-foreground/10 text-primary-foreground border-primary-foreground/50">
