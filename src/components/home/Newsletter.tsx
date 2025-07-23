@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send } from "lucide-react";
+import { LuSend } from "react-icons/lu";
 
 export default function Newsletter() {
   return (
@@ -9,7 +9,7 @@ export default function Newsletter() {
       <div className="container">
         <div className="relative bg-background text-foreground rounded-xl shadow-lg p-8 md:p-12 lg:p-16 overflow-hidden">
             <div className="absolute -right-16 -bottom-16 text-primary/5">
-                <Send size={256} className="transform rotate-[-30deg]" />
+                <LuSend size={256} className="transform rotate-[-30deg]" />
             </div>
             <div className="relative grid md:grid-cols-2 gap-8 items-center">
                 <div>

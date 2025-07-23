@@ -7,15 +7,28 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { LuLoader } from "react-icons/lu";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  resume: z.any().refine(files => files?.length === 1, "Resume is required."),
+  resume: z.any().refine((files) => files?.length === 1, "Resume is required."),
   coverLetter: z.string().optional(),
 });
 
@@ -25,10 +38,14 @@ interface ApplicationModalProps {
   onOpenChange: (isOpen: boolean) => void;
 }
 
-export function ApplicationModal({ jobTitle, isOpen, onOpenChange }: ApplicationModalProps) {
+export function ApplicationModal({
+  jobTitle,
+  isOpen,
+  onOpenChange,
+}: ApplicationModalProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,7 +77,8 @@ export function ApplicationModal({ jobTitle, isOpen, onOpenChange }: Application
         <DialogHeader>
           <DialogTitle>Apply for {jobTitle}</DialogTitle>
           <DialogDescription>
-            Fill out the form below to submit your application. We look forward to hearing from you!
+            Fill out the form below to submit your application. We look forward
+            to hearing from you!
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">
@@ -99,8 +117,8 @@ export function ApplicationModal({ jobTitle, isOpen, onOpenChange }: Application
                   <FormItem>
                     <FormLabel>Resume/CV</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="file" 
+                      <Input
+                        type="file"
                         accept=".pdf,.doc,.docx"
                         onChange={(e) => field.onChange(e.target.files)}
                       />
@@ -116,14 +134,19 @@ export function ApplicationModal({ jobTitle, isOpen, onOpenChange }: Application
                   <FormItem>
                     <FormLabel>Cover Letter (Optional)</FormLabel>
                     <FormControl>
-                      <Textarea placeholder="Tell us why you're a great fit for this role..." {...field} />
+                      <Textarea
+                        placeholder="Tell us why you're a great fit for this role..."
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
               <Button type="submit" disabled={isSubmitting} className="w-full">
-                {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && (
+                  <LuLoader className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 Submit Application
               </Button>
             </form>

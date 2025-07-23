@@ -1,5 +1,4 @@
-
-'use client';
+"use client";
 
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useEffect, useRef } from "react";
@@ -10,7 +9,11 @@ interface VideoPlayerModalProps {
   videoSrc: string;
 }
 
-export function VideoPlayerModal({ isOpen, onOpenChange, videoSrc }: VideoPlayerModalProps) {
+export function VideoPlayerModal({
+  isOpen,
+  onOpenChange,
+  videoSrc,
+}: VideoPlayerModalProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -18,7 +21,7 @@ export function VideoPlayerModal({ isOpen, onOpenChange, videoSrc }: VideoPlayer
     if (!video) return;
 
     if (isOpen) {
-      video.play().catch(error => {
+      video.play().catch((error) => {
         // Autoplay was prevented. This is common in browsers.
         // The user will have to click play manually on the controls.
         console.warn("Video autoplay prevented:", error);

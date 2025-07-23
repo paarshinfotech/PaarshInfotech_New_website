@@ -1,5 +1,4 @@
-
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -8,11 +7,27 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import type { SocialPost } from "@/app/(admin)/admin/social/page";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import Image from "next/image";
-import { ThumbsUp, MessageSquare } from "lucide-react";
+import { LuThumbsUp, LuMessageSquare } from "react-icons/lu";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
+import { formatDistanceToNow } from "date-fns";
+
+export interface SocialPost {
+  _id: string;
+  content: string;
+  image: string | null;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  hint: string;
+  published: boolean;
+}
 
 interface SocialPostPreviewModalProps {
   isOpen: boolean;
@@ -20,7 +35,11 @@ interface SocialPostPreviewModalProps {
   post: SocialPost | null;
 }
 
-export function SocialPostPreviewModal({ isOpen, onOpenChange, post }: SocialPostPreviewModalProps) {
+export function SocialPostPreviewModal({
+  isOpen,
+  onOpenChange,
+  post,
+}: SocialPostPreviewModalProps) {
   if (!post) return null;
 
   return (
@@ -33,48 +52,55 @@ export function SocialPostPreviewModal({ isOpen, onOpenChange, post }: SocialPos
           </DialogDescription>
         </DialogHeader>
         <div className="p-4">
-             <Card className="flex flex-col bg-background">
-              <CardHeader className="flex flex-row items-center gap-4">
-                <Image
-                  src="https://placehold.co/40x40.png"
-                  alt="Paarsh Infotech Logo"
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                  data-ai-hint="company logo"
-                />
-                <div>
-                  <p className="font-bold text-primary">Paarsh Infotech</p>
-                  <p className="text-sm text-muted-foreground">{post.timestamp}</p>
-                </div>
-              </CardHeader>
-              <CardContent className="flex-grow space-y-4">
-                <p>{post.content}</p>
-                {post.image && (
-                   <ImagePreviewModal imgSrc={post.image} alt="Social media post image">
-                    <div className="relative h-96 w-full rounded-lg overflow-hidden cursor-pointer bg-muted/30">
-                      <Image
-                        src={post.image}
-                        alt="Social media post image"
-                        fill
-                        className="object-contain"
-                        data-ai-hint={post.hint}
-                      />
-                    </div>
-                   </ImagePreviewModal>
-                )}
-              </CardContent>
-              <CardFooter className="flex justify-start gap-8 border-t pt-4 mt-auto">
-                 <div className="flex items-center gap-2 text-muted-foreground">
-                    <ThumbsUp className="w-5 h-5" />
-                    <span className="text-sm">{post.likes} Likes</span>
-                 </div>
-                 <div className="flex items-center gap-2 text-muted-foreground">
-                    <MessageSquare className="w-5 h-5" />
-                    <span className="text-sm">{post.comments} Comments</span>
-                 </div>
-              </CardFooter>
-            </Card>
+          <Card className="flex flex-col bg-background">
+            <CardHeader className="flex flex-row items-center gap-4">
+              <Image
+                src="https://placehold.co/40x40.png"
+                alt="Paarsh Infotech Logo"
+                width={40}
+                height={40}
+                className="rounded-full"
+                data-ai-hint="company logo"
+              />
+              <div>
+                <p className="font-bold text-primary">Paarsh Infotech</p>
+                <p className="text-sm text-muted-foreground">
+                  {formatDistanceToNow(new Date(post.timestamp), {
+                    addSuffix: true,
+                  })}
+                </p>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-grow space-y-4">
+              <p>{post.content}</p>
+              {post.image && (
+                <ImagePreviewModal
+                  imgSrc={post.image}
+                  alt="Social media post image"
+                >
+                  <div className="relative h-96 w-full rounded-lg overflow-hidden cursor-pointer bg-muted/30">
+                    <Image
+                      src={post.image}
+                      alt="Social media post image"
+                      fill
+                      className="object-contain"
+                      data-ai-hint={post.hint}
+                    />
+                  </div>
+                </ImagePreviewModal>
+              )}
+            </CardContent>
+            <CardFooter className="flex justify-start gap-8 border-t pt-4 mt-auto">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <LuThumbsUp className="w-5 h-5" />
+                <span className="text-sm">{post.likes} Likes</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <LuMessageSquare className="w-5 h-5" />
+                <span className="text-sm">{post.comments} Comments</span>
+              </div>
+            </CardFooter>
+          </Card>
         </div>
       </DialogContent>
     </Dialog>

@@ -3,7 +3,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { LuChevronLeft, LuChevronRight } from "react-icons/lu";
 
 interface ImageLightboxProps {
   isOpen: boolean;
@@ -29,16 +29,16 @@ export default function ImageLightbox({
   const currentImage = images[currentIndex];
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowRight') {
+    if (e.key === "ArrowRight") {
       onNext();
-    } else if (e.key === 'ArrowLeft') {
+    } else if (e.key === "ArrowLeft") {
       onPrev();
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent 
+      <DialogContent
         className="max-w-5xl w-full p-0 bg-transparent border-none shadow-none"
         onKeyDown={handleKeyDown}
       >
@@ -60,7 +60,7 @@ export default function ImageLightbox({
             onPrev();
           }}
         >
-          <ChevronLeft className="h-8 w-8" />
+          <LuChevronLeft className="h-8 w-8" />
           <span className="sr-only">Previous Image</span>
         </Button>
         <Button
@@ -72,7 +72,7 @@ export default function ImageLightbox({
             onNext();
           }}
         >
-          <ChevronRight className="h-8 w-8" />
+          <LuChevronRight className="h-8 w-8" />
           <span className="sr-only">Next Image</span>
         </Button>
       </DialogContent>

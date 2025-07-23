@@ -1,7 +1,7 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { Quote } from "lucide-react";
+import { LuQuote } from "react-icons/lu";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 
 export default function Testimonial() {
@@ -10,7 +10,7 @@ export default function Testimonial() {
       <div className="container max-w-4xl">
         <Card className="p-8 shadow-lg bg-background">
           <CardContent className="text-center p-0">
-            <Quote className="w-12 h-12 text-accent mx-auto mb-6" />
+            <LuQuote className="w-12 h-12 text-accent mx-auto mb-6" />
             <blockquote className="text-xl md:text-2xl italic text-foreground/80">
               "This product has been a complete game-changer for our team. We're more efficient, collaborative, and data-driven than ever before. I can't imagine working without it."
             </blockquote>

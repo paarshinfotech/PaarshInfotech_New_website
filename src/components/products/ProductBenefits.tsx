@@ -1,6 +1,6 @@
 
 import Image from "next/image";
-import { Check } from "lucide-react";
+import { LuCheck } from "react-icons/lu";
 
 const benefits = [
   "Streamline complex workflows and reduce manual effort.",
@@ -33,7 +33,7 @@ export default function ProductBenefits() {
               {benefits.map((benefit, index) => (
                 <li key={index} className="flex items-start gap-3">
                   <div className="flex-shrink-0 mt-1 p-1 bg-primary text-primary-foreground rounded-full">
-                    <Check className="w-4 h-4" />
+                    <LuCheck className="w-4 h-4" />
                   </div>
                   <span className="text-foreground/90">{benefit}</span>
                 </li>

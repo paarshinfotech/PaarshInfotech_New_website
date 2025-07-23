@@ -1,20 +1,30 @@
-
 "use client";
 
 import { useState } from "react";
 import { eventRecaps } from "@/lib/mediaData";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import { ArrowRight } from "lucide-react";
+import { LuArrowRight } from "react-icons/lu";
 import ImageLightbox from "./ImageLightbox";
 
 export default function EventRecapCards() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [activeGallery, setActiveGallery] = useState<{src: string, alt: string}[]>([]);
+  const [activeGallery, setActiveGallery] = useState<
+    { src: string; alt: string }[]
+  >([]);
 
-  const openLightbox = (gallery: {src: string, alt: string, hint: string}[], index: number) => {
+  const openLightbox = (
+    gallery: { src: string; alt: string; hint: string }[],
+    index: number
+  ) => {
     setActiveGallery(gallery);
     setCurrentImageIndex(index);
     setLightboxOpen(true);
@@ -25,7 +35,10 @@ export default function EventRecapCards() {
   };
 
   const handlePrev = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + activeGallery.length) % activeGallery.length);
+    setCurrentImageIndex(
+      (prevIndex) =>
+        (prevIndex - 1 + activeGallery.length) % activeGallery.length
+    );
   };
 
   return (
@@ -33,9 +46,12 @@ export default function EventRecapCards() {
       <section className="py-16 md:py-24 bg-background">
         <div className="container max-w-7xl">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary">Event Recaps</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary">
+              Event Recaps
+            </h2>
             <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto">
-              A look back at some of our most memorable company events and celebrations.
+              A look back at some of our most memorable company events and
+              celebrations.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -58,8 +74,12 @@ export default function EventRecapCards() {
                   <p className="text-muted-foreground">{event.description}</p>
                 </CardContent>
                 <div className="p-6 pt-0">
-                  <Button variant="link" className="p-0 h-auto" onClick={() => openLightbox(event.gallery, 0)}>
-                    View Gallery <ArrowRight className="ml-2 w-4 h-4" />
+                  <Button
+                    variant="link"
+                    className="p-0 h-auto"
+                    onClick={() => openLightbox(event.gallery, 0)}
+                  >
+                    View Gallery <LuArrowRight className="ml-2 w-4 h-4" />
                   </Button>
                 </div>
               </Card>
