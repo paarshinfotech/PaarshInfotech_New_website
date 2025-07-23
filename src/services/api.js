@@ -3,7 +3,19 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }), // Adjust if your API is elsewhere
-  tagTypes: ["Post", "User", "DBStatus", "TeamCategory"], // Define tags for caching
+  tagTypes: [
+    "Post",
+    "User",
+    "DBStatus",
+    "TeamCategory",
+    "Contact",
+    "SocialPost",
+    "Job",
+    "Applicant",
+    "Client",
+    "TeamMember",
+    "Category",
+  ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
 
@@ -180,7 +192,7 @@ export const api = createApi({
     }),
     updateSocialPost: builder.mutation({
       query: ({ _id, ...post }) => ({
-        url: `/social-post/${_id}`,
+        url: `/social-post`,
         method: "PUT",
         body: { _id, ...post },
       }),
@@ -188,10 +200,42 @@ export const api = createApi({
     }),
     deleteSocialPost: builder.mutation({
       query: (_id) => ({
-        url: `/social-post/${_id}`,
+        url: `/social-post`,
         method: "DELETE",
+        body: { _id },
       }),
       invalidatesTags: ["SocialPost"],
+    }),
+
+    // ================================================== Contact Endpoints ================================================== //
+
+    getContacts: builder.query({
+      query: () => "/contact",
+      providesTags: ["Contact"],
+    }),
+    addContact: builder.mutation({
+      query: (contact) => ({
+        url: "/contact",
+        method: "POST",
+        body: contact,
+      }),
+      invalidatesTags: ["Contact"],
+    }),
+    updateContactStatus: builder.mutation({
+      query: ({ _id, status }) => ({
+        url: `/contact`,
+        method: "PUT",
+        body: { _id, status },
+      }),
+      invalidatesTags: ["Contact"],
+    }),
+    deleteContact: builder.mutation({
+      query: (_id) => ({
+        url: `/contact`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["Contact"],
     }),
   }),
 });
@@ -228,4 +272,9 @@ export const {
   useAddSocialPostMutation,
   useUpdateSocialPostMutation,
   useDeleteSocialPostMutation,
+
+  useGetContactsQuery,
+  useAddContactMutation,
+  useUpdateContactStatusMutation,
+  useDeleteContactMutation,
 } = api;

@@ -1,5 +1,4 @@
-
-'use client';
+"use client";
 
 import {
   Dialog,
@@ -8,8 +7,17 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import type { Contact } from "@/app/(admin)/admin/contacts/page";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { format } from "date-fns";
+
+export interface Contact {
+  _id: string;
+  name: string;
+  email: string;
+  message: string;
+  date: string;
+  status: "New" | "Read" | "Archived";
+}
 
 interface ContactViewModalProps {
   isOpen: boolean;
@@ -24,9 +32,9 @@ export function ContactViewModal({ isOpen, onOpenChange, contact }: ContactViewM
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle>{contact.subject}</DialogTitle>
+          <DialogTitle>{contact.message.slice(0, 50)}...</DialogTitle>
           <DialogDescription>
-            Message from <span className="font-semibold text-foreground">{contact.name}</span> ({contact.email}) on {contact.date}.
+            Message from <span className="font-semibold text-foreground">{contact.name}</span> ({contact.email}) on {format(new Date(contact.date), "PP")}.
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="max-h-[60vh] rounded-md border p-4">
