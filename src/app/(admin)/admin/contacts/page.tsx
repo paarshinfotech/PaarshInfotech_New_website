@@ -26,68 +26,68 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import { GoPlusCircle } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
 import { IoEyeOutline } from "react-icons/io5";
-import { FaCheck, FaArchive, FaTrashAlt } from "react-icons/fa";
-
+import { FaCheck } from "react-icons/fa6";
+import { LuArchive } from "react-icons/lu";
+import { FaTrashCan } from "react-icons/fa6";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 import { ContactViewModal } from "@/components/admin/contacts/ContactViewModal";
+import { useToast } from "@/hooks/use-toast";
+import {
+  useGetContactsQuery,
+  useUpdateContactStatusMutation,
+  useDeleteContactMutation,
+} from "../../../../services/api";
+import { format } from "date-fns";
 
-const initialContacts = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john@example.com",
-    subject: "Web Development Inquiry",
-    date: "2024-05-20",
-    status: "New",
-    message:
-      "Hi, I would like to inquire about your web development services for my new e-commerce project. It's a platform for selling handmade crafts and I need a full solution including payment gateways.",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane@example.com",
-    subject: "Question about AI services",
-    date: "2024-05-19",
-    status: "Read",
-    message:
-      "Could you provide more details on your AI and ML offerings? I'm particularly interested in predictive analytics for customer churn.",
-  },
-  {
-    id: 3,
-    name: "Peter Jones",
-    email: "peter@example.com",
-    subject: "Partnership Proposal",
-    date: "2024-05-18",
-    status: "Archived",
-    message:
-      "We are a marketing agency interested in a strategic partnership to offer web development services to our clients. Let's schedule a call to discuss potential synergies.",
-  },
-];
-
-export type Contact = (typeof initialContacts)[0];
+export interface Contact {
+  _id: string;
+  name: string;
+  email: string;
+  message: string;
+  date: string;
+  status: "New" | "Read" | "Archived";
+}
 
 export default function ContactsManagementPage() {
-  const [contacts, setContacts] = useState(initialContacts);
+  const { toast } = useToast();
   const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
 
-  const handleUpdateStatus = (
-    contactId: number,
+  const {
+    data: contacts = [],
+    isLoading: contactsLoading,
+    error: contactsError,
+  } = useGetContactsQuery(undefined);
+  const [updateContactStatus] = useUpdateContactStatusMutation();
+  const [deleteContact] = useDeleteContactMutation();
+
+  const handleUpdateStatus = async (
+    contactId: string,
     status: "Read" | "Archived" | "New"
   ) => {
-    setContacts(
-      contacts.map((c) => (c.id === contactId ? { ...c, status } : c))
-    );
+    try {
+      await updateContactStatus({ _id: contactId, status }).unwrap();
+      toast({
+        title: "Status Updated",
+        description: `Contact status has been updated to ${status}.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update contact status.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleView = (contact: Contact) => {
     setSelectedContact(contact);
-    handleUpdateStatus(contact.id, "Read");
+    if (contact.status !== "Read") {
+      handleUpdateStatus(contact._id, "Read");
+    }
     setIsViewModalOpen(true);
   };
 
@@ -96,13 +96,33 @@ export default function ContactsManagementPage() {
     setIsDeleteAlertOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (selectedContact) {
-      setContacts(contacts.filter((c) => c.id !== selectedContact.id));
+      try {
+        await deleteContact(selectedContact._id).unwrap();
+        toast({
+          title: "Contact Deleted",
+          description: `Message from ${selectedContact.name} has been deleted.`,
+        });
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to delete contact.",
+          variant: "destructive",
+        });
+      }
     }
     setIsDeleteAlertOpen(false);
     setSelectedContact(null);
   };
+
+  if (contactsLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (contactsError) {
+    return <div>Error: Failed to load contacts</div>;
+  }
 
   return (
     <>
@@ -118,23 +138,25 @@ export default function ContactsManagementPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>From</TableHead>
-                <TableHead>Subject</TableHead>
+                <TableHead>Message</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {contacts.map((contact) => (
-                <TableRow key={contact.id}>
+              {contacts.map((contact: Contact) => (
+                <TableRow key={contact._id}>
                   <TableCell>
                     <div className="font-medium">{contact.name}</div>
                     <div className="text-sm text-muted-foreground">
                       {contact.email}
                     </div>
                   </TableCell>
-                  <TableCell>{contact.subject}</TableCell>
-                  <TableCell>{contact.date}</TableCell>
+                  <TableCell className="max-w-xs truncate">
+                    {contact.message}
+                  </TableCell>
+                  <TableCell>{format(new Date(contact.date), "PP")}</TableCell>
                   <TableCell>
                     <Badge
                       variant={
@@ -163,7 +185,7 @@ export default function ContactsManagementPage() {
                           View Message
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => handleUpdateStatus(contact.id, "Read")}
+                          onClick={() => handleUpdateStatus(contact._id, "Read")}
                           disabled={contact.status === "Read"}
                         >
                           <FaCheck className="mr-2 h-4 w-4" />
@@ -171,9 +193,7 @@ export default function ContactsManagementPage() {
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          onClick={() =>
-                            handleUpdateStatus(contact.id, "Archived")
-                          }
+                          onClick={() => handleUpdateStatus(contact._id, "Archived")}
                         >
                           <FaArchive className="mr-2 h-4 w-4" />
                           Archive
@@ -207,7 +227,7 @@ export default function ContactsManagementPage() {
         onConfirm={confirmDelete}
         itemName={
           selectedContact
-            ? `the message from ${selectedContact.name}`
+            ? `the message: "${selectedContact.message.slice(0, 30)}..."`
             : "the selected message"
         }
       />
