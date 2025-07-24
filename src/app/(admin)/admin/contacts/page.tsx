@@ -29,8 +29,8 @@ import {
 import { IoIosMore } from "react-icons/io";
 import { IoEyeOutline } from "react-icons/io5";
 import { FaCheck } from "react-icons/fa6";
-import { LuArchive } from "react-icons/lu";
-import { FaTrashCan } from "react-icons/fa6";
+import { FaBoxArchive } from "react-icons/fa6";
+import { FaTrash } from "react-icons/fa6";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 import { ContactViewModal } from "@/components/admin/contacts/ContactViewModal";
 import { useToast } from "@/hooks/use-toast";
@@ -195,14 +195,14 @@ export default function ContactsManagementPage() {
                         <DropdownMenuItem
                           onClick={() => handleUpdateStatus(contact._id, "Archived")}
                         >
-                          <FaArchive className="mr-2 h-4 w-4" />
+                          <FaBoxArchive className="mr-2 h-4 w-4" />
                           Archive
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => handleDelete(contact)}
                           className="text-destructive"
                         >
-                          <FaTrashAlt className="mr-2 h-4 w-4" />
+                          <FaTrash className="mr-2 h-4 w-4" />
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
