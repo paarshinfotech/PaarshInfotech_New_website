@@ -1,10 +1,25 @@
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { use } from "react";
 
 export const api = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "/api" }), // Adjust if your API is elsewhere
-  tagTypes: ["Post", "User", "DBStatus", "TeamCategory"], // Define tags for caching
+  tagTypes: [
+    "Post",
+    "User",
+    "DBStatus",
+    "TeamCategory",
+    "Contact",
+    "SocialPost",
+    "Job",
+    "Applicant",
+    "Client",
+    "TeamMember",
+    "Category",
+    "Media",
+    "SiteImage",
+  ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
 
@@ -52,6 +67,15 @@ export const api = createApi({
       invalidatesTags: ["TeamCategory"],
     }),
 
+    reorderCategories: builder.mutation({
+      query: (categories) => ({
+        url: "/team-category",
+        method: "PATCH",
+        body: { categories },
+      }),
+      invalidatesTags: ["TeamCategory"],
+    }),
+
     // ================================================== Team Member Endpoints ================================================== //
 
     getMembers: builder.query({
@@ -79,6 +103,14 @@ export const api = createApi({
         url: `/team-member`,
         method: "DELETE",
         body: { _id },
+      }),
+      invalidatesTags: ["TeamMember"],
+    }),
+    reorderMembers: builder.mutation({
+      query: (members) => ({
+        url: "/team-member",
+        method: "PATCH",
+        body: { members },
       }),
       invalidatesTags: ["TeamMember"],
     }),
@@ -110,6 +142,14 @@ export const api = createApi({
         url: `/client`,
         method: "DELETE",
         body: { _id },
+      }),
+      invalidatesTags: ["Client"],
+    }),
+    reorderClients: builder.mutation({
+      query: (clients) => ({
+        url: "/client",
+        method: "PATCH",
+        body: { clients },
       }),
       invalidatesTags: ["Client"],
     }),
@@ -181,7 +221,7 @@ export const api = createApi({
     }),
     updateSocialPost: builder.mutation({
       query: ({ _id, ...post }) => ({
-        url: `/social-post/${_id}`,
+        url: `/social-post`,
         method: "PUT",
         body: { _id, ...post },
       }),
@@ -189,8 +229,9 @@ export const api = createApi({
     }),
     deleteSocialPost: builder.mutation({
       query: (_id) => ({
-        url: `/social-post/${_id}`,
+        url: `/social-post`,
         method: "DELETE",
+        body: { _id },
       }),
       invalidatesTags: ["SocialPost"],
     }),
@@ -271,7 +312,112 @@ export const api = createApi({
     getProductById: builder.query({
       query: (id) => `/products/${id}`,
       providesTags: ["Product"],
-    })
+    }),
+    // ================================================== Contact Endpoints ================================================== //
+
+    getContacts: builder.query({
+      query: () => "/contact",
+      providesTags: ["Contact"],
+    }),
+    addContact: builder.mutation({
+      query: (contact) => ({
+        url: "/contact",
+        method: "POST",
+        body: contact,
+      }),
+      invalidatesTags: ["Contact"],
+    }),
+    updateContactStatus: builder.mutation({
+      query: ({ _id, status }) => ({
+        url: `/contact`,
+        method: "PUT",
+        body: { _id, status },
+      }),
+      invalidatesTags: ["Contact"],
+    }),
+    deleteContact: builder.mutation({
+      query: (_id) => ({
+        url: `/contact`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["Contact"],
+    }),
+
+    // ================================================== Media Endpoints ================================================== //
+
+    getMediaItems: builder.query({
+      query: (type) => `/media?type=${type}`,
+      providesTags: ["Media"],
+    }),
+
+    addMediaItem: builder.mutation({
+      query: (data) => ({
+        url: "/media",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Media"],
+    }),
+
+    updateMediaItem: builder.mutation({
+      query: (data) => ({
+        url: "/media",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Media"],
+    }),
+
+    deleteMediaItem: builder.mutation({
+      query: (data) => ({
+        url: "/media",
+        method: "DELETE",
+        body: data,
+      }),
+      invalidatesTags: ["Media"],
+    }),
+
+    reorderMediaItems: builder.mutation({
+      query: (data) => ({
+        url: "/media",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Media"],
+    }),
+    
+    // ================================================== Site Image Endpoints ================================================== //
+
+    getSiteImages: builder.query({
+      query: () => '/site-images',
+      providesTags: ['SiteImage'],
+    }),
+    addSiteImage: builder.mutation({
+      query: (imageData) => ({
+        url: '/site-images',
+        method: 'POST',
+        body: imageData,
+      }),
+      invalidatesTags: ['SiteImage'],
+    }),
+    updateSiteImage: builder.mutation({
+      query: (imageData) => ({
+        url: `/site-images`,
+        method: 'PUT',
+        body: imageData,
+      }),
+      invalidatesTags: ['SiteImage'],
+    }),
+    deleteSiteImage: builder.mutation({
+      query: (_id) => ({
+        url: '/site-images',
+        method: 'DELETE',
+        body: { _id },
+      }),
+      invalidatesTags: ['SiteImage'],
+    }),
+
   }),
 });
 
@@ -284,16 +430,19 @@ export const {
   useAddCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useReorderCategoriesMutation,
 
   useGetMembersQuery,
   useAddMemberMutation,
   useUpdateMemberMutation,
   useDeleteMemberMutation,
+  useReorderMembersMutation,
 
   useGetClientsQuery,
   useAddClientMutation,
   useUpdateClientMutation,
   useDeleteClientMutation,
+  useReorderClientsMutation,
 
   useGetJobsQuery,
   useAddJobMutation,
@@ -319,5 +468,22 @@ export const {
   useGetProductByIdQuery,
   useAddProductMutation,
   useUpdateProductMutation,
-  useDeleteProductMutation
+  useDeleteProductMutation,
+  useGetContactsQuery,
+  useAddContactMutation,
+  useUpdateContactStatusMutation,
+  useDeleteContactMutation,
+
+  // Media exports
+  useGetMediaItemsQuery,
+  useAddMediaItemMutation,
+  useUpdateMediaItemMutation,
+  useDeleteMediaItemMutation,
+  useReorderMediaItemsMutation,
+  
+  // Site Images
+  useGetSiteImagesQuery,
+  useAddSiteImageMutation,
+  useUpdateSiteImageMutation,
+  useDeleteSiteImageMutation,
 } = api;

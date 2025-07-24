@@ -13,6 +13,10 @@ const teamCategorySchema = new mongoose.Schema(
       required: true,
       default: false,
     },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

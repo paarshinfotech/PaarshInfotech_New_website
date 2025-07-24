@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,51 +11,128 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 
 import Image from "next/image";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
-import type { BehindTheScenesItem } from "@/lib/mediaData";
 import { BtsFormModal } from "../BtsFormModal";
+import { useGetMediaItemsQuery, useAddMediaItemMutation, useUpdateMediaItemMutation, useDeleteMediaItemMutation } from '@/services/api';
+import { DeleteConfirmationDialog } from '@/components/admin/DeleteConfirmationDialog';
 
 interface BtsManagementTabProps {
-  items: BehindTheScenesItem[];
-  setItems: React.Dispatch<React.SetStateAction<BehindTheScenesItem[]>>;
+  items: any[];
+  setItems: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-export function BtsManagementTab({ items, setItems }: BtsManagementTabProps) {
+export function BtsManagementTab({ items: propItems, setItems: setPropItems }: BtsManagementTabProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<BehindTheScenesItem | null>(
-    null
-  );
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
-  const handleEdit = (item: BehindTheScenesItem) => {
+  // RTK Query hooks
+  const { data: btsItems = [], isLoading } = useGetMediaItemsQuery('bts');
+  const [addMediaItem] = useAddMediaItemMutation();
+  const [updateMediaItem] = useUpdateMediaItemMutation();
+  const [deleteMediaItem] = useDeleteMediaItemMutation();
+
+  // Update local state when RTK query data changes
+  useEffect(() => {
+    if (btsItems) {
+      setPropItems(btsItems);
+    }
+  }, [btsItems, setPropItems]);
+
+  const handleAdd = () => {
+    setSelectedItem(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (item: any) => {
     setSelectedItem(item);
     setIsModalOpen(true);
   };
 
-  const handleSave = (data: BehindTheScenesItem) => {
-    setItems((prev) => prev.map((item) => (item.id === data.id ? data : item)));
-    setIsModalOpen(false);
+  const handleDelete = (item: any) => {
+    setSelectedItem(item);
+    setIsDeleteAlertOpen(true);
   };
+
+  const handleSave = async (data: { title: string; description: string; hint: string; date: string; image?: string }) => {
+    try {
+      const formData = {
+        title: data.title,
+        description: data.description,
+        date: new Date(data.date),
+        published: true,
+      };
+
+      if (selectedItem) {
+        // Update existing item
+        await updateMediaItem({
+          type: 'bts',
+          _id: selectedItem._id,
+          ...formData,
+          ...(data.image ? { imageBase64: data.image } : {}),
+        }).unwrap();
+      } else {
+        // Add new item
+        if (!data.image) {
+          throw new Error('Image is required for new BTS items');
+        }
+        await addMediaItem({
+          type: 'bts',
+          ...formData,
+          imageBase64: data.image,
+        }).unwrap();
+      }
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Failed to save BTS item:', error);
+    }
+  };
+
+  const confirmDelete = async () => {
+    if (selectedItem) {
+      try {
+        await deleteMediaItem({
+          type: 'bts',
+          _id: selectedItem._id
+        }).unwrap();
+      } catch (error) {
+        console.error('Failed to delete BTS item:', error);
+      }
+    }
+    setIsDeleteAlertOpen(false);
+    setSelectedItem(null);
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle>Behind the Scenes Cards</CardTitle>
-          <CardDescription>
-            Manage the three cards in the "A Day in the Life" section.
-          </CardDescription>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <div>
+            <CardTitle>Behind the Scenes Cards</CardTitle>
+            <CardDescription>
+              Manage the cards in the "A Day in the Life" section.
+            </CardDescription>
+          </div>
+          <Button onClick={handleAdd}>
+            <FaPlus className="h-4 w-4 mr-2" />
+            Add Card
+          </Button>
         </CardHeader>
         <CardContent>
           <div className="grid md:grid-cols-3 gap-8">
-            {items.map((item, index) => (
-              <Card key={index} className="overflow-hidden group">
-                <ImagePreviewModal imgSrc={item.image} alt={item.title}>
+            {propItems.map((item, index) => (
+              <Card key={item._id || index} className="overflow-hidden group">
+                <ImagePreviewModal imgSrc={item.imageUrl} alt={item.title}>
                   <div className="relative aspect-video cursor-pointer">
                     <Image
-                      src={item.image}
+                      src={item.imageUrl}
                       alt={item.title}
                       fill
                       className="object-cover"
@@ -67,11 +144,17 @@ export function BtsManagementTab({ items, setItems }: BtsManagementTabProps) {
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground">{item.description}</p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    {new Date(item.date).toLocaleDateString()}
+                  </p>
                 </CardContent>
-                <CardFooter className="justify-end">
+                <CardFooter className="justify-end gap-2">
                   <Button variant="outline" onClick={() => handleEdit(item)}>
                     <FaEdit className="mr-2 h-4 w-4" />
                     Edit
+                  </Button>
+                  <Button variant="destructive" size="icon" onClick={() => handleDelete(item)}>
+                    <FaTrash className="h-4 w-4" />
                   </Button>
                 </CardFooter>
               </Card>
@@ -85,6 +168,13 @@ export function BtsManagementTab({ items, setItems }: BtsManagementTabProps) {
         onOpenChange={setIsModalOpen}
         onSave={handleSave}
         item={selectedItem}
+      />
+
+      <DeleteConfirmationDialog 
+        isOpen={isDeleteAlertOpen}
+        onOpenChange={setIsDeleteAlertOpen}
+        onConfirm={confirmDelete}
+        itemName={selectedItem?.title || "the selected card"}
       />
     </>
   );

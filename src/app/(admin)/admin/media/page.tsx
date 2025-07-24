@@ -1,22 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  mediaGalleryItems as initialGalleryItems,
-  photoSliderImages as initialSliderImages,
-  behindTheScenesData as initialBtsData,
-  eventRecaps as initialEventRecaps,
-  employeeSpotlight as initialEmployeeSpotlight,
-} from "@/lib/mediaData";
-import type {
-  MediaItem,
-  PhotoSliderImage,
-  BehindTheScenesItem,
-  EventRecap,
-  EmployeeSpotlightItem,
-} from "@/lib/mediaData";
+import { useGetMediaItemsQuery } from "@/services/api";
 import { GalleryManagementTab } from "@/components/admin/media/tabs/GalleryManagementTab";
 import { SliderManagementTab } from "@/components/admin/media/tabs/SliderManagementTab";
 import { BtsManagementTab } from "@/components/admin/media/tabs/BtsManagementTab";
@@ -24,17 +11,38 @@ import { EventsManagementTab } from "@/components/admin/media/tabs/EventsManagem
 import { SpotlightManagementTab } from "@/components/admin/media/tabs/SpotlightManagementTab";
 
 export default function MediaManagementPage() {
-  const [galleryItems, setGalleryItems] =
-    useState<MediaItem[]>(initialGalleryItems);
-  const [sliderImages, setSliderImages] =
-    useState<PhotoSliderImage[]>(initialSliderImages);
-  const [btsItems, setBtsItems] =
-    useState<BehindTheScenesItem[]>(initialBtsData);
-  const [eventRecaps, setEventRecaps] =
-    useState<EventRecap[]>(initialEventRecaps);
-  const [spotlight, setSpotlight] = useState<EmployeeSpotlightItem>(
-    initialEmployeeSpotlight
-  );
+  // State for each media type
+  const [galleryItems, setGalleryItems] = useState<any[]>([]);
+  const [sliderImages, setSliderImages] = useState<any[]>([]);
+  const [btsItems, setBtsItems] = useState<any[]>([]);
+  const [eventRecaps, setEventRecaps] = useState<any[]>([]);
+  const [spotlight, setSpotlight] = useState<any>(null);
+
+  // RTK Query hooks for each media type
+  const { data: galleryData = [] } = useGetMediaItemsQuery('gallery');
+  const { data: sliderData = [] } = useGetMediaItemsQuery('slider');
+  const { data: btsData = [] } = useGetMediaItemsQuery('bts');
+  const { data: eventData = [] } = useGetMediaItemsQuery('event');
+  const { data: spotlightData = [] } = useGetMediaItemsQuery('spotlight');
+
+  // Update local state when RTK query data changes
+  useEffect(() => {
+    if (galleryData?.length !== galleryItems.length || JSON.stringify(galleryData) !== JSON.stringify(galleryItems)) {
+      setGalleryItems(galleryData);
+    }
+    if (sliderData?.length !== sliderImages.length || JSON.stringify(sliderData) !== JSON.stringify(sliderImages)) {
+      setSliderImages(sliderData);
+    }
+    if (btsData?.length !== btsItems.length || JSON.stringify(btsData) !== JSON.stringify(btsItems)) {
+      setBtsItems(btsData);
+    }
+    if (eventData?.length !== eventRecaps.length || JSON.stringify(eventData) !== JSON.stringify(eventRecaps)) {
+      setEventRecaps(eventData);
+    }
+    if (spotlightData?.[0]?._id !== spotlight?._id) {
+      setSpotlight(spotlightData?.[0] || null);
+    }
+  }, [galleryData, sliderData, btsData, eventData, spotlightData]);
 
   return (
     <div className="space-y-6">

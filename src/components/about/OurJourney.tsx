@@ -74,13 +74,13 @@ export default function OurJourney() {
             <div className="absolute bottom-0 w-3 h-3 bg-primary rounded-full -translate-x-[calc(50%-1px)]"></div>
           </div>
 
-          <div className="space-y-16">
+          <div className="space-y-8">
             {journeyMilestones.map((item, index) => (
               <div
                 key={item.year}
                 className="relative flex items-center md:justify-normal md:odd:flex-row-reverse group"
               >
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/20 text-primary absolute left-4 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 z-10 ring-8 ring-secondary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 text-primary absolute left-4 -translate-x-1/2 md:left-1/2 md:-translate-x-1/2 z-10 ring-8 ring-secondary group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300">
                   <item.Icon className="w-4 h-4" />
                 </div>
 

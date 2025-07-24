@@ -22,7 +22,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { LuLoader } from "react-icons/lu";
+import { ImSpinner2 } from "react-icons/im";
 import { Switch } from "@/components/ui/switch";
 
 interface TeamCategory {
@@ -145,7 +145,7 @@ export function CategoryFormModal({
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && (
-                  <LuLoader className="mr-2 h-4 w-4 animate-spin" />
+                  <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Save
               </Button>

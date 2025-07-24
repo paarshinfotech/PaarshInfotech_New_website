@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from "react";
@@ -9,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { LuLoader } from "react-icons/lu";
+import { ImSpinner2 } from "react-icons/im";
 
 const formSchema = z.object({
   alt: z.string().min(3, "Alt text must be at least 3 characters."),
@@ -22,7 +21,7 @@ type FormValues = z.infer<typeof formSchema>;
 interface SliderImageFormModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (data: FormValues) => void;
+  onSave: (data: { alt: string; hint: string; image?: string }) => void;
 }
 
 export function SliderImageFormModal({ isOpen, onOpenChange, onSave }: SliderImageFormModalProps) {
@@ -35,14 +34,34 @@ export function SliderImageFormModal({ isOpen, onOpenChange, onSave }: SliderIma
     },
   });
 
-  const onSubmit = (values: FormValues) => {
-    setIsSubmitting(true);
-    setTimeout(() => {
-        onSave(values);
-        setIsSubmitting(false);
-        onOpenChange(false);
-        form.reset();
-    }, 1000);
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const onSubmit = async (values: FormValues) => {
+    try {
+      setIsSubmitting(true);
+      const file = values.image[0];
+      const base64Image = await convertToBase64(file);
+      
+      await onSave({
+        alt: values.alt,
+        hint: values.hint,
+        image: base64Image,
+      });
+      
+      form.reset();
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Error processing image:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -82,7 +101,7 @@ export function SliderImageFormModal({ isOpen, onOpenChange, onSave }: SliderIma
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>Cancel</Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && <LuLoader className="mr-2 h-4 w-4 animate-spin" />}
+                {isSubmitting && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}
                 Upload
               </Button>
             </DialogFooter>

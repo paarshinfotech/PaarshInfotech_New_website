@@ -2,11 +2,12 @@ import _db from "../../../lib/utils/db";
 import TeamMemberModel from "../../../../models/TeamMember.model";
 import TeamCategoryModel from "../../../../models/TeamCategory.model";
 
+// Establish MongoDB connection once at startup
 _db();
 
 export async function GET() {
   try {
-    const members = await TeamMemberModel.find().lean();
+    const members = await TeamMemberModel.find().sort({ order: 1, name: 1 }).lean();
     return new Response(JSON.stringify(members), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -52,11 +53,16 @@ export async function POST(request) {
       }
     }
 
+    // Set order to the highest current order + 1
+    const maxOrder = await TeamMemberModel.find().sort({ order: -1 }).limit(1);
+    const newOrder = maxOrder.length > 0 ? maxOrder[0].order + 1 : 0;
+
     const newMember = new TeamMemberModel({
       name,
       categoryId,
       avatar: avatar || "https://placehold.co/40x40.png",
       published: published ?? true,
+      order: newOrder,
     });
 
     await newMember.save();
@@ -171,6 +177,51 @@ export async function DELETE(request) {
     console.error("Error deleting team member:", error);
     return new Response(
       JSON.stringify({ error: "Failed to delete team member" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
+
+export async function PATCH(request) {
+  try {
+    const { members } = await request.json();
+
+    if (!Array.isArray(members) || members.length === 0) {
+      return new Response(
+        JSON.stringify({ error: "Members array is required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Update order for each member
+    const updatePromises = members.map(({ _id, order }) =>
+      TeamMemberModel.findByIdAndUpdate(
+        _id,
+        { order },
+        { new: true, runValidators: true }
+      )
+    );
+
+    const updatedMembers = await Promise.all(updatePromises);
+
+    if (updatedMembers.some((member) => !member)) {
+      return new Response(JSON.stringify({ error: "One or more team members not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    return new Response(
+      JSON.stringify({
+        message: "Team members reordered successfully",
+        data: updatedMembers,
+      }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("Error reordering team members:", error);
+    return new Response(
+      JSON.stringify({ error: "Failed to reorder team members" }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }

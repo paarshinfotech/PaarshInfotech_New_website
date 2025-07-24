@@ -1,11 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import { LuBriefcase, LuZap, LuUsers, LuHeartHandshake } from "react-icons/lu";
-import type { ComponentType } from "react";
+import type { IconType } from "react-icons";
 
 const features: {
   title: string;
   description: string;
-  Icon: ComponentType<{ className?: string }>;
+  Icon: IconType;
 }[] = [
   {
     title: "Internship Opportunities",
@@ -48,23 +48,39 @@ export default function FeatureHighlightTiles() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map(({ title, description, Icon }) => (
-            <Card
+            <div
               key={title}
-              className="group text-center p-6 transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 bg-background"
+              className="group relative rounded-md border border-primary/10 bg-background/50 p-6 text-center shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 backdrop-blur-sm overflow-hidden"
             >
-              <CardHeader className="p-0 items-center">
-                <div className="p-4 bg-primary/10 rounded-full mb-6 transition-colors duration-300 group-hover:bg-accent">
-                  <Icon className="w-8 h-8 text-primary transition-colors duration-300 group-hover:text-accent-foreground" />
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(400px_circle_at_var(--x,_0)_var(--y,_0),_hsl(var(--primary)/_0.2),_transparent_80%)]"></div>
+              <div className="relative z-10 flex flex-col items-center h-full">
+                <div className="p-4 bg-primary/10 rounded-full mb-6 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary">
+                  <Icon className="w-8 h-8 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl text-primary">{title}</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0 mt-4">
-                <p className="text-muted-foreground">{description}</p>
-              </CardContent>
-            </Card>
+                <h3 className="text-xl font-bold text-primary mb-3">{title}</h3>
+                <p className="text-muted-foreground flex-grow">
+                  {description}
+                </p>
+              </div>
+            </div>
           ))}
         </div>
       </div>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            document.querySelectorAll('.group.relative').forEach(card => {
+              card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--x', x + 'px');
+                card.style.setProperty('--y', y + 'px');
+              });
+            });
+          `,
+        }}
+      />
     </section>
   );
 }

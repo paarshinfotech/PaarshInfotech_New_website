@@ -23,7 +23,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { LuLoader } from "react-icons/lu";
+import { ImSpinner2 } from "react-icons/im";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -145,7 +145,7 @@ export function ApplicationModal({
               />
               <Button type="submit" disabled={isSubmitting} className="w-full">
                 {isSubmitting && (
-                  <LuLoader className="mr-2 h-4 w-4 animate-spin" />
+                  <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Submit Application
               </Button>

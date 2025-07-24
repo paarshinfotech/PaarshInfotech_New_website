@@ -24,34 +24,38 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-import { FiBarChart2, FiHome, FiRss, FiImage } from "react-icons/fi";
+import { FaChartBar, FaHome } from "react-icons/fa";
 import {
   LuBriefcase,
   LuFileText,
-  LuLayers,
+  LuMenu,
   LuMessageSquare,
   LuPackage,
   LuSettings,
+  LuLayers,
+  LuRss,
+  LuStar,
   LuUsers,
-  LuLogOut,
-  LuMenu,
   LuChevronDown,
+  LuLogOut,
   LuLoader,
-
+  LuImage,
 } from "react-icons/lu";
 
 import { useAuth } from "@/hooks/useAuth";
 
 const mainLinks = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: FiHome },
+  { href: "/admin/dashboard", label: "Dashboard", icon: FaHome },
   { href: "/admin/services", label: "Services", icon: LuBriefcase },
   { href: "/admin/products", label: "Products", icon: LuLayers },
   { href: "/admin/clients", label: "Clients", icon: LuPackage },
   { href: "/admin/careers", label: "Careers", icon: LuFileText },
-  { href: "/admin/media", label: "Media", icon: FiImage },
-  { href: "/admin/social", label: "Social Posts", icon: FiRss },
+  { href: "/admin/media", label: "Media", icon: LuImage },
+  { href: "/admin/site-images", label: "Site Images", icon: LuImage },
+  { href: "/admin/social", label: "Social Posts", icon: LuRss },
   { href: "/admin/contacts", label: "Contacts", icon: LuMessageSquare },
-  { href: "/admin/analytics", label: "Analytics", icon: FiBarChart2 },
+  { href: "/admin/feedback", label: "Feedback", icon: LuStar },
+  { href: "/admin/analytics", label: "Analytics", icon: FaChartBar },
 ];
 
 const teamLinks = [
@@ -93,7 +97,7 @@ export function AdminSidebar() {
   }) => {
     const isActive = pathname === href;
     return (
-      <Link href={href} legacyBehavior passHref>
+      <Link href={href} className="block">
         <Button
           variant={isActive ? "secondary" : "ghost"}
           className={cn("w-full justify-start", isSubItem && "pl-10")}

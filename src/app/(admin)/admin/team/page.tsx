@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,6 +21,9 @@ import { GoPlusCircle } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { FaTrashCan } from "react-icons/fa6";
+import { FaGripLines } from "react-icons/fa";
+
+
 import Image from "next/image";
 import {
   DropdownMenu,
@@ -40,7 +43,24 @@ import {
   useAddMemberMutation,
   useUpdateMemberMutation,
   useDeleteMemberMutation,
+  useReorderMembersMutation,
 } from "../../../../services/api";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface TeamMember {
   _id: string;
@@ -48,6 +68,7 @@ interface TeamMember {
   avatar: string;
   categoryId: string;
   published: boolean;
+  order: number;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -58,11 +79,107 @@ interface TeamCategory {
   allowMultiple: boolean;
 }
 
+interface SortableRowProps {
+  member: TeamMember;
+  handleEdit: (member: TeamMember) => void;
+  handleDelete: (member: TeamMember) => void;
+  handleTogglePublished: (memberId: string, published: boolean) => void;
+  getCategoryName: (categoryId: string) => string;
+}
+
+const SortableRow = ({
+  member,
+  handleEdit,
+  handleDelete,
+  handleTogglePublished,
+  getCategoryName,
+}: SortableRowProps) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: member._id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <TableRow ref={setNodeRef} style={style}>
+      <TableCell className="cursor-move" {...attributes} {...listeners}>
+        <FaGripLines className="h-4 w-4" />
+      </TableCell>
+      <TableCell>
+        <Image
+          src={member.avatar}
+          alt={member.name}
+          width={40}
+          height={40}
+          className="rounded-full"
+        />
+      </TableCell>
+      <TableCell className="font-medium">{member.name}</TableCell>
+      <TableCell>{getCategoryName(member.categoryId)}</TableCell>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          <Switch
+            id={`published-${member._id}`}
+            checked={member.published}
+            onCheckedChange={(checked) =>
+              handleTogglePublished(member._id, checked)
+            }
+          />
+          <Badge variant={member.published ? "default" : "secondary"}>
+            {member.published ? "Visible" : "Hidden"}
+          </Badge>
+        </div>
+      </TableCell>
+      <TableCell className="text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <span className="sr-only">Open menu</span>
+              <IoIosMore className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => handleEdit(member)}>
+              <FiEdit className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleDelete(member)}
+              className="text-destructive"
+            >
+              <FaTrashCan className="mr-2 h-4 w-4" />
+              Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
+    </TableRow>
+  );
+};
+
 export default function TeamManagementPage() {
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [members, setMembers] = useState<TeamMember[]>([]);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const {
     data: teamMembers = [],
@@ -77,12 +194,56 @@ export default function TeamManagementPage() {
   const [addMember] = useAddMemberMutation();
   const [updateMember] = useUpdateMemberMutation();
   const [deleteMember] = useDeleteMemberMutation();
+  const [reorderMembers] = useReorderMembersMutation();
+
+  // Sync local state with fetched data
+  useEffect(() => {
+    setMembers(teamMembers);
+  }, [teamMembers]);
 
   const getCategoryName = (categoryId: string) => {
     return (
-      teamCategories.find((c: TeamCategory) => c._id === categoryId)?.name || "Uncategorized"
+      teamCategories.find((c: TeamCategory) => c._id === categoryId)?.name ||
+      "Uncategorized"
     );
   };
+
+  const handleDragEnd = useCallback(
+    async (event: any) => {
+      const { active, over } = event;
+      
+      if (active.id !== over.id) {
+        const oldIndex = members.findIndex((m) => m._id === active.id);
+        const newIndex = members.findIndex((m) => m._id === over.id);
+        
+        const updatedMembers = arrayMove(members, oldIndex, newIndex);
+        setMembers(updatedMembers);
+
+        // Update order field
+        const reorderedMembers = updatedMembers.map((member, index) => ({
+          _id: member._id,
+          order: index,
+        }));
+
+        try {
+          await reorderMembers(reorderedMembers).unwrap();
+          toast({
+            title: "Team Members Reordered",
+            description: "The order has been updated successfully.",
+          });
+        } catch (error) {
+          toast({
+            title: "Error",
+            description: "Failed to reorder team members.",
+            variant: "destructive",
+          });
+          // Revert to original order on error
+          setMembers(teamMembers);
+        }
+      }
+    },
+    [members, reorderMembers, toast, teamMembers]
+  );
 
   const handleAdd = () => {
     setSelectedMember(null);
@@ -168,7 +329,7 @@ export default function TeamManagementPage() {
     published: boolean
   ) => {
     try {
-      const member = teamMembers.find((m : TeamMember) => m._id === memberId);
+      const member = members.find((m: TeamMember) => m._id === memberId);
       if (!member) return;
       await updateMember({
         _id: memberId,
@@ -199,24 +360,29 @@ export default function TeamManagementPage() {
   }
 
   return (
-    <>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Team Management</CardTitle>
-            <CardDescription>
-              Manage your company's team members and their visibility.
-            </CardDescription>
-          </div>
-          <Button size="sm" onClick={handleAdd}>
-            <GoPlusCircle className="mr-2 h-4 w-4" />
-            Add Member
-          </Button>
-        </CardHeader>
-        <CardContent>
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <CardTitle>Team Management</CardTitle>
+          <CardDescription>
+            Manage your company's team members and their visibility.
+          </CardDescription>
+        </div>
+        <Button size="sm" onClick={handleAdd}>
+          <GoPlusCircle className="mr-2 h-4 w-4" />
+          Add Member
+        </Button>
+      </CardHeader>
+      <CardContent>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[50px]"></TableHead>
                 <TableHead className="w-[80px]">Avatar</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Role / Category</TableHead>
@@ -225,72 +391,32 @@ export default function TeamManagementPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {teamMembers.map((member : TeamMember) => (
-                <TableRow key={member._id}>
-                  <TableCell>
-                    <Image
-                      src={member.avatar}
-                      alt={member.name}
-                      width={40}
-                      height={40}
-                      className="rounded-full"
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium">{member.name}</TableCell>
-                  <TableCell>{getCategoryName(member.categoryId)}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Switch
-                        id={`published-${member._id}`}
-                        checked={member.published}
-                        onCheckedChange={(checked) =>
-                          handleTogglePublished(member._id, checked)
-                        }
-                      />
-                      <Badge
-                        variant={member.published ? "default" : "secondary"}
-                      >
-                        {member.published ? "Visible" : "Hidden"}
-                      </Badge>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" className="h-8 w-8 p-0">
-                          <span className="sr-only">Open menu</span>
-                          <IoIosMore className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem onClick={() => handleEdit(member)}>
-                          <FiEdit className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => handleDelete(member)}
-                          className="text-destructive"
-                        >
-                          <FaTrashCan className="mr-2 h-4 w-4" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
+              <SortableContext
+                items={members.map(m => m._id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {members.map((member: TeamMember) => (
+                  <SortableRow
+                    key={member._id}
+                    member={member}
+                    handleEdit={handleEdit}
+                    handleDelete={handleDelete}
+                    handleTogglePublished={handleTogglePublished}
+                    getCategoryName={getCategoryName}
+                  />
+                ))}
+              </SortableContext>
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+        </DndContext>
+      </CardContent>
       <TeamMemberFormModal
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
         onSave={handleSave}
         member={selectedMember}
         categories={teamCategories}
-        teamMembers={teamMembers}
+        teamMembers={members}
       />
       <DeleteConfirmationDialog
         isOpen={isDeleteAlertOpen}
@@ -298,6 +424,6 @@ export default function TeamManagementPage() {
         onConfirm={confirmDelete}
         itemName={selectedMember?.name || "the selected team member"}
       />
-    </>
+    </Card>
   );
 }

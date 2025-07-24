@@ -32,7 +32,7 @@ const testimonials = [
 ];
 
 // We duplicate the testimonials to create a seamless loop for the marquee effect.
-const extendedTestimonials = [...testimonials, ...testimonials, ...testimonials];
+const extendedTestimonials = [...testimonials, ...testimonials];
 
 
 export default function Testimonials() {
@@ -46,7 +46,7 @@ export default function Testimonials() {
           </p>
         </div>
         <div className="relative w-full overflow-hidden group">
-          <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
+          <div className="flex animate-marquee-left group-hover:[animation-play-state:paused]">
             {extendedTestimonials.map((testimonial, index) => (
               <div key={index} className="flex-shrink-0 w-full md:w-1/2 lg:w-[30%] p-4">
                   <Card className="h-full bg-background shadow-md flex flex-col p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">

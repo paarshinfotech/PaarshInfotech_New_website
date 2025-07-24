@@ -1,9 +1,3 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 
 import { LuAward, LuZap, LuGem, LuUsers } from "react-icons/lu";
 import { IconType } from "react-icons";
@@ -50,27 +44,39 @@ export default function WhyChooseUs() {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map(({ title, description, Icon }) => (
-            <Card
+            <div
               key={title}
-              className="text-center p-6 group transition-all duration-300 ease-in-out hover:bg-secondary/50 hover:shadow-xl hover:-translate-y-2"
+              className="group relative rounded-md border border-primary/10 bg-background p-6 text-center shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 overflow-hidden"
             >
-              <CardHeader className="p-0">
-                <div className="flex justify-center mb-6">
-                  <div className="p-4 bg-accent/10 rounded-full transition-all duration-300 group-hover:scale-110 group-hover:bg-accent">
-                    <Icon className="w-8 h-8 text-primary transition-colors group-hover:text-accent-foreground" />
-                  </div>
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(400px_circle_at_var(--x,_0)_var(--y,_0),_hsl(var(--primary)/_0.2),_transparent_80%)]"></div>
+              <div className="relative z-10 flex flex-col items-center h-full">
+                <div className="p-4 bg-primary/10 rounded-full mb-6 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary">
+                  <Icon className="w-8 h-8 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
                 </div>
-                <CardTitle className="text-xl text-primary mb-2">
-                  {title}
-                </CardTitle>
-                <CardDescription className="leading-relaxed">
+                <h3 className="text-xl font-bold text-primary mb-3">{title}</h3>
+                <p className="text-muted-foreground flex-grow">
                   {description}
-                </CardDescription>
-              </CardHeader>
-            </Card>
+                </p>
+              </div>
+            </div>
           ))}
         </div>
       </div>
+       <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            document.querySelectorAll('.group.relative').forEach(card => {
+              card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--x', x + 'px');
+                card.style.setProperty('--y', y + 'px');
+              });
+            });
+          `,
+        }}
+      />
     </section>
   );
 }

@@ -27,6 +27,7 @@ import { useToast } from "@/hooks/use-toast";
 import type { Service } from "@/lib/servicesData";
 import { useRouter } from "next/navigation";
 import { useAddServiceMutation, useUpdateServiceMutation } from "@/services/api";
+import { FaTrash } from "react-icons/fa";
 
 const offeringSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -309,7 +310,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                   size="icon"
                   onClick={() => removeOffering(index)}
                 >
-                  <LuTrash2 className="h-4 w-4" />
+                  <FaTrash className="h-4 w-4" />
                 </Button>
               </div>
             ))}
@@ -502,7 +503,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                   size="icon"
                   onClick={() => removeGallery(index)}
                 >
-                  <LuTrash2 className="h-4 w-4" />
+                  <FaTrash className="h-4 w-4" />
                 </Button>
               </div>
             ))}

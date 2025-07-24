@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from "react";
@@ -7,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Check, Archive, Trash2 } from "lucide-react";
+import { FiMoreHorizontal, FiEye, FiCheck, FiArchive, FiTrash2 } from "react-icons/fi";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 import { FeedbackViewModal } from "@/components/admin/feedback/FeedbackViewModal";
 import { initialFeedbacks } from "@/lib/feedbackData";
@@ -97,26 +96,26 @@ export default function FeedbackManagementPage() {
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" className="h-8 w-8 p-0">
                                         <span className="sr-only">Open menu</span>
-                                        <MoreHorizontal className="h-4 w-4" />
+                                        <FiMoreHorizontal className="h-4 w-4" />
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                     <DropdownMenuItem onClick={() => handleView(feedback)}>
-                                        <Eye className="mr-2 h-4 w-4" />
+                                        <FiEye className="mr-2 h-4 w-4" />
                                         View Feedback
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => handleUpdateStatus(feedback.id, 'Read')} disabled={feedback.status === 'Read'}>
-                                        <Check className="mr-2 h-4 w-4" />
+                                        <FiCheck className="mr-2 h-4 w-4" />
                                         Mark as Read
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={() => handleUpdateStatus(feedback.id, 'Archived')}>
-                                        <Archive className="mr-2 h-4 w-4" />
+                                        <FiArchive className="mr-2 h-4 w-4" />
                                         Archive
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => handleDelete(feedback)} className="text-destructive">
-                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        <FiTrash2 className="mr-2 h-4 w-4" />
                                         Delete
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
