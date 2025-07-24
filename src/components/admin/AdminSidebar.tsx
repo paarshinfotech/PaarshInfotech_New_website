@@ -40,7 +40,6 @@ import {
   LuLogOut,
   LuLoader,
   LuImage,
-  LuImageIcon,
 } from "react-icons/lu";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -52,7 +51,7 @@ const mainLinks = [
   { href: "/admin/clients", label: "Clients", icon: LuPackage },
   { href: "/admin/careers", label: "Careers", icon: LuFileText },
   { href: "/admin/media", label: "Media", icon: LuImage },
-  { href: "/admin/site-images", label: "Site Images", icon: LuImageIcon },
+  { href: "/admin/site-images", label: "Site Images", icon: LuImage },
   { href: "/admin/social", label: "Social Posts", icon: LuRss },
   { href: "/admin/contacts", label: "Contacts", icon: LuMessageSquare },
   { href: "/admin/feedback", label: "Feedback", icon: LuStar },
