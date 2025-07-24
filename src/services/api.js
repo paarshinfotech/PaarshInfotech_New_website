@@ -15,7 +15,8 @@ export const api = createApi({
     "Client",
     "TeamMember",
     "Category",
-    "Media", // Add Media tag
+    "Media",
+    "SiteImage",
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -306,6 +307,22 @@ export const api = createApi({
       }),
       invalidatesTags: ["Media"],
     }),
+    
+    // ================================================== Site Image Endpoints ================================================== //
+
+    getSiteImages: builder.query({
+      query: () => '/site-images',
+      providesTags: ['SiteImage'],
+    }),
+    updateSiteImage: builder.mutation({
+      query: (imageData) => ({
+        url: `/site-images`,
+        method: 'PUT',
+        body: imageData,
+      }),
+      invalidatesTags: ['SiteImage'],
+    }),
+
   }),
 });
 
@@ -356,4 +373,8 @@ export const {
   useUpdateMediaItemMutation,
   useDeleteMediaItemMutation,
   useReorderMediaItemsMutation,
+  
+  // Site Images
+  useGetSiteImagesQuery,
+  useUpdateSiteImageMutation,
 } = api;

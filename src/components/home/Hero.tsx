@@ -1,10 +1,20 @@
+
+'use client'
+
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import { FaArrowRight, FaStar, FaBriefcase } from "react-icons/fa";
+import { useGetSiteImagesQuery } from '@/services/api';
 
 export default function Hero() {
+
+  const { data: images = [], isLoading } = useGetSiteImagesQuery(undefined);
+  
+  const heroImage = images.find((img: any) => img.section === 'home_hero')?.imageUrl || "https://placehold.co/600x400.png";
+  const heroImageHint = images.find((img: any) => img.section === 'home_hero')?.hint || "technology abstract";
+  
   return (
     <section className="relative bg-secondary overflow-hidden">
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
@@ -52,11 +62,11 @@ export default function Hero() {
           <div className="relative h-96 w-full rounded-lg group hidden md:block">
             <div className="absolute -inset-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-lg opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
             <Image
-              src="https://placehold.co/600x400.png"
+              src={heroImage}
               alt="Innovative Software Solutions"
               fill
               className="relative object-cover rounded-lg shadow-2xl transition-transform duration-500 group-hover:scale-105"
-              data-ai-hint="technology abstract"
+              data-ai-hint={heroImageHint}
             />
           </div>
         </div>
