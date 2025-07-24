@@ -5,13 +5,19 @@ import { useGetSiteImagesQuery } from "@/services/api";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { HomePageImages } from "@/components/admin/site-images/HomePageImages";
 import { AboutPageImages } from "@/components/admin/site-images/AboutPageImages";
+import { ServicesPageImages } from "@/components/admin/site-images/ServicesPageImages";
+import { ProductsPageImages } from "@/components/admin/site-images/ProductsPageImages";
+import { ExcellenceCentersPageImages } from "@/components/admin/site-images/ExcellenceCentersPageImages";
+
 
 export default function SiteImagesPage() {
   const { data: images = [], isLoading } = useGetSiteImagesQuery(undefined);
 
   const homePageImages = images.filter((img: any) => img.page === "home");
   const aboutPageImages = images.filter((img: any) => img.page === "about");
-  // Add filters for other pages as needed
+  const servicesPageImages = images.filter((img: any) => img.page === "services");
+  const productsPageImages = images.filter((img: any) => img.page === "products");
+  const excellenceCentersPageImages = images.filter((img: any) => img.page === "excellence-centers");
 
   if (isLoading) {
     return <div>Loading image data...</div>;
@@ -30,9 +36,9 @@ export default function SiteImagesPage() {
         <TabsList className="grid w-full grid-cols-1 md:grid-cols-5">
           <TabsTrigger value="home">Home Page</TabsTrigger>
           <TabsTrigger value="about">About Page</TabsTrigger>
-          <TabsTrigger value="services" disabled>Services</TabsTrigger>
-          <TabsTrigger value="products" disabled>Products</TabsTrigger>
-          <TabsTrigger value="excellence-centers" disabled>Excellence Centers</TabsTrigger>
+          <TabsTrigger value="services">Services</TabsTrigger>
+          <TabsTrigger value="products">Products</TabsTrigger>
+          <TabsTrigger value="excellence-centers">Excellence Centers</TabsTrigger>
         </TabsList>
 
         <TabsContent value="home" className="mt-6">
@@ -41,7 +47,15 @@ export default function SiteImagesPage() {
         <TabsContent value="about" className="mt-6">
            <AboutPageImages images={aboutPageImages} />
         </TabsContent>
-        {/* Add TabsContent for other pages here */}
+        <TabsContent value="services" className="mt-6">
+            <ServicesPageImages images={servicesPageImages} />
+        </TabsContent>
+        <TabsContent value="products" className="mt-6">
+            <ProductsPageImages images={productsPageImages} />
+        </TabsContent>
+        <TabsContent value="excellence-centers" className="mt-6">
+            <ExcellenceCentersPageImages images={excellenceCentersPageImages} />
+        </TabsContent>
       </Tabs>
     </div>
   );
