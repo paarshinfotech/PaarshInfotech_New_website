@@ -125,6 +125,14 @@ export default {
             transform: 'translate(0px, 0px) scale(1)',
           },
         },
+        aurora: {
+          from: {
+            backgroundPosition: "50% 50%, 50% 50%",
+          },
+          to: {
+            backgroundPosition: "350% 50%, 350% 50%",
+          },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -133,6 +141,7 @@ export default {
         'marquee-right': 'marquee-right 60s linear infinite',
         'marquee-slow': 'marquee-slow 80s linear infinite',
         blob: 'blob 7s infinite',
+        aurora: "aurora 60s linear infinite",
       },
     },
   },
