@@ -137,9 +137,11 @@ const serviceSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    published: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-const ServiceModel = mongoose.models.Service || mongoose.model("Service", serviceSchema);
+const ServiceModel =
+  mongoose.models.Service || mongoose.model("Service", serviceSchema);
 module.exports = ServiceModel;

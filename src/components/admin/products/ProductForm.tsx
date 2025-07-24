@@ -28,6 +28,7 @@ import {LuLoader, LuTrash2, } from "react-icons/lu";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/productsData";
 import { useRouter } from "next/navigation";
+import { useAddProductMutation, useUpdateProductMutation } from "@/services/api";
 
 const featureSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -101,8 +102,17 @@ export function ProductForm({ product }: ProductFormProps) {
     name: "gallery",
   });
 
-  const onSubmit = (values: ProductFormValues) => {
-    console.log("Form Submitted:", values);
+  const [_ADDPRODUCT] = useAddProductMutation();
+  const [_EDITPRODUCT] = useUpdateProductMutation();
+
+  const onSubmit = async (values: ProductFormValues) => {
+    
+    if (product) {
+     const result = await _EDITPRODUCT({ _id: product._id , ...values }).unwrap();
+    } else {
+      const result = await _ADDPRODUCT(values).unwrap();
+    }
+
     toast({
       title: `Product ${product ? "Updated" : "Created"}!`,
       description: `The product "${values.name}" has been saved successfully.`,

@@ -3,6 +3,7 @@ import { LuLayers, LuBriefcase, LuBot, LuGraduationCap, LuZap, LuShieldCheck, Lu
 import type { IconType } from 'react-icons';
 
 export interface Product {
+    _id?: string;
     id: string;
     name: string;
     tagline: string;
@@ -14,84 +15,6 @@ export interface Product {
     features: { title: string; description: string; Icon: IconType; }[];
 }
 
-export const productsData: Product[] = [
-    {
-        id: "crm",
-        name: "Paarsh CRM",
-        tagline: "Build Lasting Customer Relationships",
-        description: "An all-in-one Customer Relationship Management platform designed to help you manage leads, close deals faster, and create exceptional customer experiences.",
-        published: true,
-        Icon: LuUsers,
-        heroImage: "https://placehold.co/1200x800.png",
-        gallery: [
-            { src: "https://placehold.co/800x600.png", alt: "CRM Dashboard", hint: "dashboard analytics" },
-            { src: "https://placehold.co/800x600.png", alt: "Contact Management", hint: "contact list" },
-            { src: "https://placehold.co/800x600.png", alt: "Sales Pipeline", hint: "sales pipeline" },
-        ],
-        features: [
-            { title: "Lead Management", description: "Capture, track, and score leads from various channels.", Icon: LuZap },
-            { title: "Sales Automation", description: "Automate repetitive tasks to let your sales team focus on selling.", Icon: LuBot },
-            { title: "Advanced Analytics", description: "Get real-time insights into your sales performance.", Icon: LuActivity },
-        ]
-    },
-    {
-        id: "hrms",
-        name: "Paarsh HRMS",
-        tagline: "Empower Your Workforce, Simplify HR",
-        description: "A comprehensive Human Resource Management System that automates everything from recruitment and onboarding to payroll and performance management.",
-        published: true,
-        Icon: LuBriefcase,
-        heroImage: "https://placehold.co/1200x800.png",
-        gallery: [
-            { src: "https://placehold.co/800x600.png", alt: "Employee Directory", hint: "employee profile" },
-            { src: "https://placehold.co/800x600.png", alt: "Leave Management", hint: "calendar view" },
-            { src: "https://placehold.co/800x600.png", alt: "Payroll Processing", hint: "payroll dashboard" },
-        ],
-        features: [
-            { title: "Recruitment & Onboarding", description: "Streamline the entire hiring process from application to hire.", Icon: LuUsers },
-            { title: "Payroll Management", description: "Automate salary calculations, deductions, and compliance.", Icon: LuZap },
-            { title: "Performance Reviews", description: "Set goals, track progress, and conduct performance reviews.", Icon: LuActivity },
-        ]
-    },
-    {
-        id: "erp",
-        name: "Paarsh ERP",
-        tagline: "Unify Your Business Operations",
-        description: "An integrated Enterprise Resource Planning solution that brings together your finance, supply chain, manufacturing, and HR processes into a single, unified system.",
-        published: true,
-        Icon: LuLayers,
-        heroImage: "https://placehold.co/1200x800.png",
-        gallery: [
-            { src: "https://placehold.co/800x600.png", alt: "Financial Dashboard", hint: "finance chart" },
-            { src: "https://placehold.co/800x600.png", alt: "Inventory Tracking", hint: "warehouse stock" },
-            { src: "https://placehold.co/800x600.png", alt: "Supply Chain Visualization", hint: "supply chain" },
-        ],
-        features: [
-            { title: "Financial Management", description: "Automate accounting, invoicing, and financial reporting.", Icon: LuActivity },
-            { title: "Supply Chain", description: "Optimize inventory, procurement, and logistics.", Icon: LuZap },
-            { title: "Manufacturing Control", description: "Manage production orders, bills of materials, and shop floor control.", Icon: LuCode },
-        ]
-    },
-    {
-        id: "e-learn",
-        name: "Paarsh E-Learn",
-        tagline: "The Future of Digital Education",
-        description: "A powerful Learning Management System (LMS) for educational institutions and corporate training, enabling you to create, manage, and deliver engaging online courses.",
-        published: true,
-        Icon: LuGraduationCap,
-        heroImage: "https://placehold.co/1200x800.png",
-        gallery: [
-            { src: "https://placehold.co/800x600.png", alt: "Course Dashboard", hint: "online course" },
-            { src: "https://placehold.co/800x600.png", alt: "Interactive Quiz", hint: "quiz interface" },
-            { src: "https://placehold.co/800x600.png", alt: "Student Progress Tracking", hint: "progress chart" },
-        ],
-        features: [
-            { title: "Course Builder", description: "Easily create rich, interactive courses with video, quizzes, and assignments.", Icon: LuCode },
-            { title: "Live Classes", description: "Host virtual classrooms with video conferencing and whiteboarding.", Icon: LuUsers },
-            { title: "Analytics & Reporting", description: "Track student progress and course effectiveness.", Icon: LuActivity },
-        ]
-    }
-];
 
 export const coreFeatures = [
     { title: "AI-Powered Insights", description: "Leverage artificial intelligence to get predictive analytics and smarter recommendations across all our products.", Icon: LuBot },
