@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,15 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ImSpinner2 } from "react-icons/im";
 import Image from "next/image";
-import type { EmployeeSpotlightItem } from '@/lib/mediaData';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { useGetMediaItemsQuery, useAddMediaItemMutation, useUpdateMediaItemMutation } from '@/services/api';
 
 interface SpotlightManagementTabProps {
-    item: EmployeeSpotlightItem;
-    setItem: React.Dispatch<React.SetStateAction<EmployeeSpotlightItem>>;
+    item: any;
+    setItem: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const formSchema = z.object({
@@ -29,42 +29,93 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function SpotlightManagementTab({ item, setItem }: SpotlightManagementTabProps) {
+export function SpotlightManagementTab({ item: propItem, setItem: setPropItem }: SpotlightManagementTabProps) {
     const { toast } = useToast();
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // RTK Query hooks
+    const { data: spotlightData } = useGetMediaItemsQuery('spotlight');
+    const [addMediaItem] = useAddMediaItemMutation();
+    const [updateMediaItem] = useUpdateMediaItemMutation();
+
+    // Update local state when RTK query data changes
+    useEffect(() => {
+        if (spotlightData?.[0]) {
+            setPropItem(spotlightData[0]);
+        }
+    }, [spotlightData, setPropItem]);
 
     const form = useForm<FormValues>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: item.name,
-            role: item.role,
-            quote: item.quote,
-            hint: item.hint,
+            name: propItem?.employeeName || '',
+            role: propItem?.position || '',
+            quote: propItem?.quote || '',
+            hint: propItem?.hint || '',
         },
     });
 
-    const onSubmit = (values: FormValues) => {
-        setIsSubmitting(true);
-        setTimeout(() => {
-            const newAvatarUrl = values.avatarFile && values.avatarFile.length > 0
-                ? "https://placehold.co/400x400.png"
-                : item.avatar;
-            
-            const updatedItem = {
-                ...item,
-                ...values,
-                avatar: newAvatarUrl,
+    const convertToBase64 = (file: File): Promise<string> => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result as string);
+            reader.onerror = (error) => reject(error);
+        });
+    };
+
+    const onSubmit = async (values: FormValues) => {
+        try {
+            setIsSubmitting(true);
+
+            let imageBase64: string | undefined;
+            if (values.avatarFile?.[0]) {
+                imageBase64 = await convertToBase64(values.avatarFile[0]);
+            }
+
+            const formData = {
+                type: 'spotlight',
+                title: values.name,
+                description: values.quote,
+                employeeName: values.name,
+                position: values.role,
+                quote: values.quote,
+                hint: values.hint,
+                published: true,
             };
-            
-            setItem(updatedItem);
-            
+
+            if (propItem?._id) {
+                // Update existing spotlight
+                await updateMediaItem({
+                    _id: propItem._id,
+                    ...formData,
+                    ...(imageBase64 ? { imageBase64 } : {})
+                }).unwrap();
+            } else {
+                // Add new spotlight
+                if (!imageBase64) {
+                    throw new Error('Employee photo is required');
+                }
+                await addMediaItem({
+                    ...formData,
+                    imageBase64
+                }).unwrap();
+            }
+
             toast({
                 title: "Success",
                 description: "Employee spotlight has been updated successfully.",
             });
-
+        } catch (error) {
+            console.error('Failed to save spotlight:', error);
+            toast({
+                title: "Error",
+                description: "Failed to save employee spotlight.",
+                variant: "destructive",
+            });
+        } finally {
             setIsSubmitting(false);
-        }, 1000);
+        }
     };
     
     return (
@@ -83,7 +134,15 @@ export function SpotlightManagementTab({ item, setItem }: SpotlightManagementTab
                                         <CardTitle className="text-base">Employee Photo</CardTitle>
                                     </CardHeader>
                                     <CardContent className="flex flex-col items-center gap-4">
-                                        <Image src={item.avatar} alt={item.name} width={200} height={200} className="rounded-lg object-cover" />
+                                        {propItem?.imageUrl && (
+                                            <Image 
+                                                src={propItem.imageUrl} 
+                                                alt={propItem.employeeName} 
+                                                width={200} 
+                                                height={200} 
+                                                className="rounded-lg object-cover" 
+                                            />
+                                        )}
                                         <FormField control={form.control} name="avatarFile" render={({ field }) => (
                                             <FormItem className="w-full">
                                                 <FormLabel className="sr-only">Avatar</FormLabel>

@@ -10,11 +10,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { ImSpinner2 } from "react-icons/im";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { mediaCategories } from "@/lib/mediaData";
+
+const VALID_CATEGORIES = ["event", "office", "team", "other"] as const;
 
 const formSchema = z.object({
   alt: z.string().min(3, "Alt text must be at least 3 characters."),
-  category: z.string({ required_error: "Please select a category." }),
+  category: z.enum(VALID_CATEGORIES, { required_error: "Please select a category." }),
   image: z.any().refine((files) => files?.length === 1, "An image is required."),
 });
 
@@ -23,7 +24,7 @@ type MediaFormValues = z.infer<typeof formSchema>;
 interface MediaUploadModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (data: MediaFormValues) => void;
+  onSave: (data: { alt: string; category: string; image?: string }) => void;
 }
 
 export function MediaUploadModal({ isOpen, onOpenChange, onSave }: MediaUploadModalProps) {
@@ -35,15 +36,34 @@ export function MediaUploadModal({ isOpen, onOpenChange, onSave }: MediaUploadMo
     },
   });
 
-  const onSubmit = (values: MediaFormValues) => {
-    setIsSubmitting(true);
-    // Simulate API call for upload
-    setTimeout(() => {
-        onSave(values);
-        setIsSubmitting(false);
-        onOpenChange(false);
-        form.reset();
-    }, 1000);
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const onSubmit = async (values: MediaFormValues) => {
+    try {
+      setIsSubmitting(true);
+      const file = values.image[0];
+      const base64Image = await convertToBase64(file);
+      
+      await onSave({
+        alt: values.alt,
+        category: values.category,
+        image: base64Image,
+      });
+      
+      form.reset();
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Error processing image:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -99,7 +119,7 @@ export function MediaUploadModal({ isOpen, onOpenChange, onSave }: MediaUploadMo
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                            {mediaCategories.filter(c => c !== 'All').map(cat => (
+                            {VALID_CATEGORIES.map(cat => (
                                 <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                             ))}
                         </SelectContent>

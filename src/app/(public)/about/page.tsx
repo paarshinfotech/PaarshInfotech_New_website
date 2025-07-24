@@ -22,12 +22,15 @@ export default function AboutPage() {
       <AboutHero />
       <CompanyStatement />
       <VisionStatement />
-      <OurJourney />
       <OurValues />
-      <OurProcess />
       <Stats />
-      {settings.showLeadership && <LeadershipTeam />}
-      {settings.showTeam && <TeamGrid />}
+      {/* Leadership and Team section */}
+      <div className="bg-background">
+        {settings.showLeadership && <LeadershipTeam />}
+        {settings.showTeam && <TeamGrid />}
+      </div>
+      <OurJourney />
+      <OurProcess />
       <CompanyCulture />
       <Testimonials />
     </>

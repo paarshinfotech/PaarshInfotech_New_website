@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -25,38 +24,37 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
+import { FaChartBar, FaHome } from "react-icons/fa";
 import {
-  BarChart2,
-  Briefcase,
-  FileText,
-  Home,
-  Menu,
-  MessageSquare,
-  Package,
-  Settings,
-  Users,
-  Image as ImageIcon,
-  LogOut,
-  Loader2,
-  Rss,
-  ChevronDown,
-  Layers,
-  Star,
-} from "lucide-react";
+  LuBriefcase,
+  LuFileText,
+  LuMenu,
+  LuMessageSquare,
+  LuPackage,
+  LuSettings,
+  LuLayers,
+  LuRss,
+  LuStar,
+  LuUsers,
+  LuChevronDown,
+  LuLogOut,
+  LuLoader,
+  LuImage,
+} from "react-icons/lu";
 
 import { useAuth } from "@/hooks/useAuth";
 
 const mainLinks = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: Home },
-  { href: "/admin/services", label: "Services", icon: Briefcase },
-  { href: "/admin/products", label: "Products", icon: Layers },
-  { href: "/admin/clients", label: "Clients", icon: Package },
-  { href: "/admin/careers", label: "Careers", icon: FileText },
-  { href: "/admin/media", label: "Media", icon: ImageIcon },
-  { href: "/admin/social", label: "Social Posts", icon: Rss },
-  { href: "/admin/contacts", label: "Contacts", icon: MessageSquare },
-  { href: "/admin/feedback", label: "Feedback", icon: Star },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart2 },
+  { href: "/admin/dashboard", label: "Dashboard", icon: FaHome },
+  { href: "/admin/services", label: "Services", icon: LuBriefcase },
+  { href: "/admin/products", label: "Products", icon: LuLayers },
+  { href: "/admin/clients", label: "Clients", icon: LuPackage },
+  { href: "/admin/careers", label: "Careers", icon: LuFileText },
+  { href: "/admin/media", label: "Media", icon: LuImage },
+  { href: "/admin/social", label: "Social Posts", icon: LuRss },
+  { href: "/admin/contacts", label: "Contacts", icon: LuMessageSquare },
+  { href: "/admin/feedback", label: "Feedback", icon: LuStar },
+  { href: "/admin/analytics", label: "Analytics", icon: FaChartBar },
 ];
 
 const teamLinks = [
@@ -67,7 +65,7 @@ const teamLinks = [
 const settingsLink = {
   href: "/admin/settings",
   label: "Settings",
-  icon: Settings,
+  icon: LuSettings,
 };
 
 export function AdminSidebar() {
@@ -98,7 +96,7 @@ export function AdminSidebar() {
   }) => {
     const isActive = pathname === href;
     return (
-      <Link href={href} legacyBehavior passHref>
+      <Link href={href} className="block">
         <Button
           variant={isActive ? "secondary" : "ghost"}
           className={cn("w-full justify-start", isSubItem && "pl-10")}
@@ -123,9 +121,9 @@ export function AdminSidebar() {
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="w-full justify-between">
                 <span className="flex items-center gap-2">
-                  <Users className="h-4 w-4" /> Team
+                  <LuUsers className="h-4 w-4" /> Team
                 </span>
-                <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+                <LuChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
               </Button>
             </CollapsibleTrigger>
             <CollapsibleContent className="space-y-1 pt-1">
@@ -147,7 +145,7 @@ export function AdminSidebar() {
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button variant="ghost" className="w-full justify-start">
-              <LogOut className="mr-2 h-4 w-4" />
+              <LuLogOut className="mr-2 h-4 w-4" />
               Log Out
             </Button>
           </AlertDialogTrigger>
@@ -164,7 +162,7 @@ export function AdminSidebar() {
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction onClick={handleLogout} disabled={isLoggingOut}>
                 {isLoggingOut && (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <LuLoader className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Continue
               </AlertDialogAction>
@@ -184,7 +182,7 @@ export function AdminSidebar() {
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="outline" size="icon">
-              <Menu className="h-5 w-5" />
+              <LuMenu className="h-5 w-5" />
               <span className="sr-only">Open menu</span>
             </Button>
           </SheetTrigger>

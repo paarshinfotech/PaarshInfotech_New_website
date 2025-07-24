@@ -1,77 +1,117 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { FaPlus, FaPencilAlt, FaTrash } from "react-icons/fa";
 import Image from "next/image";
 import { ImagePreviewModal } from '@/components/common/ImagePreviewModal';
-import type { EventRecap } from '@/lib/mediaData';
 import { DeleteConfirmationDialog } from '@/components/admin/DeleteConfirmationDialog';
 import { EventRecapFormModal } from '../EventRecapFormModal';
 import { Badge } from '@/components/ui/badge';
+import { useGetMediaItemsQuery, useAddMediaItemMutation, useUpdateMediaItemMutation, useDeleteMediaItemMutation } from '@/services/api';
 
 interface EventsManagementTabProps {
-    items: EventRecap[];
-    setItems: React.Dispatch<React.SetStateAction<EventRecap[]>>;
+    items: any[];
+    setItems: React.Dispatch<React.SetStateAction<any[]>>;
 }
 
-export function EventsManagementTab({ items, setItems }: EventsManagementTabProps) {
+export function EventsManagementTab({ items: propItems, setItems: setPropItems }: EventsManagementTabProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-    const [selectedItem, setSelectedItem] = useState<EventRecap | null>(null);
+    const [selectedItem, setSelectedItem] = useState<any | null>(null);
+
+    // RTK Query hooks
+    const { data: eventItems = [], isLoading } = useGetMediaItemsQuery('event');
+    const [addMediaItem] = useAddMediaItemMutation();
+    const [updateMediaItem] = useUpdateMediaItemMutation();
+    const [deleteMediaItem] = useDeleteMediaItemMutation();
+
+    // Update local state when RTK query data changes
+    useEffect(() => {
+        if (eventItems) {
+            setPropItems(eventItems);
+        }
+    }, [eventItems, setPropItems]);
 
     const handleAdd = () => {
         setSelectedItem(null);
         setIsModalOpen(true);
     };
 
-    const handleEdit = (item: EventRecap) => {
+    const handleEdit = (item: any) => {
         setSelectedItem(item);
         setIsModalOpen(true);
     };
 
-    const handleDelete = (item: EventRecap) => {
+    const handleDelete = (item: any) => {
         setSelectedItem(item);
         setIsDeleteAlertOpen(true);
     };
 
-    const confirmDelete = () => {
-        if(selectedItem) {
-            setItems(items.filter(item => item.id !== selectedItem.id));
+    const handleSave = async (data: { 
+        title: string; 
+        description: string; 
+        hint: string; 
+        date: string;
+        location: string;
+        image?: string;
+        galleryImages?: { alt: string; hint: string; image: string; }[];
+    }) => {
+        try {
+            const formData = {
+                title: data.title,
+                description: data.description,
+                eventDate: new Date(data.date), // Use eventDate instead of date
+                location: data.location, // Add location field
+                published: true,
+            };
+
+            if (selectedItem) {
+                // Update existing item
+                await updateMediaItem({
+                    type: 'event',
+                    _id: selectedItem._id,
+                    ...formData,
+                    ...(data.image ? { imageBase64: data.image } : {}),
+                    ...(data.galleryImages ? { imagesBase64: data.galleryImages.map(img => img.image) } : {})
+                }).unwrap();
+            } else {
+                // Add new item
+                if (!data.image) {
+                    throw new Error('Cover image is required for new events');
+                }
+                await addMediaItem({
+                    type: 'event',
+                    ...formData,
+                    imageBase64: data.image,
+                    ...(data.galleryImages ? { imagesBase64: data.galleryImages.map(img => img.image) } : {})
+                }).unwrap();
+            }
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error('Failed to save event:', error);
+        }
+    };
+
+    const confirmDelete = async () => {
+        if (selectedItem) {
+            try {
+                await deleteMediaItem({
+                    type: 'event',
+                    _id: selectedItem._id
+                }).unwrap();
+            } catch (error) {
+                console.error('Failed to delete event:', error);
+            }
         }
         setIsDeleteAlertOpen(false);
         setSelectedItem(null);
-    }
-
-    const handleSave = (data: { 
-        title: string;
-        hint: string;
-        date: string;
-        description: string;
-        gallery: { alt: string; hint: string; src: string; }[];
-        id?: number;
-        imageFile?: any;
-    }) => {
-        const { imageFile, ...eventData } = data;
-
-        if (selectedItem && eventData.id) {
-            setItems(items.map(i => i.id === eventData.id ? { 
-                ...i, 
-                ...eventData,
-                image: "https://placehold.co/800x600.png" // Placeholder for new image
-            } : i));
-        } else {
-            setItems([...items, { 
-                ...eventData, 
-                id: Date.now(),
-                image: "https://placehold.co/800x600.png" // Placeholder for new image
-            }]);
-        }
-        setIsModalOpen(false);
-        setSelectedItem(null);
     };
 
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <>
@@ -88,20 +128,20 @@ export function EventsManagementTab({ items, setItems }: EventsManagementTabProp
                 </CardHeader>
                 <CardContent>
                     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {items.map((item, index) => (
-                             <Card key={index} className="overflow-hidden group flex flex-col">
-                                <ImagePreviewModal imgSrc={item.image} alt={item.title}>
+                        {propItems.map((item, index) => (
+                             <Card key={item._id || index} className="overflow-hidden group flex flex-col">
+                                <ImagePreviewModal imgSrc={item.imageUrl} alt={item.title}>
                                     <div className="relative aspect-video cursor-pointer">
-                                        <Image src={item.image} alt={item.title} fill className="object-cover" />
+                                        <Image src={item.imageUrl} alt={item.title} fill className="object-cover" />
                                     </div>
                                 </ImagePreviewModal>
                                 <CardHeader>
                                     <CardTitle>{item.title}</CardTitle>
-                                    <CardDescription>{item.date}</CardDescription>
+                                    <CardDescription>{new Date(item.date).toLocaleDateString()}</CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex-grow">
                                     <p className="text-muted-foreground text-sm">{item.description}</p>
-                                    <Badge className="mt-4">{item.gallery.length} photos</Badge>
+                                    <Badge className="mt-4">{item.images?.length || 0} photos</Badge>
                                 </CardContent>
                                 <CardFooter className="justify-end gap-2">
                                     <Button variant="outline" size="icon" className="h-8 w-8" onClick={() => handleEdit(item)}>

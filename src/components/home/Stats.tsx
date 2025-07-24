@@ -3,13 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { IconType } from "react-icons";
 import { FaSmile, FaBriefcase, FaClock, FaUsers } from "react-icons/fa";
-
-const stats: { value: number; label: string; Icon: IconType }[] = [
-  { value: 150, label: "Happy Clients", Icon: FaSmile  },
-  { value: 200, label: "Projects Completed", Icon: FaBriefcase },
-  { value: 9000, label: "Hours of Support", Icon: FaClock },
-  { value: 25, label: "Hard Workers", Icon: FaUsers },
-];
+import { useGetMembersQuery } from "@/services/api";
 
 function CountUp({ end }: { end: number }) {
   const [count, setCount] = useState(0);
@@ -39,6 +33,24 @@ function CountUp({ end }: { end: number }) {
 export default function Stats() {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  const {
+    data: members = [],
+    isLoading: membersLoading,
+    error: membersError,
+  } = useGetMembersQuery(undefined);
+
+  // total team members
+  const totalTeamMembers = members.length;
+  console.log("Total Team Members : ", totalTeamMembers);
+
+  // Define stats array, using totalTeamMembers for "Hard Workers"
+  const stats: { value: number; label: string; Icon: IconType }[] = [
+    { value: 150, label: "Happy Clients", Icon: FaSmile },
+    { value: 200, label: "Projects Completed", Icon: FaBriefcase },
+    { value: 9000, label: "Hours of Support", Icon: FaClock },
+    { value: totalTeamMembers, label: "Hard Workers", Icon: FaUsers },
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver(

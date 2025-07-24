@@ -15,6 +15,7 @@ export const api = createApi({
     "Client",
     "TeamMember",
     "Category",
+    "Media", // Add Media tag
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -63,6 +64,15 @@ export const api = createApi({
       invalidatesTags: ["TeamCategory"],
     }),
 
+    reorderCategories: builder.mutation({
+      query: (categories) => ({
+        url: "/team-category",
+        method: "PATCH",
+        body: { categories },
+      }),
+      invalidatesTags: ["TeamCategory"],
+    }),
+
     // ================================================== Team Member Endpoints ================================================== //
 
     getMembers: builder.query({
@@ -90,6 +100,14 @@ export const api = createApi({
         url: `/team-member`,
         method: "DELETE",
         body: { _id },
+      }),
+      invalidatesTags: ["TeamMember"],
+    }),
+    reorderMembers: builder.mutation({
+      query: (members) => ({
+        url: "/team-member",
+        method: "PATCH",
+        body: { members },
       }),
       invalidatesTags: ["TeamMember"],
     }),
@@ -121,6 +139,14 @@ export const api = createApi({
         url: `/client`,
         method: "DELETE",
         body: { _id },
+      }),
+      invalidatesTags: ["Client"],
+    }),
+    reorderClients: builder.mutation({
+      query: (clients) => ({
+        url: "/client",
+        method: "PATCH",
+        body: { clients },
       }),
       invalidatesTags: ["Client"],
     }),
@@ -237,6 +263,49 @@ export const api = createApi({
       }),
       invalidatesTags: ["Contact"],
     }),
+
+    // ================================================== Media Endpoints ================================================== //
+
+    getMediaItems: builder.query({
+      query: (type) => `/media?type=${type}`,
+      providesTags: ["Media"],
+    }),
+
+    addMediaItem: builder.mutation({
+      query: (data) => ({
+        url: "/media",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Media"],
+    }),
+
+    updateMediaItem: builder.mutation({
+      query: (data) => ({
+        url: "/media",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: ["Media"],
+    }),
+
+    deleteMediaItem: builder.mutation({
+      query: (data) => ({
+        url: "/media",
+        method: "DELETE",
+        body: data,
+      }),
+      invalidatesTags: ["Media"],
+    }),
+
+    reorderMediaItems: builder.mutation({
+      query: (data) => ({
+        url: "/media",
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Media"],
+    }),
   }),
 });
 
@@ -249,16 +318,19 @@ export const {
   useAddCategoryMutation,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useReorderCategoriesMutation,
 
   useGetMembersQuery,
   useAddMemberMutation,
   useUpdateMemberMutation,
   useDeleteMemberMutation,
+  useReorderMembersMutation,
 
   useGetClientsQuery,
   useAddClientMutation,
   useUpdateClientMutation,
   useDeleteClientMutation,
+  useReorderClientsMutation,
 
   useGetJobsQuery,
   useAddJobMutation,
@@ -277,4 +349,11 @@ export const {
   useAddContactMutation,
   useUpdateContactStatusMutation,
   useDeleteContactMutation,
+
+  // Media exports
+  useGetMediaItemsQuery,
+  useAddMediaItemMutation,
+  useUpdateMediaItemMutation,
+  useDeleteMediaItemMutation,
+  useReorderMediaItemsMutation,
 } = api;
