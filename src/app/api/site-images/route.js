@@ -1,5 +1,8 @@
+
 import _db from "../../../lib/utils/db";
 import SiteImageModel from "../../../../models/SiteImage.model";
+import { uploadBase64, deleteFile } from "../../../lib/utils/upload";
+
 
 // Establish MongoDB connection
 _db();
@@ -20,33 +23,91 @@ export async function GET() {
   }
 }
 
-export async function PUT(request) {
+export async function POST(request) {
   try {
     const data = await request.json();
-    const { section, imageUrl, alt, hint } = data;
+    const { page, section, alt, hint, imageUrl } = data;
 
-    if (!section || !imageUrl || !alt) {
+    if (!page || !section || !alt || !imageUrl) {
       return new Response(
-        JSON.stringify({ error: "Section, imageUrl, and alt are required" }),
+        JSON.stringify({ error: "Page, section, alt, and imageUrl are required" }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
     
-    // Use upsert to create or update the image based on the unique section identifier
-    const updatedImage = await SiteImageModel.findOneAndUpdate(
-      { section: section },
+    // Upload image
+    const uploadedUrl = await uploadBase64(imageUrl, section);
+    if (!uploadedUrl) {
+      throw new Error("Failed to upload image");
+    }
+
+    const newImage = new SiteImageModel({
+      page,
+      section,
+      alt,
+      hint: hint || "website image",
+      imageUrl: uploadedUrl,
+    });
+    
+    await newImage.save();
+
+    return new Response(
+      JSON.stringify({
+        message: "Site image created successfully",
+        data: newImage,
+      }),
+      { status: 201, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("Error creating site image:", error);
+    return new Response(
+      JSON.stringify({ error: "Failed to create site image" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
+
+
+export async function PUT(request) {
+  try {
+    const data = await request.json();
+    const { _id, alt, hint, imageUrl } = data;
+
+    if (!_id || !alt) {
+      return new Response(
+        JSON.stringify({ error: "_id and alt are required" }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    const imageToUpdate = await SiteImageModel.findById(_id);
+    if (!imageToUpdate) {
+        return new Response(JSON.stringify({ error: "Image not found" }), {
+            status: 404, headers: { "Content-Type": "application/json" },
+        });
+    }
+
+    let finalImageUrl = imageToUpdate.imageUrl;
+    // Check if a new image was uploaded (it will be a base64 string)
+    if (imageUrl && imageUrl.startsWith('data:')) {
+      // Delete old image
+      await deleteFile(imageToUpdate.imageUrl);
+      // Upload new image
+      const newUrl = await uploadBase64(imageUrl, imageToUpdate.section);
+      if (!newUrl) {
+        throw new Error("Failed to upload new image");
+      }
+      finalImageUrl = newUrl;
+    }
+
+    const updatedImage = await SiteImageModel.findByIdAndUpdate(
+      _id,
       { 
-        $set: { 
-          imageUrl, 
-          alt,
-          hint: hint || "website image"
-        },
-        $setOnInsert: {
-            page: section.split('_')[0], // Assumes section is like 'page_name'
-            section: section,
-        }
+        alt,
+        hint: hint || "website image",
+        imageUrl: finalImageUrl,
       },
-      { new: true, upsert: true, runValidators: true }
+      { new: true, runValidators: true }
     );
 
     return new Response(
@@ -60,6 +121,42 @@ export async function PUT(request) {
     console.error("Error updating site image:", error);
     return new Response(
       JSON.stringify({ error: "Failed to update site image" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    const { _id } = await request.json();
+
+    if (!_id) {
+      return new Response(JSON.stringify({ error: "_id is required" }), {
+        status: 400, headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const imageToDelete = await SiteImageModel.findById(_id);
+    if (!imageToDelete) {
+      return new Response(JSON.stringify({ error: "Image not found" }), {
+        status: 404, headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Delete the file from storage
+    await deleteFile(imageToDelete.imageUrl);
+
+    // Delete the record from the database
+    await SiteImageModel.findByIdAndDelete(_id);
+    
+    return new Response(
+      JSON.stringify({ message: "Site image deleted successfully" }),
+      { status: 200, headers: { "Content-Type": "application/json" } }
+    );
+  } catch (error) {
+    console.error("Error deleting site image:", error);
+    return new Response(
+      JSON.stringify({ error: "Failed to delete site image" }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }

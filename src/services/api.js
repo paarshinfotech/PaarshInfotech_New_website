@@ -1,3 +1,4 @@
+
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const api = createApi({
@@ -314,11 +315,27 @@ export const api = createApi({
       query: () => '/site-images',
       providesTags: ['SiteImage'],
     }),
+    addSiteImage: builder.mutation({
+      query: (imageData) => ({
+        url: '/site-images',
+        method: 'POST',
+        body: imageData,
+      }),
+      invalidatesTags: ['SiteImage'],
+    }),
     updateSiteImage: builder.mutation({
       query: (imageData) => ({
         url: `/site-images`,
         method: 'PUT',
         body: imageData,
+      }),
+      invalidatesTags: ['SiteImage'],
+    }),
+    deleteSiteImage: builder.mutation({
+      query: (_id) => ({
+        url: '/site-images',
+        method: 'DELETE',
+        body: { _id },
       }),
       invalidatesTags: ['SiteImage'],
     }),
@@ -376,5 +393,7 @@ export const {
   
   // Site Images
   useGetSiteImagesQuery,
+  useAddSiteImageMutation,
   useUpdateSiteImageMutation,
+  useDeleteSiteImageMutation,
 } = api;
