@@ -1,5 +1,6 @@
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { add } from "date-fns";
 import { use } from "react";
 
 export const api = createApi({
@@ -19,6 +20,10 @@ export const api = createApi({
     "Category",
     "Media",
     "SiteImage",
+    "Service",
+    "Testimonial",
+    "Project",
+    
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -393,6 +398,7 @@ export const api = createApi({
       query: () => '/site-images',
       providesTags: ['SiteImage'],
     }),
+    
     addSiteImage: builder.mutation({
       query: (imageData) => ({
         url: '/site-images',
@@ -416,6 +422,39 @@ export const api = createApi({
         body: { _id },
       }),
       invalidatesTags: ['SiteImage'],
+    }),
+
+    // ================================================== Testimonial Endpoints ================================================== //
+
+    getTestimonials: builder.query({
+      query: () => '/testimonial',
+      providesTags: ['Testimonial'],
+    }),
+
+    addTestimonial: builder.mutation({
+      query: (testimonial) => ({
+        url: '/testimonial',
+        method: 'POST',
+        body: testimonial,
+      }),
+      invalidatesTags: ['Testimonial'],
+    }),
+
+    updateTestimonial: builder.mutation({
+      query: (testimonial) => ({
+        url: '/testimonial',
+        method: 'PATCH',
+        body: testimonial,
+      }),
+      invalidatesTags: ['Testimonial'],
+    }),
+
+    deleteTestimonial: builder.mutation({
+      query: (id) => ({
+        url: `/testimonial?id=${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Testimonial'],
     }),
 
   }),
@@ -486,4 +525,10 @@ export const {
   useAddSiteImageMutation,
   useUpdateSiteImageMutation,
   useDeleteSiteImageMutation,
+
+  // Testimonials
+  useGetTestimonialsQuery,
+  useAddTestimonialMutation,
+  useUpdateTestimonialMutation,
+  useDeleteTestimonialMutation
 } = api;

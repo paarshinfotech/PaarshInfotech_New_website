@@ -1,10 +1,11 @@
-import type { ComponentType } from "react";
+import { IconType } from "react-icons"; // Import IconType
+import { LuCheck } from "react-icons/lu"; // Import fallback icon
 
 interface OurProcessServiceProps {
   steps: {
     title: string;
     description: string;
-    Icon: ComponentType<React.SVGProps<SVGSVGElement> | { className?: string }>;
+    IconComponent?: IconType; // Change Icon to IconComponent and use IconType
   }[];
 }
 
@@ -33,7 +34,11 @@ export default function OurProcessService({ steps }: OurProcessServiceProps) {
               >
                 <div className="relative z-10 flex items-center justify-center w-24 h-24 bg-secondary rounded-full">
                   <div className="flex items-center justify-center w-20 h-20 bg-primary/10 text-primary rounded-full ring-8 ring-primary/5 transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground">
-                    <step.Icon className="w-8 h-8" />
+                    {step.IconComponent ? (
+                      <step.IconComponent className="w-8 h-8" />
+                    ) : (
+                      <LuCheck className="w-8 h-8" /> // Fallback icon
+                    )}
                   </div>
                 </div>
                 <h3 className="text-xl font-bold text-primary mb-2 mt-6">

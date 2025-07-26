@@ -27,10 +27,10 @@ export default function Hero() {
       <div className="container relative z-10 py-24 md:py-32">
         <div className="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
           <div className="text-center md:text-left">
-            <Badge variant="outline" className="mb-4 border-primary/20 bg-primary/5 text-primary font-semibold">
+            {/* <Badge variant="outline" className="mb-4 border-primary/20 bg-primary/5 text-primary font-semibold">
               <FaStar className="w-4 h-4 mr-2" />
               Welcome to Paarsh Infotech
-            </Badge>
+            </Badge> */}
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-primary mb-6">
               Best Software Development Company in Nashik
             </h1>

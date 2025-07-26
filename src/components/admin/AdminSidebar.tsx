@@ -51,6 +51,7 @@ const mainLinks = [
   { href: "/admin/clients", label: "Clients", icon: LuPackage },
   { href: "/admin/careers", label: "Careers", icon: LuFileText },
   { href: "/admin/media", label: "Media", icon: LuImage },
+  { href: "/admin/testimonial", label: "Testimonials", icon: LuPackage },
   { href: "/admin/site-images", label: "Site Images", icon: LuImage },
   { href: "/admin/social", label: "Social Posts", icon: LuRss },
   { href: "/admin/contacts", label: "Contacts", icon: LuMessageSquare },

@@ -12,13 +12,32 @@ import { Service } from "@/lib/servicesData";
 import { useGetServicesQuery } from "@/services/api";
 import Link from "next/link";
 import { LuArrowRight, LuCheck } from "react-icons/lu";
-import { FaCode, FaMobileAlt, FaRobot } from "react-icons/fa";
+import { IconType } from "react-icons";
+import {
+  FaCode,
+  FaUsers,
+  FaGem,
+  FaBolt,
+  FaAward,
+  FaPen,
+  FaSearch,
+  FaRocket,
+  FaLifeRing,
+  FaCheckCircle
+} from "react-icons/fa";
 
-// Map service titles to icons
-const iconMap: Record<string, React.ComponentType> = {
-  "Web Development": FaCode,
-  "Mobile Development": FaMobileAlt,
-  "AI Solutions": FaRobot,
+// Map icon names to React icon components
+const iconMap: Record<string, IconType> = {
+  Code: FaCode,
+  Users: FaUsers,
+  Gem: FaGem,
+  Zap: FaBolt,
+  Award: FaAward,
+  PenTool: FaPen,
+  Search: FaSearch,
+  Rocket: FaRocket,
+  LifeBuoy: FaLifeRing,
+  CheckCircle: FaCheckCircle,
 };
 
 // Skeleton component for loading state
@@ -112,11 +131,15 @@ export default function ServicesGrid() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
             {publishedServices.map((service: Service) => {
-              const ServiceIcon = iconMap[service.title] || FaCode; // Fallback to FaCode
+              // Get the icon from the service data, fallback to Code icon
+              const ServiceIcon = service.Icon && iconMap[service.Icon] 
+                ? iconMap[service.Icon] 
+                : iconMap.Code;
+              
               return (
                 <Link
-                  key={service.slug}
-                  href={`/services/${service.slug}`}
+                  key={service._id}
+                  href={`/services/${service._id}`}
                   className="block group h-full"
                 >
                   <Card className="flex flex-col h-full transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 border-transparent hover:border-primary/20 bg-secondary/30">

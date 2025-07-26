@@ -1,3 +1,7 @@
+"use client";
+import { useGetClientsQuery } from "@/services/api";
+
+// Keep the ClientLogo as fallback (optional)
 const ClientLogo = ({ className }: { className?: string }) => (
   <svg
     viewBox="0 0 128 48"
@@ -11,36 +15,59 @@ const ClientLogo = ({ className }: { className?: string }) => (
   </svg>
 );
 
-const clients = [
-  { id: 1, name: "TechCorp", published: true },
-  { id: 2, name: "HealthFirst", published: true },
-  { id: 3, name: "Urban Apparel", published: true },
-  { id: 4, name: "Innovate Corp", published: true },
-  { id: 5, name: "Innovate Corp", published: true },
-  { id: 6, name: "Innovate Corp", published: true },
-  { id: 7, name: "Innovate Corp", published: true },
-  { id: 8, name: "Innovate Corp", published: false },
-  { id: 9, name: "Innovate Corp", published: true },
-  { id: 10, name: "Innovate Corp", published: true },
-];
+interface Client {
+  _id: string;
+  name: string;
+  industry: string;
+  since: string;
+  logo: string;
+  published: boolean;
+  order: number;
+}
 
 export default function Clients() {
-  const publishedClients = clients.filter((c) => c.published);
+  const { data: clientData } = useGetClientsQuery(undefined);
+  console.log("clientData", clientData);
+
+  const clients: Client[] = clientData || [];
+  const publishedClients = clients.filter((c: Client) => c.published);
+
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section className="py-20 md:py-28 lg:py-32 bg-background">
       <div className="container max-w-7xl">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6">
             Our Valued Clients
           </h2>
-          <p className="mt-4 text-lg text-foreground/70">
+          <p className="text-xl md:text-2xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
             We are proud to have worked with a diverse range of businesses.
           </p>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-8 gap-y-12 items-center">
-          {publishedClients.map((client) => (
-            <div key={client.id} className="flex justify-center items-center">
-              <ClientLogo className="w-32 h-12 text-muted-foreground/60 hover:text-foreground/80 transition-colors" />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12 lg:gap-16 items-center">
+          {publishedClients.map((client: Client) => (
+            <div key={client._id} className="flex flex-col justify-center items-center space-y-4 p-6 rounded-xl hover:bg-muted/30 transition-all duration-300">
+              <div className="flex justify-center items-center h-24 w-40 lg:h-28 lg:w-48">
+                <img
+                  src={client.logo}
+                  alt={`${client.name} logo`}
+                  className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
+                  onError={(e) => {
+                    // Fallback to default logo if image fails to load
+                    const target = e.currentTarget;
+                    target.style.display = 'none';
+                    const fallback = target.nextElementSibling as HTMLElement;
+                    if (fallback) fallback.style.display = 'block';
+                  }}
+                />
+                <ClientLogo 
+                  className="w-40 h-16 lg:w-48 lg:h-20 text-muted-foreground/60 hover:text-foreground/80 transition-colors hidden" 
+                />
+              </div>
+              <div className="text-center space-y-2">
+                <h3 className="text-lg lg:text-xl font-semibold text-foreground/90">{client.name}</h3>
+                <p className="text-base lg:text-lg text-muted-foreground font-medium">{client.industry}</p>
+                <p className="text-sm text-muted-foreground/70">Since {client.since}</p>
+              </div>
             </div>
           ))}
         </div>

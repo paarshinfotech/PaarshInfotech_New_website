@@ -1,22 +1,20 @@
+import { IconType } from "react-icons"; // Import IconType
 import {
   Card,
   CardHeader,
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import type { ComponentType } from "react";
 
 interface WhyChooseUsServiceProps {
   reasons: {
     title: string;
     description: string;
-    Icon: ComponentType<React.SVGProps<SVGSVGElement> | { className?: string }>;
+    IconComponent?: IconType; // Change Icon to IconComponent and use IconType
   }[];
 }
 
-export default function WhyChooseUsService({
-  reasons,
-}: WhyChooseUsServiceProps) {
+export default function WhyChooseUsService({ reasons }: WhyChooseUsServiceProps) {
   return (
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
@@ -29,7 +27,7 @@ export default function WhyChooseUsService({
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {reasons.map(({ title, description, Icon }) => (
+          {reasons.map(({ title, description, IconComponent }) => (
             <Card
               key={title}
               className="text-center hover:shadow-xl transition-shadow duration-300 p-4 bg-background"
@@ -37,7 +35,11 @@ export default function WhyChooseUsService({
               <CardHeader>
                 <div className="flex justify-center mb-4">
                   <div className="p-3 bg-accent/20 rounded-full">
-                    <Icon className="w-8 h-8 text-primary" />
+                    {IconComponent ? (
+                      <IconComponent className="w-8 h-8 text-primary" />
+                    ) : (
+                      <span>No Icon</span> // Fallback UI
+                    )}
                   </div>
                 </div>
                 <CardTitle className="text-xl text-primary mb-2">
