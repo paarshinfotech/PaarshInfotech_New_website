@@ -1,7 +1,8 @@
 // src/app/(admin)/admin/excellence-center/journey/page.tsx
 "use client";
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { JourneyMilestonesManagement } from "@/components/admin/about/JourneyMilestonesManagement";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function JourneyPage() {
     return (
@@ -11,8 +12,8 @@ export default function JourneyPage() {
                 <CardDescription>Manage the journey timeline for the Excellence Center program.</CardDescription>
             </CardHeader>
             <CardContent>
-                <p>Journey Management Coming Soon...</p>
+                <JourneyMilestonesManagement />
             </CardContent>
         </Card>
-    )
+    );
 }

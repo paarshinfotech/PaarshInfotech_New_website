@@ -1,9 +1,21 @@
 // src/app/(admin)/admin/excellence-center/gallery/page.tsx
 "use client";
 
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { GalleryManagementTab } from "@/components/admin/media/tabs/GalleryManagementTab";
+import { useGetMediaItemsQuery } from "@/services/api";
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function GalleryPage() {
+    const [galleryItems, setGalleryItems] = useState<any[]>([]);
+    const { data: galleryData = [] } = useGetMediaItemsQuery('gallery');
+
+    useEffect(() => {
+        if (galleryData) {
+            setGalleryItems(galleryData);
+        }
+    }, [galleryData]);
+
     return (
         <Card>
             <CardHeader>
@@ -11,8 +23,8 @@ export default function GalleryPage() {
                 <CardDescription>Manage the images in the Excellence Center gallery.</CardDescription>
             </CardHeader>
             <CardContent>
-                <p>Gallery Management Coming Soon...</p>
+                <GalleryManagementTab items={galleryItems} setItems={setGalleryItems} />
             </CardContent>
         </Card>
-    )
+    );
 }
