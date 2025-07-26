@@ -710,6 +710,7 @@ export const {
   useAddTestimonialMutation,
   useUpdateTestimonialMutation,
   useDeleteTestimonialMutation,
+  useReorderTestimonialsMutation,
 
   // Excellence Center
   useGetPartnersQuery,
