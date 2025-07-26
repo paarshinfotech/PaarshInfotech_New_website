@@ -1,8 +1,15 @@
+// src/components/products/details/FeatureGrid.tsx
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import type { Product } from "@/lib/productsData";
 
+interface Feature {
+  title: string;
+  description: string;
+  _id: string;
+}
+
 interface FeatureGridProps {
-    features: Product['features'];
+  features: Feature[];
 }
 
 export default function FeatureGrid({ features }: FeatureGridProps) {
@@ -16,12 +23,9 @@ export default function FeatureGrid({ features }: FeatureGridProps) {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {features.map(({ title, description, Icon }) => (
-            <Card key={title} className="p-6 group transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 bg-background text-center">
+          {features.map(({ title, description, _id }) => (
+            <Card key={_id} className="p-6 group transition-all duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2 bg-background text-center">
               <CardHeader className="p-0 items-center">
-                <div className="p-4 bg-primary/10 rounded-full mb-6 transition-all duration-300 group-hover:scale-110 group-hover:bg-accent">
-                  <Icon className="w-8 h-8 text-primary transition-colors group-hover:text-accent-foreground" />
-                </div>
                 <CardTitle className="text-xl text-primary">{title}</CardTitle>
               </CardHeader>
               <div className="p-0 mt-4">

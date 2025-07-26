@@ -1,11 +1,11 @@
+// src/components/products/details/ProductHero.tsx
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { LuArrowRight } from "react-icons/lu";
-
+import { LuArrowRight, LuBox } from "react-icons/lu"; // Added fallback icon
 import type { Product } from "@/lib/productsData";
 
 interface ProductHeroProps {
-    product: Product;
+  product: Product;
 }
 
 export default function ProductHero({ product }: ProductHeroProps) {
@@ -17,8 +17,8 @@ export default function ProductHero({ product }: ProductHeroProps) {
       
       <div className="relative container text-center max-w-4xl z-10">
         <div className="inline-flex items-center gap-3 bg-background border rounded-full px-4 py-2 mb-6">
-            <product.Icon className="w-6 h-6 text-primary" />
-            <span className="font-bold text-primary">{product.name}</span>
+          <LuBox className="w-6 h-6 text-primary" /> {/* Fallback icon */}
+          <span className="font-bold text-primary">{product.name}</span>
         </div>
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-primary">
           {product.tagline}
