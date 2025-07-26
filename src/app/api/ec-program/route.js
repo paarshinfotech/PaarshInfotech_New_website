@@ -1,7 +1,8 @@
 
 import { NextResponse } from "next/server";
 import _db from "../../../lib/utils/db";
-const ProgramModel = require("../../../../models/Program.model.js");
+// const ProgramModel = require("../../../../models/Program.model");
+import ProgramModel from "../../../../models/Program.model.js";
 
 await _db();
 
