@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
@@ -174,30 +175,35 @@ export function WorkshopsManagement() {
 
   const handleDragEnd = useCallback(
     async (event: any) => {
-      const { active, over } = event;
-      if (active.id !== over.id) {
-        const oldIndex = workshops.findIndex((item) => item._id === active.id);
-        const newIndex = workshops.findIndex((item) => item._id === over.id);
-        const newItems = arrayMove(workshops, oldIndex, newIndex);
-        setWorkshops(newItems);
+        const { active, over } = event;
+        if (active.id !== over.id) {
+            const oldItems = workshops;
+            const oldIndex = oldItems.findIndex((item) => item._id === active.id);
+            const newIndex = oldItems.findIndex((item) => item._id === over.id);
+            const newItems = arrayMove(oldItems, oldIndex, newIndex);
+            
+            // Update the local state immediately for a smooth UI experience
+            setWorkshops(newItems);
+            
+            const reorderedData = newItems.map((item, index) => ({
+                _id: item._id,
+                order: (index + 1) * 10, // Recalculate order with gaps
+            }));
 
-        const reorderedData = newItems.map((item, index) => ({
-          _id: item._id,
-          order: index,
-        }));
-
-        reorderWorkshops({ workshops: reorderedData })
-          .unwrap()
-          .then(() => toast({ title: "Reordered successfully" }))
-          .catch((error) => {
-            toast({
-              title: "Error reordering",
-              description: error.data?.error || "An unknown error occurred",
-              variant: "destructive",
-            });
-            setWorkshops(workshops);
-          });
-      }
+            try {
+                // Send the reordered data to the backend
+                await reorderWorkshops({ workshops: reorderedData }).unwrap();
+                toast({ title: "Reordered successfully" });
+            } catch (error: any) {
+                // If the API call fails, revert the state and show an error
+                setWorkshops(oldItems);
+                toast({
+                    title: "Error reordering",
+                    description: error.data?.error || "An unknown error occurred",
+                    variant: "destructive",
+                });
+            }
+        }
     },
     [workshops, reorderWorkshops, toast]
   );
