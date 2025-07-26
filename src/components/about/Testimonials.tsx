@@ -1,71 +1,65 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { useGetTestimonialsQuery } from "@/services/api";
-import { LuStar } from "react-icons/lu";
+import Image from "next/image";
+import { useGetTestimonialsQuery } from "../../services/api";
 
 interface Testimonial {
   _id: string;
+  quote: string;
   name: string;
-  designation: string;
-  rating: number;
-  feedback: string;
-  order: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  title: string;
+  avatar: string;
+  published: boolean;
 }
 
 export default function Testimonials() {
-  const { data: testimonials = [], isLoading } = useGetTestimonialsQuery(true); // Only active testimonials
+  const {
+    data: testimonialsData,
+    isLoading: testimonialsLoading,
+    error: testimonialsError,
+  } = useGetTestimonialsQuery(undefined);
 
-  // Duplicate testimonials for seamless marquee effect, triple for single testimonial
-  const extendedTestimonials =
-    testimonials.length === 1
-      ? [...testimonials, ...testimonials, ...testimonials]
-      : [...testimonials, ...testimonials];
+  const testimonials = testimonialsData?.data || [];
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <LuStar
-        key={i}
-        className={`h-4 w-4 ${
-          i < rating ? "text-yellow-400 fill-current" : "text-gray-300"
-        }`}
-      />
-    ));
-  };
+  // Filter published testimonials and duplicate for marquee effect
+  const publishedTestimonials = testimonials.filter((t: Testimonial) => t.published);
+  const extendedTestimonials = [...publishedTestimonials, ...publishedTestimonials];
 
-  if (isLoading) {
-    return (
-      <section className="py-16 md:py-24 bg-secondary">
-        <div className="container max-w-7xl">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary">From Our Team & Partners</h2>
-            <p className="mt-4 text-lg text-foreground/70 max-w-2xl mx-auto">
-              Hear what our interns, employees, and clients have to say about their experience with us.
-            </p>
+  // Skeleton component for loading state
+  const SkeletonCard = () => (
+    <div className="flex-shrink-0 w-full md:w-1/2 lg:w-[30%] p-4">
+      <Card className="h-full bg-background shadow-md flex flex-col p-8">
+        <CardContent className="p-0 flex-grow">
+          <div className="animate-pulse">
+            <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
+            <div className="h-4 bg-gray-200 rounded w-2/3 mb-6"></div>
           </div>
-          <div className="flex items-center justify-center py-12">
-            <div className="text-muted-foreground">Loading testimonials...</div>
+        </CardContent>
+        <div className="flex items-center gap-4 mt-auto pt-4 border-t">
+          <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse"></div>
+          <div className="flex-grow">
+            <div className="h-4 bg-gray-200 rounded w-1/2 mb-1 animate-pulse"></div>
+            <div className="h-3 bg-gray-200 rounded w-1/3 animate-pulse"></div>
           </div>
         </div>
-      </section>
-    );
-  }
+      </Card>
+    </div>
+  );
 
-  if (testimonials.length === 0) {
+  if (testimonialsError) {
     return (
       <section className="py-16 md:py-24 bg-secondary">
         <div className="container max-w-7xl">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-primary">From Our Team & Partners</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-primary">What Our Clients Say</h2>
             <p className="mt-4 text-lg text-foreground/70 max-w-2xl mx-auto">
-              Hear what our interns, employees, and clients have to say about their experience with us.
+              Real stories from satisfied partners who trust our work.
             </p>
           </div>
-          <div className="flex items-center justify-center py-12">
-            <div className="text-muted-foreground">No testimonials available.</div>
+          <div className="text-center text-red-500">
+            Error: Failed to load testimonials. Please try again later.
           </div>
         </div>
       </section>
@@ -76,39 +70,39 @@ export default function Testimonials() {
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">From Our Team & Partners</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-primary">What Our Clients Say</h2>
           <p className="mt-4 text-lg text-foreground/70 max-w-2xl mx-auto">
-            Hear what our interns, employees, and clients have to say about their experience with us.
+            Real stories from satisfied partners who trust our work.
           </p>
         </div>
         <div className="relative w-full overflow-hidden group">
-          <div className="flex marquee group-hover:[animation-play-state:paused]">
-            {extendedTestimonials.map((testimonial: Testimonial, index: number) => (
-              <div key={`${testimonial._id}-${index}`} className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4">
-                <Card className="h-full bg-background shadow-lg flex flex-col p-8">
-                  <CardContent className="p-0 flex-grow">
-                    <div className="flex items-center gap-1 mb-4">
-                      {renderStars(testimonial.rating)}
-                      <span className="text-sm text-muted-foreground ml-1">
-                        ({testimonial.rating}/5)
-                      </span>
-                    </div>
-                    <p className="text-foreground/80 mb-6 italic">"{testimonial.feedback}"</p>
-                  </CardContent>
-                  <div className="flex items-center gap-4 mt-auto pt-4 border-t">
-                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-primary font-semibold text-lg">
-                        {testimonial.name.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-primary">{testimonial.name}</p>
-                      <p className="text-sm text-muted-foreground">{testimonial.designation}</p>
-                    </div>
+          <div className="flex animate-marquee-left group-hover:[animation-play-state:paused]">
+            {testimonialsLoading
+              ? // Render 6 skeleton cards during loading
+                Array.from({ length: 6 }).map((_, index) => <SkeletonCard key={index} />)
+              : extendedTestimonials.map((testimonial: Testimonial, index: number) => (
+                  <div key={`${testimonial._id}-${index}`} className="flex-shrink-0 w-full md:w-1/2 lg:w-[30%] p-4">
+                    <Card className="h-full bg-background shadow-md flex flex-col p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+                      <CardContent className="p-0 flex-grow">
+                        <p className="text-foreground/80 mb-6 italic">"{testimonial.quote}"</p>
+                      </CardContent>
+                      <div className="flex items-center gap-4 mt-auto pt-4 border-t">
+                        <Image
+                          src={testimonial.avatar}
+                          alt={testimonial.name}
+                          width={48}
+                          height={48}
+                          className="rounded-full object-cover"
+                          data-ai-hint="person"
+                        />
+                        <div>
+                          <p className="font-semibold text-primary">{testimonial.name}</p>
+                          <p className="text-sm text-muted-foreground">{testimonial.title}</p>
+                        </div>
+                      </div>
+                    </Card>
                   </div>
-                </Card>
-              </div>
-            ))}
+                ))}
           </div>
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-secondary via-transparent to-secondary"></div>
         </div>

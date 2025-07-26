@@ -712,17 +712,4 @@ export const {
   useDeleteTestimonialMutation,
   useReorderTestimonialsMutation,
 
-  // Excellence Center
-  useGetPartnersQuery,
-  useAddPartnerMutation,
-  useUpdatePartnerMutation,
-  useDeletePartnerMutation,
-  useReorderPartnersMutation,
-
-  useGetProgramsQuery,
-  useAddProgramMutation,
-  useUpdateProgramMutation,
-  useDeleteProgramMutation,
-  useReorderProgramsMutation,
-
 } = api;
