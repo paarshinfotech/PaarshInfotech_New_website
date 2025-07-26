@@ -40,6 +40,7 @@ import {
   LuLogOut,
   LuLoader,
   LuImage,
+  LuGraduationCap,
 } from "react-icons/lu";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -52,6 +53,7 @@ const mainLinks = [
   { href: "/admin/clients", label: "Clients", icon: LuPackage },
   { href: "/admin/careers", label: "Careers", icon: LuFileText },
   { href: "/admin/media", label: "Media", icon: LuImage },
+  { href: "/admin/testimonial", label: "Testimonials", icon: LuPackage },
   { href: "/admin/site-images", label: "Site Images", icon: LuImage },
   { href: "/admin/social", label: "Social Posts", icon: LuRss },
   { href: "/admin/contacts", label: "Contacts", icon: LuMessageSquare },
@@ -62,6 +64,18 @@ const mainLinks = [
 const teamLinks = [
   { href: "/admin/team", label: "Members" },
   { href: "/admin/team/categories", label: "Categories" },
+];
+
+const excellenceCenterLinks = [
+  { href: "/admin/excellence-center", label: "Dashboard" },
+  { href: "/admin/excellence-center/partners", label: "Partners" },
+  { href: "/admin/excellence-center/programs", label: "Programs Offered" },
+  { href: "/admin/excellence-center/centers", label: "Centers" },
+  { href: "/admin/excellence-center/gallery", label: "Gallery" },
+  { href: "/admin/excellence-center/journey", label: "Journey" },
+  { href: "/admin/excellence-center/workshops", label: "Workshops" },
+  { href: "/admin/excellence-center/awards", label: "Awards" },
+  { href: "/admin/excellence-center/feedbacks", label: "Feedbacks" },
 ];
 
 const settingsLink = {
@@ -75,6 +89,7 @@ export function AdminSidebar() {
   const { logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const isTeamSectionOpen = pathname.startsWith("/admin/team");
+  const isExcellenceCenterSectionOpen = pathname.startsWith("/admin/excellence-center");
 
   const handleLogout = () => {
     setIsLoggingOut(true);
@@ -130,6 +145,22 @@ export function AdminSidebar() {
             </CollapsibleTrigger>
             <CollapsibleContent className="space-y-1 pt-1">
               {teamLinks.map((link) => (
+                <NavLink key={link.href} {...link} isSubItem />
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+          
+          <Collapsible defaultOpen={isExcellenceCenterSectionOpen}>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between">
+                <span className="flex items-center gap-2">
+                  <LuGraduationCap className="h-4 w-4" /> Excellence Center
+                </span>
+                <LuChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-1 pt-1">
+              {excellenceCenterLinks.map((link) => (
                 <NavLink key={link.href} {...link} isSubItem />
               ))}
             </CollapsibleContent>

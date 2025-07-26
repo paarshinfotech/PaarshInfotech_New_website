@@ -1,5 +1,6 @@
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { add } from "date-fns";
 import { use } from "react";
 
 export const api = createApi({
@@ -19,9 +20,14 @@ export const api = createApi({
     "Category",
     "Media",
     "SiteImage",
+    "Service",
+    "Testimonial",
+    "Project",
     "JourneyMilestone",
     "CultureMoment",
-    "Testimonial",
+    "Partner",
+    "Program",
+    
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -396,6 +402,7 @@ export const api = createApi({
       query: () => '/site-images',
       providesTags: ['SiteImage'],
     }),
+    
     addSiteImage: builder.mutation({
       query: (imageData) => ({
         url: '/site-images',
@@ -421,6 +428,38 @@ export const api = createApi({
       invalidatesTags: ['SiteImage'],
     }),
 
+    // ================================================== Testimonial Endpoints ================================================== //
+
+    getTestimonials: builder.query({
+      query: () => '/testimonial',
+      providesTags: ['Testimonial'],
+    }),
+
+    addTestimonial: builder.mutation({
+      query: (testimonial) => ({
+        url: '/testimonial',
+        method: 'POST',
+        body: testimonial,
+      }),
+      invalidatesTags: ['Testimonial'],
+    }),
+
+    updateTestimonial: builder.mutation({
+      query: (testimonial) => ({
+        url: '/testimonial',
+        method: 'PATCH',
+        body: testimonial,
+      }),
+      invalidatesTags: ['Testimonial'],
+    }),
+
+    deleteTestimonial: builder.mutation({
+      query: (id) => ({
+        url: `/testimonial?id=${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Testimonial'],
+    }),
     // ================================================== Journey Milestone Endpoints ================================================== //
 
     getJourneyMilestones: builder.query({
@@ -538,7 +577,52 @@ export const api = createApi({
       invalidatesTags: ["Testimonial"],
     }),
 
+    // ================================================== Excellence Center Endpoints ================================================== //
+
+    getPartners: builder.query({
+      query: () => "/ec-partner",
+      providesTags: ["Partner"],
+    }),
+    addPartner: builder.mutation({
+      query: (partner) => ({ url: "/ec-partner", method: "POST", body: partner }),
+      invalidatesTags: ["Partner"],
+    }),
+    updatePartner: builder.mutation({
+      query: (partner) => ({ url: "/ec-partner", method: "PUT", body: partner }),
+      invalidatesTags: ["Partner"],
+    }),
+    deletePartner: builder.mutation({
+      query: (body) => ({ url: "/ec-partner", method: "DELETE", body }),
+      invalidatesTags: ["Partner"],
+    }),
+    reorderPartners: builder.mutation({
+      query: (body) => ({ url: "/ec-partner", method: "PATCH", body }),
+      invalidatesTags: ["Partner"],
+    }),
+
+    getPrograms: builder.query({
+      query: () => "/ec-program",
+      providesTags: ["Program"],
+    }),
+    addProgram: builder.mutation({
+      query: (program) => ({ url: "/ec-program", method: "POST", body: program }),
+      invalidatesTags: ["Program"],
+    }),
+    updateProgram: builder.mutation({
+      query: (program) => ({ url: "/ec-program", method: "PUT", body: program }),
+      invalidatesTags: ["Program"],
+    }),
+    deleteProgram: builder.mutation({
+      query: (body) => ({ url: "/ec-program", method: "DELETE", body }),
+      invalidatesTags: ["Program"],
+    }),
+    reorderPrograms: builder.mutation({
+      query: (body) => ({ url: "/ec-program", method: "PATCH", body }),
+      invalidatesTags: ["Program"],
+    }),
+
   }),
+
 });
 
 export const {
@@ -626,5 +710,18 @@ export const {
   useAddTestimonialMutation,
   useUpdateTestimonialMutation,
   useDeleteTestimonialMutation,
-  useReorderTestimonialsMutation,
+
+  // Excellence Center
+  useGetPartnersQuery,
+  useAddPartnerMutation,
+  useUpdatePartnerMutation,
+  useDeletePartnerMutation,
+  useReorderPartnersMutation,
+
+  useGetProgramsQuery,
+  useAddProgramMutation,
+  useUpdateProgramMutation,
+  useDeleteProgramMutation,
+  useReorderProgramsMutation,
+
 } = api;

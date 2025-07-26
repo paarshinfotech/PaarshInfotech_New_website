@@ -1,6 +1,16 @@
+"use client";
+
+import { Service } from "@/lib/servicesData";
+import { useGetServicesQuery } from "@/services/api";
 import Link from "next/link";
 
 export function Footer() {
+
+
+  const {data: servicesData} = useGetServicesQuery(undefined);
+
+  const services = servicesData?.data || [];
+
   return (
     <footer className="bg-secondary text-secondary-foreground border-t">
       <div className="container py-12 max-w-7xl">
@@ -30,13 +40,13 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-sm">
-              {/* {servicesData.map((service) => (
-                <li key={service.slug}>
-                  <Link href={`/services/${service.slug}`} className="hover:text-primary transition-colors">
+              {services.map((service:Service) => (
+                <li key={service._id}>
+                  <Link href={`/services/${service._id}`} className="hover:text-primary transition-colors">
                     {service.title}
                   </Link>
                 </li>
-              ))} */}
+              ))}
             </ul>
           </div>
 

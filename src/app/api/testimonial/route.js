@@ -1,207 +1,152 @@
-import _db from "../../../lib/utils/db";
-import TestimonialModel from "../../../../models/Testimonial.model";
+import { NextResponse } from "next/server";
+import mongoose from "mongoose";
+import _db from "../../../lib/utils/db"; // Adjust path to your db connection
+import TestimonialModel from "../../../../models/Testimonial.model"; // Adjust path to your model
+import { uploadBase64 } from "../../../lib/utils/upload";
 
-// Establish MongoDB connection
-_db();
-
-export async function GET(request) {
-  try {
-    const url = new URL(request.url);
-    const activeOnly = url.searchParams.get("activeOnly") === "true";
-    
-    let query = TestimonialModel.find();
-    if (activeOnly) query = query.where({ isActive: true });
-    query = query.sort({ order: 1 });
-    
-    const testimonials = await query.lean();
-    return new Response(JSON.stringify(testimonials), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (error) {
-    console.error("Error fetching testimonials:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to fetch testimonials" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
-}
+await _db();
 
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { name, designation, rating, feedback, order, isActive } = data;
+    let { quote, name, title, avatarBase64, published } = data;
 
-    if (!name || !designation || !rating || !feedback || order === undefined) {
-      return new Response(
-        JSON.stringify({ error: "All fields are required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+    if (!quote || !name || !title) {
+      return NextResponse.json(
+        { success: false, error: "Quote, name, and title are required" },
+        { status: 400 }
       );
     }
 
+    let avatar = "https://placehold.co/40x40.png"; // Default avatar
+    if (avatarBase64) {
+      const imageUrl = await uploadBase64(avatarBase64, `testimonial-${Date.now()}`);
+      if (!imageUrl) {
+        throw new Error("Failed to upload avatar image");
+      }
+      avatar = imageUrl;
+    }
+
     const newTestimonial = new TestimonialModel({
+      quote,
       name,
-      designation,
-      rating,
-      feedback,
-      order,
-      isActive: isActive ?? true,
+      title,
+      avatar,
+      published: published ?? true,
     });
 
     await newTestimonial.save();
 
-    return new Response(
-      JSON.stringify({
-        message: "Testimonial created successfully",
-        data: newTestimonial,
-      }),
-      { status: 201, headers: { "Content-Type": "application/json" } }
-    );
+    return NextResponse.json({
+      success: true,
+      message: "Testimonial created successfully",
+      data: newTestimonial,
+    }, { status: 201 });
   } catch (error) {
     console.error("Error creating testimonial:", error);
-    if (error.code === 11000) {
-      return new Response(
-        JSON.stringify({ error: "Order number already exists" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
-    return new Response(
-      JSON.stringify({ error: "Failed to create testimonial" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    return NextResponse.json(
+      { success: false, error: "Failed to create testimonial" },
+      { status: 500 }
     );
   }
 }
 
-export async function PUT(request) {
+export async function GET() {
+  try {
+    const testimonials = await TestimonialModel.find().sort({ createdAt: -1 });
+
+    return NextResponse.json(
+      {
+        success: true,
+        results: testimonials.length,
+        data: testimonials,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to fetch testimonials" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request,) {
   try {
     const data = await request.json();
-    const { _id, name, designation, rating, feedback, order, isActive } = data;
+    let { _id, quote, name, title, avatarBase64, published } = data;
 
-    if (!_id || !name || !designation || !rating || !feedback || order === undefined) {
-      return new Response(
-        JSON.stringify({ error: "All fields are required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+    if (!quote && !name && !title && !avatarBase64 && published === undefined) {
+      return NextResponse.json(
+        { success: false, error: "At least one field is required to update" },
+        { status: 400 }
       );
     }
 
-    const updatedTestimonial = await TestimonialModel.findByIdAndUpdate(
+    const updateData = { quote, name, title, published };
+    if (avatarBase64) {
+      const imageUrl = await uploadBase64(avatarBase64, `testimonial-${_id}-${Date.now()}`);
+      if (!imageUrl) {
+        throw new Error("Failed to upload avatar image");
+      }
+      updateData.avatar = imageUrl;
+    }
+
+    const testimonial = await TestimonialModel.findByIdAndUpdate(
       _id,
-      {
-        name,
-        designation,
-        rating,
-        feedback,
-        order,
-        isActive: isActive ?? true,
-      },
+      updateData,
       { new: true, runValidators: true }
     );
 
-    if (!updatedTestimonial) {
-      return new Response(
-        JSON.stringify({ error: "Testimonial not found" }),
-        { status: 404, headers: { "Content-Type": "application/json" } }
+    if (!testimonial) {
+      return NextResponse.json(
+        { success: false, error: "Testimonial not found" },
+        { status: 404 }
       );
     }
 
-    return new Response(
-      JSON.stringify({
-        message: "Testimonial updated successfully",
-        data: updatedTestimonial,
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
+    return NextResponse.json({
+      success: true,
+      message: "Testimonial updated successfully",
+      data: testimonial,
+    }, { status: 200 });
   } catch (error) {
     console.error("Error updating testimonial:", error);
-    if (error.code === 11000) {
-      return new Response(
-        JSON.stringify({ error: "Order number already exists" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
-    return new Response(
-      JSON.stringify({ error: "Failed to update testimonial" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    return NextResponse.json(
+      { success: false, error: "Failed to update testimonial" },
+      { status: 500 }
     );
   }
 }
 
 export async function DELETE(request) {
   try {
-    const data = await request.json();
-    const { _id } = data;
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
 
-    if (!_id) {
-      return new Response(
-        JSON.stringify({ error: "Testimonial ID is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+    const testimonial = await TestimonialModel.findByIdAndDelete(id);
+
+    if (!testimonial) {
+      return NextResponse.json(
+        { success: false, error: "Testimonial not found" },
+        { status: 404 }
       );
     }
 
-    const deletedTestimonial = await TestimonialModel.findByIdAndDelete(_id);
-
-    if (!deletedTestimonial) {
-      return new Response(
-        JSON.stringify({ error: "Testimonial not found" }),
-        { status: 404, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    return new Response(
-      JSON.stringify({
+    return NextResponse.json(
+      {
+        success: true,
         message: "Testimonial deleted successfully",
-        data: deletedTestimonial,
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
+        data: null,
+      },
+      { status: 200 }
+    ); // Using 200 instead of 204 to match the response format
   } catch (error) {
     console.error("Error deleting testimonial:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to delete testimonial" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    return NextResponse.json(
+      { success: false, error: "Failed to delete testimonial" },
+      { status: 500 }
     );
   }
 }
-
-export async function PATCH(request) {
-  try {
-    const data = await request.json();
-    const { testimonials } = data;
-
-    if (!testimonials || !Array.isArray(testimonials)) {
-      return new Response(
-        JSON.stringify({ error: "Testimonials array is required" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    // Two-step update to avoid duplicate key errors
-    for (const testimonial of testimonials) {
-      await TestimonialModel.findByIdAndUpdate(
-        testimonial._id,
-        { order: -(testimonial.order + 1000) },
-        { new: true }
-      );
-    }
-    for (const testimonial of testimonials) {
-      await TestimonialModel.findByIdAndUpdate(
-        testimonial._id,
-        { order: testimonial.order },
-        { new: true }
-      );
-    }
-
-    return new Response(
-      JSON.stringify({
-        message: "Testimonials reordered successfully",
-      }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
-  } catch (error) {
-    console.error("Error reordering testimonials:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to reorder testimonials" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
-  }
-} 

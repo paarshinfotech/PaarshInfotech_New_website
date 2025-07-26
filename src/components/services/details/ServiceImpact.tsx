@@ -1,12 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { ComponentType } from "react";
+import { IconType } from "react-icons"; // Import IconType
+import { LuCheck } from "react-icons/lu"; // Import fallback icon
 
 interface ServiceImpactProps {
   outcomes: {
     title: string;
     metric: string;
     description: string;
-    Icon: ComponentType<React.SVGProps<SVGSVGElement> | { className?: string }>;
+    IconComponent?: IconType; // Change Icon to IconComponent and use IconType
   }[];
 }
 
@@ -30,7 +31,11 @@ export default function ServiceImpact({ outcomes }: ServiceImpactProps) {
               className="flex items-center p-6 gap-6 shadow-sm hover:shadow-lg transition-shadow"
             >
               <div className="p-4 bg-primary/10 rounded-full">
-                <outcome.Icon className="w-10 h-10 text-primary" />
+                {outcome.IconComponent ? (
+                  <outcome.IconComponent className="w-10 h-10 text-primary" />
+                ) : (
+                  <LuCheck className="w-10 h-10 text-primary" /> // Fallback icon
+                )}
               </div>
               <div>
                 <p className="text-3xl font-extrabold text-primary">

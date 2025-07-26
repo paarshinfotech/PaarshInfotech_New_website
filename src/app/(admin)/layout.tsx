@@ -36,9 +36,9 @@ export default function AdminAreaLayout({ children }: PropsWithChildren) {
   }
 
   return (
-    <div className="flex min-h-screen bg-secondary/50">
+    <div className="flex h-screen overflow-hidden bg-secondary/50">
       <AdminSidebar />
-      <main className="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
         {children}
       </main>
     </div>
