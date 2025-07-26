@@ -27,6 +27,7 @@ export const api = createApi({
     "CultureMoment",
     "Partner",
     "Program",
+    "Center",
     
   ], // Define tags for caching
   endpoints: (builder) => ({
@@ -621,6 +622,22 @@ export const api = createApi({
       invalidatesTags: ["Program"],
     }),
 
+    getCenters: builder.query({
+      query: () => "/ec-center",
+      providesTags: ["Center"],
+    }),
+    addCenter: builder.mutation({
+      query: (center) => ({ url: "/ec-center", method: "POST", body: center }),
+      invalidatesTags: ["Center"],
+    }),
+    updateCenter: builder.mutation({
+      query: (center) => ({ url: "/ec-center", method: "PUT", body: center }),
+      invalidatesTags: ["Center"],
+    }),
+    deleteCenter: builder.mutation({
+      query: (body) => ({ url: "/ec-center", method: "DELETE", body }),
+      invalidatesTags: ["Center"],
+    }),
   }),
 
 });
@@ -711,5 +728,21 @@ export const {
   useUpdateTestimonialMutation,
   useDeleteTestimonialMutation,
   useReorderTestimonialsMutation,
+
+  // Excellence Center
+  useGetPartnersQuery,
+  useAddPartnerMutation,
+  useUpdatePartnerMutation,
+  useDeletePartnerMutation,
+  useReorderPartnersMutation,
+  useGetProgramsQuery,
+  useAddProgramMutation,
+  useUpdateProgramMutation,
+  useDeleteProgramMutation,
+  useReorderProgramsMutation,
+  useGetCentersQuery,
+  useAddCenterMutation,
+  useUpdateCenterMutation,
+  useDeleteCenterMutation,
 
 } = api;
