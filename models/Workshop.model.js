@@ -33,7 +33,11 @@ const workshopSchema = new mongoose.Schema(
         type: String,
         enum: ["Upcoming", "Completed", "Cancelled"],
         default: "Upcoming"
-    }
+    },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

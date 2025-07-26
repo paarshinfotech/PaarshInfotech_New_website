@@ -6,7 +6,7 @@ await _db();
 
 export async function GET() {
   try {
-    const awards = await AwardModel.find().sort({ year: -1, title: 1 });
+    const awards = await AwardModel.find().sort({ order: 1 });
     return NextResponse.json({ success: true, data: awards }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, error: "Failed to fetch awards" }, { status: 500 });
@@ -16,6 +16,8 @@ export async function GET() {
 export async function POST(request) {
   try {
     const body = await request.json();
+    const maxOrder = await AwardModel.find().sort({ order: -1 }).limit(1);
+    body.order = maxOrder.length > 0 ? maxOrder[0].order + 10 : 10;
     const newAward = new AwardModel(body);
     await newAward.save();
     return NextResponse.json({ success: true, data: newAward }, { status: 201 });
@@ -49,3 +51,16 @@ export async function DELETE(request) {
     return NextResponse.json({ success: false, error: "Failed to delete award" }, { status: 500 });
   }
 }
+
+export async function PATCH(request) {
+    try {
+      const { awards } = await request.json();
+      const updatePromises = awards.map(p => 
+        AwardModel.findByIdAndUpdate(p._id, { order: p.order })
+      );
+      await Promise.all(updatePromises);
+      return NextResponse.json({ success: true, message: "Awards reordered" }, { status: 200 });
+    } catch (error) {
+      return NextResponse.json({ success: false, error: "Failed to reorder awards" }, { status: 500 });
+    }
+  }

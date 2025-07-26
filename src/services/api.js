@@ -30,6 +30,8 @@ export const api = createApi({
     "Center",
     "Workshop",
     "Award",
+    "ECJourney",
+    "ECGallery"
     
   ], // Define tags for caching
   endpoints: (builder) => ({
@@ -657,6 +659,10 @@ export const api = createApi({
         query: (body) => ({ url: '/ec-workshop', method: 'DELETE', body }),
         invalidatesTags: ['Workshop'],
     }),
+    reorderWorkshops: builder.mutation({
+      query: (body) => ({ url: "/ec-workshop", method: "PATCH", body }),
+      invalidatesTags: ["Workshop"],
+    }),
 
     getAwards: builder.query({
         query: () => '/ec-award',
@@ -673,6 +679,52 @@ export const api = createApi({
     deleteAward: builder.mutation({
         query: (body) => ({ url: '/ec-award', method: 'DELETE', body }),
         invalidatesTags: ['Award'],
+    }),
+    reorderAwards: builder.mutation({
+      query: (body) => ({ url: "/ec-award", method: "PATCH", body }),
+      invalidatesTags: ["Award"],
+    }),
+
+    getECJourney: builder.query({
+      query: () => "/ec-journey",
+      providesTags: ["ECJourney"],
+    }),
+    addECJourneyMilestone: builder.mutation({
+      query: (milestone) => ({ url: "/ec-journey", method: "POST", body: milestone }),
+      invalidatesTags: ["ECJourney"],
+    }),
+    updateECJourneyMilestone: builder.mutation({
+      query: (milestone) => ({ url: "/ec-journey", method: "PUT", body: milestone }),
+      invalidatesTags: ["ECJourney"],
+    }),
+    deleteECJourneyMilestone: builder.mutation({
+      query: (body) => ({ url: "/ec-journey", method: "DELETE", body }),
+      invalidatesTags: ["ECJourney"],
+    }),
+    reorderECJourneyMilestones: builder.mutation({
+      query: (body) => ({ url: "/ec-journey", method: "PATCH", body }),
+      invalidatesTags: ["ECJourney"],
+    }),
+
+    getECGallery: builder.query({
+      query: () => "/ec-gallery",
+      providesTags: ["ECGallery"],
+    }),
+    addECGalleryItem: builder.mutation({
+      query: (item) => ({ url: "/ec-gallery", method: "POST", body: item }),
+      invalidatesTags: ["ECGallery"],
+    }),
+    updateECGalleryItem: builder.mutation({
+      query: (item) => ({ url: "/ec-gallery", method: "PUT", body: item }),
+      invalidatesTags: ["ECGallery"],
+    }),
+    deleteECGalleryItem: builder.mutation({
+      query: (body) => ({ url: "/ec-gallery", method: "DELETE", body }),
+      invalidatesTags: ["ECGallery"],
+    }),
+    reorderECGalleryItems: builder.mutation({
+      query: (body) => ({ url: "/ec-gallery", method: "PATCH", body }),
+      invalidatesTags: ["ECGallery"],
     }),
   }),
 
@@ -784,9 +836,21 @@ export const {
   useAddWorkshopMutation,
   useUpdateWorkshopMutation,
   useDeleteWorkshopMutation,
+  useReorderWorkshopsMutation,
   useGetAwardsQuery,
   useAddAwardMutation,
   useUpdateAwardMutation,
   useDeleteAwardMutation,
+  useReorderAwardsMutation,
+  useGetECJourneyQuery,
+  useAddECJourneyMilestoneMutation,
+  useUpdateECJourneyMilestoneMutation,
+  useDeleteECJourneyMilestoneMutation,
+  useReorderECJourneyMilestonesMutation,
+  useGetECGalleryQuery,
+  useAddECGalleryItemMutation,
+  useUpdateECGalleryItemMutation,
+  useDeleteECGalleryItemMutation,
+  useReorderECGalleryItemsMutation,
 
 } = api;
