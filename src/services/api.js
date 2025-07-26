@@ -28,6 +28,8 @@ export const api = createApi({
     "Partner",
     "Program",
     "Center",
+    "Workshop",
+    "Award",
     
   ], // Define tags for caching
   endpoints: (builder) => ({
@@ -638,6 +640,40 @@ export const api = createApi({
       query: (body) => ({ url: "/ec-center", method: "DELETE", body }),
       invalidatesTags: ["Center"],
     }),
+    
+    getWorkshops: builder.query({
+        query: () => '/ec-workshop',
+        providesTags: ['Workshop'],
+    }),
+    addWorkshop: builder.mutation({
+        query: (workshop) => ({ url: '/ec-workshop', method: 'POST', body: workshop }),
+        invalidatesTags: ['Workshop'],
+    }),
+    updateWorkshop: builder.mutation({
+        query: (workshop) => ({ url: '/ec-workshop', method: 'PUT', body: workshop }),
+        invalidatesTags: ['Workshop'],
+    }),
+    deleteWorkshop: builder.mutation({
+        query: (body) => ({ url: '/ec-workshop', method: 'DELETE', body }),
+        invalidatesTags: ['Workshop'],
+    }),
+
+    getAwards: builder.query({
+        query: () => '/ec-award',
+        providesTags: ['Award'],
+    }),
+    addAward: builder.mutation({
+        query: (award) => ({ url: '/ec-award', method: 'POST', body: award }),
+        invalidatesTags: ['Award'],
+    }),
+    updateAward: builder.mutation({
+        query: (award) => ({ url: '/ec-award', method: 'PUT', body: award }),
+        invalidatesTags: ['Award'],
+    }),
+    deleteAward: builder.mutation({
+        query: (body) => ({ url: '/ec-award', method: 'DELETE', body }),
+        invalidatesTags: ['Award'],
+    }),
   }),
 
 });
@@ -744,5 +780,13 @@ export const {
   useAddCenterMutation,
   useUpdateCenterMutation,
   useDeleteCenterMutation,
+  useGetWorkshopsQuery,
+  useAddWorkshopMutation,
+  useUpdateWorkshopMutation,
+  useDeleteWorkshopMutation,
+  useGetAwardsQuery,
+  useAddAwardMutation,
+  useUpdateAwardMutation,
+  useDeleteAwardMutation,
 
 } = api;
