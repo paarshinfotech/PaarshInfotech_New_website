@@ -46,6 +46,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const mainLinks = [
   { href: "/admin/dashboard", label: "Dashboard", icon: FaHome },
+  { href: "/admin/about", label: "About", icon: LuFileText },
   { href: "/admin/services", label: "Services", icon: LuBriefcase },
   { href: "/admin/products", label: "Products", icon: LuLayers },
   { href: "/admin/clients", label: "Clients", icon: LuPackage },
