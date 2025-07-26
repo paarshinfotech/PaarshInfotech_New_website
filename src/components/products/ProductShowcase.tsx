@@ -126,8 +126,8 @@ export default function ProductShowcase() {
             const ProductIcon = iconMap[product.name] || FaCode; // Fallback to FaCode
             return (
               <Button
-                key={product.id}
-                variant={activeProduct?.id === product.id ? "default" : "outline"}
+                key={product._id}
+                variant={activeProduct?._id === product._id ? "default" : "outline"}
                 onClick={() => setActiveProduct(product)}
                 className="capitalize"
               >
@@ -163,7 +163,7 @@ export default function ProductShowcase() {
                   ))}
                 </div>
                 <Button asChild className="self-start">
-                  <Link href={`/products/${activeProduct.id}`}>
+                  <Link href={`/products/${activeProduct._id}`}>
                     Learn More <LuArrowRight className="ml-2 w-4 h-4" />
                   </Link>
                 </Button>
