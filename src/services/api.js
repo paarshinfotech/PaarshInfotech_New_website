@@ -25,6 +25,8 @@ export const api = createApi({
     "Project",
     "JourneyMilestone",
     "CultureMoment",
+    "Partner",
+    "Program",
     
   ], // Define tags for caching
   endpoints: (builder) => ({
@@ -573,7 +575,51 @@ export const api = createApi({
         body: { testimonials },
       }),
       invalidatesTags: ["Testimonial"],
-    }),   
+    }),
+
+    // ================================================== Excellence Center Endpoints ================================================== //
+
+    getPartners: builder.query({
+      query: () => "/ec-partner",
+      providesTags: ["Partner"],
+    }),
+    addPartner: builder.mutation({
+      query: (partner) => ({ url: "/ec-partner", method: "POST", body: partner }),
+      invalidatesTags: ["Partner"],
+    }),
+    updatePartner: builder.mutation({
+      query: (partner) => ({ url: "/ec-partner", method: "PUT", body: partner }),
+      invalidatesTags: ["Partner"],
+    }),
+    deletePartner: builder.mutation({
+      query: (body) => ({ url: "/ec-partner", method: "DELETE", body }),
+      invalidatesTags: ["Partner"],
+    }),
+    reorderPartners: builder.mutation({
+      query: (body) => ({ url: "/ec-partner", method: "PATCH", body }),
+      invalidatesTags: ["Partner"],
+    }),
+
+    getPrograms: builder.query({
+      query: () => "/ec-program",
+      providesTags: ["Program"],
+    }),
+    addProgram: builder.mutation({
+      query: (program) => ({ url: "/ec-program", method: "POST", body: program }),
+      invalidatesTags: ["Program"],
+    }),
+    updateProgram: builder.mutation({
+      query: (program) => ({ url: "/ec-program", method: "PUT", body: program }),
+      invalidatesTags: ["Program"],
+    }),
+    deleteProgram: builder.mutation({
+      query: (body) => ({ url: "/ec-program", method: "DELETE", body }),
+      invalidatesTags: ["Program"],
+    }),
+    reorderPrograms: builder.mutation({
+      query: (body) => ({ url: "/ec-program", method: "PATCH", body }),
+      invalidatesTags: ["Program"],
+    }),
 
   }),
 
@@ -663,5 +709,19 @@ export const {
   useGetTestimonialsQuery,
   useAddTestimonialMutation,
   useUpdateTestimonialMutation,
-  useDeleteTestimonialMutation
+  useDeleteTestimonialMutation,
+
+  // Excellence Center
+  useGetPartnersQuery,
+  useAddPartnerMutation,
+  useUpdatePartnerMutation,
+  useDeletePartnerMutation,
+  useReorderPartnersMutation,
+
+  useGetProgramsQuery,
+  useAddProgramMutation,
+  useUpdateProgramMutation,
+  useDeleteProgramMutation,
+  useReorderProgramsMutation,
+
 } = api;
