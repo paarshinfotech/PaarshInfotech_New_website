@@ -25,6 +25,11 @@ export const api = createApi({
     "Project",
     "JourneyMilestone",
     "CultureMoment",
+    "Partner",
+    "Program",
+    "Center",
+    "Workshop",
+    "Award",
     
   ], // Define tags for caching
   endpoints: (builder) => ({
@@ -573,8 +578,102 @@ export const api = createApi({
         body: { testimonials },
       }),
       invalidatesTags: ["Testimonial"],
-    }),   
+    }),
 
+    // ================================================== Excellence Center Endpoints ================================================== //
+
+    getPartners: builder.query({
+      query: () => "/ec-partner",
+      providesTags: ["Partner"],
+    }),
+    addPartner: builder.mutation({
+      query: (partner) => ({ url: "/ec-partner", method: "POST", body: partner }),
+      invalidatesTags: ["Partner"],
+    }),
+    updatePartner: builder.mutation({
+      query: (partner) => ({ url: "/ec-partner", method: "PUT", body: partner }),
+      invalidatesTags: ["Partner"],
+    }),
+    deletePartner: builder.mutation({
+      query: (body) => ({ url: "/ec-partner", method: "DELETE", body }),
+      invalidatesTags: ["Partner"],
+    }),
+    reorderPartners: builder.mutation({
+      query: (body) => ({ url: "/ec-partner", method: "PATCH", body }),
+      invalidatesTags: ["Partner"],
+    }),
+
+    getPrograms: builder.query({
+      query: () => "/ec-program",
+      providesTags: ["Program"],
+    }),
+    addProgram: builder.mutation({
+      query: (program) => ({ url: "/ec-program", method: "POST", body: program }),
+      invalidatesTags: ["Program"],
+    }),
+    updateProgram: builder.mutation({
+      query: (program) => ({ url: "/ec-program", method: "PUT", body: program }),
+      invalidatesTags: ["Program"],
+    }),
+    deleteProgram: builder.mutation({
+      query: (body) => ({ url: "/ec-program", method: "DELETE", body }),
+      invalidatesTags: ["Program"],
+    }),
+    reorderPrograms: builder.mutation({
+      query: (body) => ({ url: "/ec-program", method: "PATCH", body }),
+      invalidatesTags: ["Program"],
+    }),
+
+    getCenters: builder.query({
+      query: () => "/ec-center",
+      providesTags: ["Center"],
+    }),
+    addCenter: builder.mutation({
+      query: (center) => ({ url: "/ec-center", method: "POST", body: center }),
+      invalidatesTags: ["Center"],
+    }),
+    updateCenter: builder.mutation({
+      query: (center) => ({ url: "/ec-center", method: "PUT", body: center }),
+      invalidatesTags: ["Center"],
+    }),
+    deleteCenter: builder.mutation({
+      query: (body) => ({ url: "/ec-center", method: "DELETE", body }),
+      invalidatesTags: ["Center"],
+    }),
+    
+    getWorkshops: builder.query({
+        query: () => '/ec-workshop',
+        providesTags: ['Workshop'],
+    }),
+    addWorkshop: builder.mutation({
+        query: (workshop) => ({ url: '/ec-workshop', method: 'POST', body: workshop }),
+        invalidatesTags: ['Workshop'],
+    }),
+    updateWorkshop: builder.mutation({
+        query: (workshop) => ({ url: '/ec-workshop', method: 'PUT', body: workshop }),
+        invalidatesTags: ['Workshop'],
+    }),
+    deleteWorkshop: builder.mutation({
+        query: (body) => ({ url: '/ec-workshop', method: 'DELETE', body }),
+        invalidatesTags: ['Workshop'],
+    }),
+
+    getAwards: builder.query({
+        query: () => '/ec-award',
+        providesTags: ['Award'],
+    }),
+    addAward: builder.mutation({
+        query: (award) => ({ url: '/ec-award', method: 'POST', body: award }),
+        invalidatesTags: ['Award'],
+    }),
+    updateAward: builder.mutation({
+        query: (award) => ({ url: '/ec-award', method: 'PUT', body: award }),
+        invalidatesTags: ['Award'],
+    }),
+    deleteAward: builder.mutation({
+        query: (body) => ({ url: '/ec-award', method: 'DELETE', body }),
+        invalidatesTags: ['Award'],
+    }),
   }),
 
 });
@@ -663,5 +762,31 @@ export const {
   useGetTestimonialsQuery,
   useAddTestimonialMutation,
   useUpdateTestimonialMutation,
-  useDeleteTestimonialMutation
+  useDeleteTestimonialMutation,
+  useReorderTestimonialsMutation,
+
+  // Excellence Center
+  useGetPartnersQuery,
+  useAddPartnerMutation,
+  useUpdatePartnerMutation,
+  useDeletePartnerMutation,
+  useReorderPartnersMutation,
+  useGetProgramsQuery,
+  useAddProgramMutation,
+  useUpdateProgramMutation,
+  useDeleteProgramMutation,
+  useReorderProgramsMutation,
+  useGetCentersQuery,
+  useAddCenterMutation,
+  useUpdateCenterMutation,
+  useDeleteCenterMutation,
+  useGetWorkshopsQuery,
+  useAddWorkshopMutation,
+  useUpdateWorkshopMutation,
+  useDeleteWorkshopMutation,
+  useGetAwardsQuery,
+  useAddAwardMutation,
+  useUpdateAwardMutation,
+  useDeleteAwardMutation,
+
 } = api;
