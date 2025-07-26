@@ -31,8 +31,21 @@ import {
   useReorderAwardsMutation,
 } from "@/services/api";
 import { Badge } from "@/components/ui/badge";
-import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 export interface Award {
@@ -43,49 +56,73 @@ export interface Award {
   order: number;
 }
 
-const SortableAwardCard = ({ award, handleEdit, handleDelete }: { award: Award, handleEdit: (award: Award) => void, handleDelete: (award: Award) => void }) => {
-    const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: award._id });
-    const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1, zIndex: isDragging ? 10 : 'auto' };
+const SortableAwardCard = ({
+  award,
+  handleEdit,
+  handleDelete,
+}: {
+  award: Award;
+  handleEdit: (award: Award) => void;
+  handleDelete: (award: Award) => void;
+}) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: award._id });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : "auto",
+  };
 
-    return (
-        <Card ref={setNodeRef} style={style} className="relative group">
-            <div {...attributes} {...listeners} className="absolute top-2 left-2 z-10 p-2 bg-white/50 rounded-full cursor-grab">
-                <FaGripLines className="h-4 w-4 text-muted-foreground" />
-            </div>
-            <CardHeader>
-                <div className="flex items-center justify-between">
-                    <FaAward className="h-8 w-8 text-primary/70" />
-                    <Badge variant="outline">{award.year}</Badge>
-                </div>
-                <CardTitle className="pt-4">{award.title}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <p className="text-muted-foreground">{award.description}</p>
-            </CardContent>
-             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="h-8 w-8 p-0">
-                      <IoIosMore className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                    <DropdownMenuItem onClick={() => handleEdit(award)}>
-                      <FiEdit className="mr-2 h-4 w-4" /> Edit
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => handleDelete(award)}
-                      className="text-destructive"
-                    >
-                      <FaTrashCan className="mr-2 h-4 w-4" /> Delete
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-        </Card>
-    )
-}
+  return (
+    <Card ref={setNodeRef} style={style} className="relative group">
+      <div
+        {...attributes}
+        {...listeners}
+        className="absolute top-2 left-2 z-10 p-2 bg-white/50 rounded-full cursor-grab"
+      >
+        <FaGripLines className="h-4 w-4 text-muted-foreground" />
+      </div>
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <FaAward className="h-8 w-8 text-primary/70" />
+          <Badge variant="outline">{award.year}</Badge>
+        </div>
+        <CardTitle className="pt-4">{award.title}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-muted-foreground">{award.description}</p>
+      </CardContent>
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <IoIosMore className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem onClick={() => handleEdit(award)}>
+              <FiEdit className="mr-2 h-4 w-4" /> Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleDelete(award)}
+              className="text-destructive"
+            >
+              <FaTrashCan className="mr-2 h-4 w-4" /> Delete
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </Card>
+  );
+};
 
 export function AwardsManagement() {
   const { toast } = useToast();
@@ -94,42 +131,53 @@ export function AwardsManagement() {
   const [selectedAward, setSelectedAward] = useState<Award | null>(null);
   const [awards, setAwards] = useState<Award[]>([]);
 
-  const { data: awardsResponse, isLoading: awardsLoading } = useGetAwardsQuery(undefined);
+  const { data: awardsResponse, isLoading: awardsLoading } =
+    useGetAwardsQuery(undefined);
   const [addAward] = useAddAwardMutation();
   const [updateAward] = useUpdateAwardMutation();
   const [deleteAward] = useDeleteAwardMutation();
   const [reorderAwards] = useReorderAwardsMutation();
-  
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
   useEffect(() => {
-    if(awardsResponse?.data) {
-        setAwards(awardsResponse.data)
+    if (awardsResponse?.data) {
+      setAwards(awardsResponse.data);
     }
   }, [awardsResponse]);
 
-  const handleDragEnd = useCallback(async (event: any) => {
-    const { active, over } = event;
-    if (active.id !== over.id) {
+  const handleDragEnd = useCallback(
+    async (event: any) => {
+      const { active, over } = event;
+      if (active.id !== over.id) {
         const oldIndex = awards.findIndex((item) => item._id === active.id);
         const newIndex = awards.findIndex((item) => item._id === over.id);
         const newItems = arrayMove(awards, oldIndex, newIndex);
         setAwards(newItems);
-        
-        const reorderedData = newItems.map((item, index) => ({ _id: item._id, order: index }));
-        
+
+        const reorderedData = newItems.map((item, index) => ({
+          _id: item._id,
+          order: index,
+        }));
+
         reorderAwards({ awards: reorderedData })
           .unwrap()
           .then(() => toast({ title: "Reordered successfully" }))
           .catch((error) => {
-            toast({ title: "Error reordering", description: error.data?.error || "An unknown error occurred", variant: "destructive" });
+            toast({
+              title: "Error reordering",
+              description: error.data?.error || "An unknown error occurred",
+              variant: "destructive",
+            });
             setAwards(awards);
           });
       }
-  }, [awards, reorderAwards, toast]);
+    },
+    [awards, reorderAwards, toast]
+  );
 
   const handleAdd = () => {
     setSelectedAward(null);
@@ -165,7 +213,11 @@ export function AwardsManagement() {
       }
       setIsModalOpen(false);
     } catch (error: any) {
-      toast({ title: "Error", description: error.data?.error || "Could not save award.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: error.data?.error || "Could not save award.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -179,37 +231,51 @@ export function AwardsManagement() {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>Awards & Recognitions</CardTitle>
-            <CardDescription>Manage the awards showcased on the Excellence Center page.</CardDescription>
+            <CardDescription>
+              Manage the awards showcased on the Excellence Center page.
+            </CardDescription>
           </div>
           <Button onClick={handleAdd}>
             <GoPlusCircle className="mr-2 h-4 w-4" /> Add Award
           </Button>
         </CardHeader>
         <CardContent>
-            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                <SortableContext items={awards.map(p => p._id)} strategy={verticalListSortingStrategy}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {awards.map((award: Award) => (
-                           <SortableAwardCard key={award._id} award={award} handleEdit={handleEdit} handleDelete={handleDelete} />
-                        ))}
-                    </div>
-                </SortableContext>
-            </DndContext>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={awards.map((p) => p._id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {awards.map((award: Award) => (
+                  <SortableAwardCard
+                    key={award._id}
+                    award={award}
+                    handleEdit={handleEdit}
+                    handleDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
         </CardContent>
       </Card>
-      
-      <AwardFormModal 
-        isOpen={isModalOpen} 
-        onOpenChange={setIsModalOpen} 
-        onSave={handleSave} 
+
+      <AwardFormModal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onSave={handleSave}
         award={selectedAward}
       />
 
-      <DeleteConfirmationDialog 
-        isOpen={isDeleteAlertOpen} 
+      <DeleteConfirmationDialog
+        isOpen={isDeleteAlertOpen}
         onOpenChange={setIsDeleteAlertOpen}
-        onConfirm={confirmDelete} 
-        itemName={selectedAward?.title || 'the selected award'} 
+        onConfirm={confirmDelete}
+        itemName={selectedAward?.title || "the selected award"}
       />
     </>
   );
