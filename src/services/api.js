@@ -23,6 +23,8 @@ export const api = createApi({
     "Service",
     "Testimonial",
     "Project",
+    "JourneyMilestone",
+    "CultureMoment",
     
   ], // Define tags for caching
   endpoints: (builder) => ({
@@ -456,8 +458,125 @@ export const api = createApi({
       }),
       invalidatesTags: ['Testimonial'],
     }),
+    // ================================================== Journey Milestone Endpoints ================================================== //
+
+    getJourneyMilestones: builder.query({
+      query: (activeOnly = false) => `/journey-milestone${activeOnly ? '?activeOnly=true' : ''}`,
+      providesTags: ["JourneyMilestone"],
+    }),
+    addJourneyMilestone: builder.mutation({
+      query: (milestone) => ({
+        url: "/journey-milestone",
+        method: "POST",
+        body: milestone,
+      }),
+      invalidatesTags: ["JourneyMilestone"],
+    }),
+    updateJourneyMilestone: builder.mutation({
+      query: ({ _id, ...milestone }) => ({
+        url: `/journey-milestone`,
+        method: "PUT",
+        body: { _id, ...milestone },
+      }),
+      invalidatesTags: ["JourneyMilestone"],
+    }),
+    deleteJourneyMilestone: builder.mutation({
+      query: (_id) => ({
+        url: `/journey-milestone`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["JourneyMilestone"],
+    }),
+    reorderJourneyMilestones: builder.mutation({
+      query: (milestones) => ({
+        url: "/journey-milestone",
+        method: "PATCH",
+        body: { milestones },
+      }),
+      invalidatesTags: ["JourneyMilestone"],
+    }),
+
+    // ================================================== Culture Moment Endpoints ================================================== //
+
+    getCultureMoments: builder.query({
+      query: (activeOnly = false) => `/culture-moment${activeOnly ? '?activeOnly=true' : ''}`,
+      providesTags: ["CultureMoment"],
+    }),
+    addCultureMoment: builder.mutation({
+      query: (moment) => ({
+        url: "/culture-moment",
+        method: "POST",
+        body: moment,
+      }),
+      invalidatesTags: ["CultureMoment"],
+    }),
+    updateCultureMoment: builder.mutation({
+      query: ({ _id, ...moment }) => ({
+        url: `/culture-moment`,
+        method: "PUT",
+        body: { _id, ...moment },
+      }),
+      invalidatesTags: ["CultureMoment"],
+    }),
+    deleteCultureMoment: builder.mutation({
+      query: (_id) => ({
+        url: `/culture-moment`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["CultureMoment"],
+    }),
+    reorderCultureMoments: builder.mutation({
+      query: (moments) => ({
+        url: "/culture-moment",
+        method: "PATCH",
+        body: { moments },
+      }),
+      invalidatesTags: ["CultureMoment"],
+    }),
+
+    // ================================================== Testimonial Endpoints ================================================== //
+
+    getTestimonials: builder.query({
+      query: (activeOnly = false) => `/testimonial${activeOnly ? '?activeOnly=true' : ''}`,
+      providesTags: ["Testimonial"],
+    }),
+    addTestimonial: builder.mutation({
+      query: (testimonial) => ({
+        url: "/testimonial",
+        method: "POST",
+        body: testimonial,
+      }),
+      invalidatesTags: ["Testimonial"],
+    }),
+    updateTestimonial: builder.mutation({
+      query: ({ _id, ...testimonial }) => ({
+        url: `/testimonial`,
+        method: "PUT",
+        body: { _id, ...testimonial },
+      }),
+      invalidatesTags: ["Testimonial"],
+    }),
+    deleteTestimonial: builder.mutation({
+      query: (_id) => ({
+        url: `/testimonial`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["Testimonial"],
+    }),
+    reorderTestimonials: builder.mutation({
+      query: (testimonials) => ({
+        url: "/testimonial",
+        method: "PATCH",
+        body: { testimonials },
+      }),
+      invalidatesTags: ["Testimonial"],
+    }),   
 
   }),
+
 });
 
 export const {
@@ -525,6 +644,20 @@ export const {
   useAddSiteImageMutation,
   useUpdateSiteImageMutation,
   useDeleteSiteImageMutation,
+
+  // Journey Milestones
+  useGetJourneyMilestonesQuery,
+  useAddJourneyMilestoneMutation,
+  useUpdateJourneyMilestoneMutation,
+  useDeleteJourneyMilestoneMutation,
+  useReorderJourneyMilestonesMutation,
+
+  // Culture Moments
+  useGetCultureMomentsQuery,
+  useAddCultureMomentMutation,
+  useUpdateCultureMomentMutation,
+  useDeleteCultureMomentMutation,
+  useReorderCultureMomentsMutation,
 
   // Testimonials
   useGetTestimonialsQuery,
