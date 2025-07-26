@@ -663,5 +663,7 @@ export const {
   useGetTestimonialsQuery,
   useAddTestimonialMutation,
   useUpdateTestimonialMutation,
-  useDeleteTestimonialMutation
+  useDeleteTestimonialMutation,
+  useReorderTestimonialsMutation,
+
 } = api;
