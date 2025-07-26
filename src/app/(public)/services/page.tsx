@@ -1,3 +1,5 @@
+"use client";
+
 import ServicesGrid from "@/components/home/ServicesGrid";
 import ExpectedOutcomes from "@/components/services/ExpectedOutcomes";
 import ProblemSolutionGrid from "@/components/services/ProblemSolutionGrid";

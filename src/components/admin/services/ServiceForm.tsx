@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -21,14 +21,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-
 import { GoPlusCircle } from "react-icons/go";
-import { ImSpinner2 } from "react-icons/im";
-import { FaTrash } from "react-icons/fa";
-
+import { LuLoader, LuTrash2 } from "react-icons/lu";
 import { useToast } from "@/hooks/use-toast";
 import type { Service } from "@/lib/servicesData";
 import { useRouter } from "next/navigation";
+import { useAddServiceMutation, useUpdateServiceMutation } from "@/services/api";
+import { FaTrash } from "react-icons/fa";
 
 const offeringSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -37,7 +36,7 @@ const offeringSchema = z.object({
 
 const formSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters."),
-  slug: z.string().min(3, "Slug must be at least 3 characters."),
+  slug: z.string().min(3, "Slug must be at least 3 characters.").refine((s) => !s.includes(" "), "Slug cannot contain spaces."),
   description: z.string().min(10, "Short description is required."),
   overview: z.string().min(20, "Overview is required."),
   heroImage: z.string().url("Must be a valid URL."),
@@ -61,7 +60,7 @@ const formSchema = z.object({
       dataAiHint: z.string(),
     })
   ),
-  industries: z.string(),
+  industries: z.string().min(1, "Industries are required."),
 });
 
 type ServiceFormValues = z.infer<typeof formSchema>;
@@ -73,18 +72,33 @@ interface ServiceFormProps {
 export function ServiceForm({ service }: ServiceFormProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const [addService, { isLoading: isAdding }] = useAddServiceMutation();
+  const [updateService, { isLoading: isUpdating }] = useUpdateServiceMutation();
+
   const form = useForm<ServiceFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: service
       ? {
-          ...service,
+          title: service.title || "",
+          slug: service.slug || "",
+          description: service.description || "",
+          overview: service.overview || "",
+          heroImage: service.heroImage || "https://placehold.co/600x400.png",
+          offerings: service.offerings || [],
           techStack: {
-            frontend: service.techStack.frontend.join(", "),
-            backend: service.techStack.backend.join(", "),
-            database: service.techStack.database.join(", "),
-            tools: service.techStack.tools.join(", "),
+            frontend: service.techStack?.frontend || "",
+            backend: service.techStack?.backend || "",
+            database: service.techStack?.database || "",
+            tools: service.techStack?.tools || "",
           },
-          industries: service.industries.join(", "),
+          testimonial: {
+            quote: service.testimonial?.quote || "",
+            name: service.testimonial?.name || "",
+            role: service.testimonial?.role || "",
+            avatar: service.testimonial?.avatar || "https://placehold.co/100x100.png",
+          },
+          gallery: service.gallery || [],
+          industries: service.industries || "",
         }
       : {
           title: "",
@@ -123,14 +137,43 @@ export function ServiceForm({ service }: ServiceFormProps) {
     name: "gallery",
   });
 
-  const onSubmit = (values: ServiceFormValues) => {
-    console.log("Form Submitted:", values);
-    toast({
-      title: `Service ${service ? "Updated" : "Created"}!`,
-      description: `The service "${values.title}" has been saved successfully.`,
-    });
-    // In a real app, you would API call here, then redirect.
-    router.push("/admin/services");
+  const onSubmit = async (values: ServiceFormValues) => {
+    try {
+      const payload = {
+        id: service?._id,
+        ...values,
+      };
+
+      const result = service
+        ? await updateService(payload).unwrap()
+        : await addService(payload).unwrap();
+
+      toast({
+        title: `Service ${service ? "Updated" : "Created"}!`,
+        description: `The service "${values.title}" has been saved successfully.`,
+      });
+
+      router.push("/admin/services");
+    } catch (error: any) {
+      console.error("Error from RTK Query:", error);
+
+      let errorMessage = "Something went wrong while saving the service.";
+      if (error?.data?.error) {
+        errorMessage = error.data.error;
+      } else if (error?.data?.message) {
+        errorMessage = error.data.message;
+      } else if (typeof error?.error === "string") {
+        errorMessage = error.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    }
   };
 
   return (
@@ -140,15 +183,14 @@ export function ServiceForm({ service }: ServiceFormProps) {
           <h1 className="text-3xl font-bold">
             {service ? "Edit Service" : "Create New Service"}
           </h1>
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting && (
-              <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
+          <Button type="submit" disabled={isAdding || isUpdating}>
+            {(isAdding || isUpdating) && (
+              <LuLoader className="mr-2 h-4 w-4 animate-spin" />
             )}
             Save {service ? "Changes" : "Service"}
           </Button>
         </div>
 
-        {/* Basic Info */}
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>
@@ -175,7 +217,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 <FormItem>
                   <FormLabel>Slug</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="e.g., web-development" />
+                    <Input {...field} placeholder="e.g., web-development" disabled={!!service} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -223,13 +265,10 @@ export function ServiceForm({ service }: ServiceFormProps) {
           </CardContent>
         </Card>
 
-        {/* Offerings */}
         <Card>
           <CardHeader>
             <CardTitle>Service Offerings</CardTitle>
-            <CardDescription>
-              Detail what this service includes.
-            </CardDescription>
+            <CardDescription>Detail what this service includes.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {offeringsFields.map((field, index) => (
@@ -285,13 +324,10 @@ export function ServiceForm({ service }: ServiceFormProps) {
           </CardContent>
         </Card>
 
-        {/* Tech Stack */}
         <Card>
           <CardHeader>
             <CardTitle>Technology Stack</CardTitle>
-            <CardDescription>
-              Enter technologies as comma-separated values.
-            </CardDescription>
+            <CardDescription>Enter technologies as comma-separated values.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -301,10 +337,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 <FormItem>
                   <FormLabel>Frontend</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="React, Next.js, TypeScript"
-                    />
+                    <Input {...field} placeholder="React, Next.js, TypeScript" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -352,7 +385,6 @@ export function ServiceForm({ service }: ServiceFormProps) {
           </CardContent>
         </Card>
 
-        {/* Testimonial */}
         <Card>
           <CardHeader>
             <CardTitle>Client Testimonial</CardTitle>
@@ -413,13 +445,10 @@ export function ServiceForm({ service }: ServiceFormProps) {
           </CardContent>
         </Card>
 
-        {/* Gallery */}
         <Card>
           <CardHeader>
             <CardTitle>Project Gallery</CardTitle>
-            <CardDescription>
-              Showcase images of projects related to this service.
-            </CardDescription>
+            <CardDescription>Showcase images of projects related to this service.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {galleryFields.map((field, index) => (
@@ -461,10 +490,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                       <FormItem>
                         <FormLabel>AI Hint</FormLabel>
                         <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="e.g. dashboard analytics"
-                          />
+                          <Input {...field} placeholder="e.g. dashboard analytics" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -497,13 +523,10 @@ export function ServiceForm({ service }: ServiceFormProps) {
           </CardContent>
         </Card>
 
-        {/* Industries */}
         <Card>
           <CardHeader>
             <CardTitle>Industries Served</CardTitle>
-            <CardDescription>
-              Enter industries as comma-separated values.
-            </CardDescription>
+            <CardDescription>Enter industries as comma-separated values.</CardDescription>
           </CardHeader>
           <CardContent>
             <FormField
@@ -513,10 +536,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 <FormItem>
                   <FormLabel>Industries</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      placeholder="E-commerce, Healthcare, Education"
-                    />
+                    <Input {...field} placeholder="E-commerce, Healthcare, Education" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { servicesData } from "@/lib/servicesData";
 
 export function Footer() {
   return (
@@ -31,13 +30,13 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-sm">
-              {servicesData.map((service) => (
+              {/* {servicesData.map((service) => (
                 <li key={service.slug}>
                   <Link href={`/services/${service.slug}`} className="hover:text-primary transition-colors">
                     {service.title}
                   </Link>
                 </li>
-              ))}
+              ))} */}
             </ul>
           </div>
 

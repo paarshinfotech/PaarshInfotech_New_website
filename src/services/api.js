@@ -1,5 +1,6 @@
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { use } from "react";
 
 export const api = createApi({
   reducerPath: "api",
@@ -238,6 +239,83 @@ export const api = createApi({
       invalidatesTags: ["SocialPost"],
     }),
 
+    // ================================================== Services Endpoints ================================================== //
+
+    getServices: builder.query({
+      query: () => "/services",
+      providesTags: ["Service"],
+    }),
+
+    addService: builder.mutation({
+      query: (serviceData) => ({
+        url: "/services",
+        method: "POST",
+        body: serviceData,
+      }),
+      invalidatesTags: ["Service"],
+    }),
+
+    updateService: builder.mutation({
+      query: ({ id, ...service }) => ({
+        url: `/services`,
+        method: "PUT",
+        body: { id, ...service },
+      }),
+      invalidatesTags: ["Service"],
+    }),
+
+    deleteService: builder.mutation({
+      query: (id) => ({
+        url: `/services?_id=${id}`,
+        method: "DELETE",
+        body: id,
+      }),
+      invalidatesTags: ["Service"],
+    }),
+
+    fetchServiceById: builder.query({
+      query: (id) => `/services/service?id=${id}`,
+      providesTags: ["Service"],
+    }),
+
+    // ================================================== Product Endpoints ================================================== //
+
+    addProduct: builder.mutation({
+      query: (product) => ({
+        url: "/products",
+        method: "POST",
+        body: product,
+      }),
+      invalidatesTags: ["Product"],
+    }),
+
+    updateProduct: builder.mutation({
+      query: ({ _id, ...product }) => ({
+        url: `/products`,
+        method: "PUT",
+        body: { _id , ...product },
+      }),
+      invalidatesTags: ["Product"],
+    }),
+
+    deleteProduct: builder.mutation({
+      query: (_id) => ({
+        url: `/products`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["Product"],
+    }),
+
+    getProducts: builder.query({
+      query: () => "/products",
+      providesTags: ["Product"],
+    }),
+
+    getProductById: builder.query({
+      query: (id) => `/products/${id}`,
+      providesTags: ["Product"],
+    }),
     // ================================================== Contact Endpoints ================================================== //
 
     getContacts: builder.query({
@@ -499,6 +577,18 @@ export const {
   useUpdateSocialPostMutation,
   useDeleteSocialPostMutation,
 
+  useGetServicesQuery,
+  useAddServiceMutation,
+  useUpdateServiceMutation,
+  useDeleteServiceMutation,
+
+  useFetchServiceByIdQuery,
+
+  useGetProductsQuery,
+  useGetProductByIdQuery,
+  useAddProductMutation,
+  useUpdateProductMutation,
+  useDeleteProductMutation,
   useGetContactsQuery,
   useAddContactMutation,
   useUpdateContactStatusMutation,

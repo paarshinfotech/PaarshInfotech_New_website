@@ -17,12 +17,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { GoPlusCircle } from "react-icons/go";
 import { IoIosMore } from "react-icons/io";
 import { FiEdit } from "react-icons/fi";
 import { FaTrashCan } from "react-icons/fa6";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,45 +30,108 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
-import { servicesData } from "@/lib/servicesData";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Switch } from "@/components/ui/switch";
+import { useGetServicesQuery, useDeleteServiceMutation, useUpdateServiceMutation } from "@/services/api";
+import { toast } from "@/hooks/use-toast";
+
+
+interface Service {
+  _id: string;
+  title: string;
+  slug: string;
+  published: boolean;
+}
 
 export default function ServicesManagementPage() {
   const router = useRouter();
-  const [services, setServices] = useState(servicesData);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState<
-    (typeof servicesData)[0] | null
-  >(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editServiceId, setEditServiceId] = useState<string | null>(null);
 
-  const handleAdd = () => {
-    router.push("/admin/services/new");
+  const { data: servicesResponse, isLoading, isError, error } = useGetServicesQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const [deleteService] = useDeleteServiceMutation();
+  const [updateService] = useUpdateServiceMutation();
+
+  const services: Service[] = servicesResponse?.data || [];
+
+  const handleEdit = (service: Service) => {
+  router.push(`/admin/services/edit/${service._id}`);
   };
 
-  const handleEdit = (service: (typeof servicesData)[0]) => {
-    router.push(`/admin/services/edit/${service.slug}`);
-  };
-
-  const handleDelete = (service: (typeof servicesData)[0]) => {
+  const handleDelete = (service: Service) => {
     setSelectedService(service);
     setIsDeleteAlertOpen(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (selectedService) {
-      setServices(services.filter((s) => s.slug !== selectedService.slug));
+      try {
+        const response = await deleteService({ id: selectedService._id }).unwrap();
+        if (response.success) {
+          toast({
+            title: "Service Deleted",
+            description: `The service "${selectedService.title}" has been deleted successfully.`,
+          });
+        }
+      } catch (error: any) {
+        toast({
+          title: "Error",
+          description: `Failed to delete service: ${error?.data?.error || "Something went wrong"}`,
+          variant: "destructive",
+        });
+      }
     }
     setIsDeleteAlertOpen(false);
     setSelectedService(null);
   };
 
-  const handleTogglePublished = (slug: string, published: boolean) => {
-    setServices(
-      services.map((s) => (s.slug === slug ? { ...s, published } : s))
-    );
+
+  const handleTogglePublished = async (service: Service, published: boolean) => {
+    try {
+      const response = await updateService({
+        id: service._id,
+        published,
+      }).unwrap();
+      if (response.success) {
+        toast({
+          title: "Service Updated",
+          description: `The service "${service.title}" has been ${published ? "published" : "unpublished"} successfully.`,
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: `Failed to update service: ${error?.data?.error || "Something went wrong"}`,
+        variant: "destructive",
+      });
+    }
   };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Loading Services...</CardTitle>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Error Loading Services</CardTitle>
+          <CardDescription>{(error as any)?.data?.error || "Failed to load services"}</CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
 
   return (
     <>
@@ -101,16 +162,16 @@ export default function ServicesManagementPage() {
             </TableHeader>
             <TableBody>
               {services.map((service) => (
-                <TableRow key={service.slug}>
+                <TableRow key={service._id}>
                   <TableCell className="font-medium">{service.title}</TableCell>
                   <TableCell>/services/{service.slug}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <Switch
-                        id={`published-${service.slug}`}
+                        id={`published-${service._id}`}
                         checked={service.published}
                         onCheckedChange={(checked) =>
-                          handleTogglePublished(service.slug, checked)
+                          handleTogglePublished(service, checked)
                         }
                       />
                       <Badge
@@ -157,6 +218,6 @@ export default function ServicesManagementPage() {
         onConfirm={confirmDelete}
         itemName={selectedService?.title || "the selected service"}
       />
-    </>
+      </>
   );
 }
