@@ -1,7 +1,6 @@
 
 import { NextResponse } from "next/server";
 import _db from "../../../lib/utils/db";
-// const ProgramModel = require("../../../../models/Program.model");
 import ProgramModel from "../../../../models/Program.model.js";
 
 await _db();
@@ -67,4 +66,3 @@ export async function PATCH(request) {
     return NextResponse.json({ success: false, error: "Failed to reorder programs" }, { status: 500 });
   }
 }
-
