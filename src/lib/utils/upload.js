@@ -10,8 +10,8 @@ const LOCAL_BASE_URL = "/uploads/";
 const VPS_BASE_URL = "https://paarshedu.com/PaarshEdu/uploads/";
 
 // Set current configuration
-const UPLOAD_DIR = VPS_UPLOAD_DIR ; // Switch to VPS_UPLOAD_DIR for VPS storage
-const BASE_URL = VPS_BASE_URL; // Switch to VPS_BASE_URL for VPS storage
+const UPLOAD_DIR = LOCAL_UPLOAD_DIR ; // Switch to VPS_UPLOAD_DIR for VPS storage
+const BASE_URL = LOCAL_BASE_URL; // Switch to VPS_BASE_URL for VPS storage
 
 // Ensure the upload directory exists
 if (!fs.existsSync(UPLOAD_DIR)) {
