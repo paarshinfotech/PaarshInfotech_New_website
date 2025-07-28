@@ -34,10 +34,6 @@ export default function ProductSlugPage() {
   // Access the products array (adjust based on your API response structure)
   const Products = productsData.data || productsData; // Fallback to productsData if no data field
 
-  // Debug: Log id and Products to verify
-  console.log('Product ID:', id);
-  console.log('Products Data:', Products);
-
   // Ensure Products is an array
   if (!Array.isArray(Products)) {
     console.error('Products is not an array:', Products);

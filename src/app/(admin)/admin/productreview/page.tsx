@@ -29,19 +29,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { TestimonialFormModal } from "@/components/admin/testimonials/TestimonialFormModal";
+import { ProductReviewForm } from "@/components/admin/products/ProductReviewForm";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import {
-  useGetTestimonialsQuery,
-  useAddTestimonialMutation,
-  useUpdateTestimonialMutation,
-  useDeleteTestimonialMutation,
-} from "../../../../services/api";
+import { useAddProductTestimonialMutation, useDeleteProductTestimonialMutation, useGetProductTestimonialsQuery, useUpdateProductTestimonialMutation } from "../../../../services/api";
 
-interface Testimonial {
+interface ProductReview {
   _id: string;
   quote: string;
   name: string;
@@ -52,44 +47,44 @@ interface Testimonial {
   updatedAt?: string;
 }
 
-interface TestimonialRowProps {
-  testimonial: Testimonial;
-  handleEdit: (testimonial: Testimonial) => void;
-  handleDelete: (testimonial: Testimonial) => void;
-  handleTogglePublished: (testimonialId: string, published: boolean) => void;
+interface ProductReviewRowProps {
+  review: ProductReview;
+  handleEdit: (review: ProductReview) => void;
+  handleDelete: (review: ProductReview) => void;
+  handleTogglePublished: (reviewId: string, published: boolean) => void;
 }
 
-const TestimonialRow = ({
-  testimonial,
+const ProductReviewRow = ({
+  review,
   handleEdit,
   handleDelete,
   handleTogglePublished,
-}: TestimonialRowProps) => {
+}: ProductReviewRowProps) => {
   return (
     <TableRow>
       <TableCell>
         <Image
-          src={testimonial.avatar}
-          alt={testimonial.name}
+          src={review.avatar}
+          alt={review.name}
           width={40}
           height={40}
           className="rounded-md object-contain"
         />
       </TableCell>
-      <TableCell className="font-medium">{testimonial.name}</TableCell>
-      <TableCell>{testimonial.title}</TableCell>
-      <TableCell>{testimonial.quote?.substring(0, 50)}...</TableCell>
+      <TableCell className="font-medium">{review.name}</TableCell>
+      <TableCell>{review.title}</TableCell>
+      <TableCell>{review.quote?.substring(0, 50)}...</TableCell>
       <TableCell>
         <div className="flex items-center gap-2">
           <Switch
-            id={`published-${testimonial._id}`}
-            checked={testimonial.published}
+            id={`published-${review._id}`}
+            checked={review.published}
             onCheckedChange={(checked) =>
-              handleTogglePublished(testimonial._id, checked)
+              handleTogglePublished(review._id, checked)
             }
           />
-          <Badge variant={testimonial.published ? "default" : "secondary"}>
-            {testimonial.published ? "Published" : "Draft"}
+          <Badge variant={review.published ? "default" : "secondary"}>
+            {review.published ? "Published" : "Draft"}
           </Badge>
         </div>
       </TableCell>
@@ -103,12 +98,12 @@ const TestimonialRow = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => handleEdit(testimonial)}>
+            <DropdownMenuItem onClick={() => handleEdit(review)}>
               <FiEdit className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => handleDelete(testimonial)}
+              onClick={() => handleDelete(review)}
               className="text-destructive"
             >
               <FaTrashCan className="mr-2 h-4 w-4" />
@@ -121,60 +116,60 @@ const TestimonialRow = ({
   );
 };
 
-export default function TestimonialsManagementPage() {
+export default function ProductReviewsManagementPage() {
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null);
+  const [selectedReview, setSelectedReview] = useState<ProductReview | null>(null);
 
   const {
-    data: testimonialsData,
-    isLoading: testimonialsLoading,
-    error: testimonialsError,
-  } = useGetTestimonialsQuery(undefined);
+    data: reviewsData,
+    isLoading: reviewsLoading,
+    error: reviewsError,
+  } = useGetProductTestimonialsQuery(undefined);
 
-  const testimonials = testimonialsData?.data || [];
+  const reviews = reviewsData?.data || [];
 
-  const [addTestimonial] = useAddTestimonialMutation();
-  const [updateTestimonial] = useUpdateTestimonialMutation();
-  const [deleteTestimonial] = useDeleteTestimonialMutation();
+  const [addProductReview] = useAddProductTestimonialMutation();
+  const [updateProductReview] = useUpdateProductTestimonialMutation();
+  const [deleteProductReview] = useDeleteProductTestimonialMutation();
 
   const handleAdd = () => {
-    setSelectedTestimonial(null);
+    setSelectedReview(null);
     setIsModalOpen(true);
   };
 
-  const handleEdit = (testimonial: Testimonial) => {
-    setSelectedTestimonial(testimonial);
+  const handleEdit = (review: ProductReview) => {
+    setSelectedReview(review);
     setIsModalOpen(true);
   };
 
-  const handleDelete = (testimonial: Testimonial) => {
-    setSelectedTestimonial(testimonial);
+  const handleDelete = (review: ProductReview) => {
+    setSelectedReview(review);
     setIsDeleteAlertOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (selectedTestimonial) {
+    if (selectedReview) {
       try {
-        await deleteTestimonial(selectedTestimonial._id).unwrap();
+        await deleteProductReview(selectedReview._id).unwrap();
         toast({
-          title: "Testimonial Deleted",
-          description: `${selectedTestimonial.name}'s testimonial has been deleted successfully.`,
+          title: "Product Review Deleted",
+          description: `${selectedReview.name}'s review has been deleted successfully.`,
         });
       } catch (error) {
         toast({
           title: "Error",
-          description: "Failed to delete testimonial.",
+          description: "Failed to delete product review.",
           variant: "destructive",
         });
       }
     }
     setIsDeleteAlertOpen(false);
-    setSelectedTestimonial(null);
+    setSelectedReview(null);
   };
 
-  const handleSave = async (testimonialData: {
+  const handleSave = async (reviewData: {
     quote: string;
     name: string;
     title: string;
@@ -182,57 +177,57 @@ export default function TestimonialsManagementPage() {
     published?: boolean;
   }) => {
     try {
-      if (selectedTestimonial) {
-        await updateTestimonial({
-          _id: selectedTestimonial._id,
-          quote: testimonialData.quote,
-          name: testimonialData.name,
-          title: testimonialData.title,
-          avatarBase64: testimonialData.avatarBase64,
-          published: testimonialData.published ?? selectedTestimonial.published,
+      if (selectedReview) {
+        await updateProductReview({
+          _id: selectedReview._id,
+          quote: reviewData.quote,
+          name: reviewData.name,
+          title: reviewData.title,
+          avatarBase64: reviewData.avatarBase64,
+          published: reviewData.published ?? selectedReview.published,
         }).unwrap();
         toast({
-          title: "Testimonial Updated",
-          description: `${testimonialData.name}'s testimonial has been updated successfully.`,
+          title: "Product Review Updated",
+          description: `${reviewData.name}'s review has been updated successfully.`,
         });
       } else {
-        await addTestimonial({
-          quote: testimonialData.quote,
-          name: testimonialData.name,
-          title: testimonialData.title,
-          avatarBase64: testimonialData.avatarBase64,
-          published: testimonialData.published ?? true,
+        await addProductReview({
+          quote: reviewData.quote,
+          name: reviewData.name,
+          title: reviewData.title,
+          avatarBase64: reviewData.avatarBase64,
+          published: reviewData.published ?? true,
         }).unwrap();
         toast({
-          title: "Testimonial Created",
-          description: `${testimonialData.name}'s testimonial has been created successfully.`,
+          title: "Product Review Created",
+          description: `${reviewData.name}'s review has been created successfully.`,
         });
       }
       setIsModalOpen(false);
-      setSelectedTestimonial(null);
+      setSelectedReview(null);
     } catch (error) {
       toast({
         title: "Error",
-        description: `Failed to ${selectedTestimonial ? "update" : "create"} testimonial.`,
+        description: `Failed to ${selectedReview ? "update" : "create"} product review.`,
         variant: "destructive",
       });
     }
   };
 
-  const handleTogglePublished = async (testimonialId: string, published: boolean) => {
+  const handleTogglePublished = async (reviewId: string, published: boolean) => {
     try {
-      const testimonial = testimonials.find((t: Testimonial) => t._id === testimonialId);
-      if (!testimonial) return;
-      await updateTestimonial({
-        _id: testimonialId,
-        quote: testimonial.quote,
-        name: testimonial.name,
-        title: testimonial.title,
+      const review = reviews.find((r: ProductReview) => r._id === reviewId);
+      if (!review) return;
+      await updateProductReview({
+        _id: reviewId,
+        quote: review.quote,
+        name: review.name,
+        title: review.title,
         published,
       }).unwrap();
       toast({
         title: "Status Updated",
-        description: `${testimonial.name}'s visibility has been updated.`,
+        description: `${review.name}'s review visibility has been updated.`,
       });
     } catch (error) {
       toast({
@@ -243,26 +238,26 @@ export default function TestimonialsManagementPage() {
     }
   };
 
-  if (testimonialsLoading) {
+  if (reviewsLoading) {
     return <div>Loading...</div>;
   }
 
-  if (testimonialsError) {
-    return <div>Error: Failed to load testimonials</div>;
+  if (reviewsError) {
+    return <div>Error: Failed to load product reviews</div>;
   }
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between">
         <div>
-          <CardTitle>Testimonials Management</CardTitle>
+          <CardTitle>Product Reviews Management</CardTitle>
           <CardDescription>
-            Manage your company's testimonials and their visibility on the public site.
+            Manage your product reviews and their visibility on the public site.
           </CardDescription>
         </div>
         <Button size="sm" onClick={handleAdd}>
           <GoPlusCircle className="mr-2 h-4 w-4" />
-          Add Testimonial
+          Add Product Review
         </Button>
       </CardHeader>
       <CardContent>
@@ -272,16 +267,16 @@ export default function TestimonialsManagementPage() {
               <TableHead className="w-[80px]">Avatar</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Title</TableHead>
-              <TableHead>Quote</TableHead>
+              <TableHead>Review</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {testimonials.map((testimonial: Testimonial) => (
-              <TestimonialRow
-                key={testimonial._id}
-                testimonial={testimonial}
+            {reviews.map((review: ProductReview) => (
+              <ProductReviewRow
+                key={review._id}
+                review={review}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
                 handleTogglePublished={handleTogglePublished}
@@ -290,17 +285,17 @@ export default function TestimonialsManagementPage() {
           </TableBody>
         </Table>
       </CardContent>
-      <TestimonialFormModal
+      <ProductReviewForm
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
         onSave={handleSave}
-        testimonial={selectedTestimonial}
+        review={selectedReview}
       />
       <DeleteConfirmationDialog
         isOpen={isDeleteAlertOpen}
         onOpenChange={setIsDeleteAlertOpen}
         onConfirm={confirmDelete}
-        itemName={selectedTestimonial?.name || "the selected testimonial"}
+        itemName={selectedReview?.name || "the selected review"}
       />
     </Card>
   );

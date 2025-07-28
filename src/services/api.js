@@ -674,6 +674,46 @@ export const api = createApi({
         query: (body) => ({ url: '/ec-award', method: 'DELETE', body }),
         invalidatesTags: ['Award'],
     }),
+
+    // ================================================== Product Testimonials Endpoints ================================================== //
+    
+      getProductTestimonials: builder.query({
+      query: (activeOnly = false) => `/producttestimonial${activeOnly ? '?activeOnly=true' : ''}`,
+      providesTags: ["Testimonial"],
+    }),
+    addProductTestimonial: builder.mutation({
+      query: (testimonial) => ({
+        url: "/producttestimonial",
+        method: "POST",
+        body: testimonial,
+      }),
+      invalidatesTags: ["Testimonial"],
+    }),
+    updateProductTestimonial: builder.mutation({
+      query: ({ _id, ...testimonial }) => ({
+        url: `/producttestimonial`,
+        method: "PUT",
+        body: { _id, ...testimonial },
+      }),
+      invalidatesTags: ["Testimonial"],
+    }),
+    deleteProductTestimonial: builder.mutation({
+      query: (_id) => ({
+        url: `/producttestimonial`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["Testimonial"],
+    }),
+    reorderProductTestimonials: builder.mutation({
+      query: (testimonials) => ({
+        url: "/producttestimonial",
+        method: "PATCH",
+        body: { testimonials },
+      }),
+      invalidatesTags: ["Testimonial"],
+    }),
+  
   }),
 
 });
@@ -788,5 +828,12 @@ export const {
   useAddAwardMutation,
   useUpdateAwardMutation,
   useDeleteAwardMutation,
+
+  // Product Testimonials
+  useGetProductTestimonialsQuery,
+  useAddProductTestimonialMutation,
+  useUpdateProductTestimonialMutation,
+  useDeleteProductTestimonialMutation,
+  useReorderProductTestimonialsMutation,
 
 } = api;

@@ -10,6 +10,7 @@ import { FaCode, FaMobileAlt, FaRobot } from "react-icons/fa";
 import { Card, CardContent } from "@/components/ui/card";
 import { useGetProductsQuery } from "@/services/api";
 import { Product } from "@/lib/productsData";
+import { iconMap, iconOptions } from "@/lib/iconsMap";
 
 // Skeleton component for loading state
 const ProductShowcaseSkeleton = () => {
@@ -53,12 +54,12 @@ const ProductShowcaseSkeleton = () => {
   );
 };
 
-// Map product names to icons
-const iconMap: Record<string, React.ComponentType> = {
-  "Web Development": FaCode,
-  "Mobile App": FaMobileAlt,
-  "AI Platform": FaRobot,
-};
+// // Map product names to icons
+// const iconMap: Record<string, React.ComponentType> = {
+//   "Web Development": FaCode,
+//   "Mobile App": FaMobileAlt,
+//   "AI Platform": FaRobot,
+// };
 
 export default function ProductShowcase() {
   const { data: productsData, isLoading, isError, error } = useGetProductsQuery(undefined);
@@ -142,10 +143,10 @@ export default function ProductShowcase() {
           <Card className="overflow-hidden shadow-lg border-primary/10">
             <div className="grid md:grid-cols-2">
               <div className="p-8 md:p-12 flex flex-col justify-center order-2 md:order-1">
-                {(() => {
+                {/* {(() => {
                   const ActiveProductIcon = iconMap[activeProduct.name] || FaCode;
                   return <ActiveProductIcon className="w-12 h-12 text-primary mb-4" />;
-                })()}
+                })()} */}
                 <h3 className="text-3xl font-bold text-primary">{activeProduct.name}</h3>
                 <p className="text-lg font-semibold text-accent mb-4">{activeProduct.tagline}</p>
                 <p className="text-muted-foreground mb-6">{activeProduct.description}</p>

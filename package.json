@@ -50,6 +50,7 @@
     "embla-carousel-autoplay": "^8.0.4",
     "embla-carousel-react": "^8.6.0",
     "firebase": "^11.9.1",
+    "framer-motion": "^12.23.9",
     "genkit": "^1.13.0",
     "lucide-react": "^0.525.0",
     "mongoose": "^8.5.1",
