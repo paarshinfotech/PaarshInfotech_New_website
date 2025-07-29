@@ -2,12 +2,41 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { successStoriesData } from "@/lib/careersData";
+import { useGetCareerTestimonialsQuery } from "@/services/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// We duplicate the testimonials to create a seamless loop for the marquee effect.
-const extendedSuccessStories = [...successStoriesData, ...successStoriesData];
+interface CareerTestimonial {
+  _id: string;
+  quote: string;
+  name: string;
+  role: string;
+  avatar: string;
+  hint: string;
+}
+
+const SkeletonCard = () => (
+  <div className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4">
+    <Card className="h-full bg-secondary/50 shadow-sm flex flex-col p-8">
+      <CardContent className="p-0 flex-grow">
+        <Skeleton className="h-4 w-full mb-2" />
+        <Skeleton className="h-4 w-3/4 mb-6" />
+      </CardContent>
+      <div className="flex items-center gap-4 mt-auto pt-4 border-t">
+        <Skeleton className="w-12 h-12 rounded-full" />
+        <div className="flex-grow space-y-2">
+          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-3 w-1/3" />
+        </div>
+      </div>
+    </Card>
+  </div>
+);
 
 export default function SuccessStories() {
+  const { data: testimonialsData, isLoading, error } = useGetCareerTestimonialsQuery(undefined);
+  const successStories: CareerTestimonial[] = testimonialsData?.data || [];
+  const extendedSuccessStories = [...successStories, ...successStories];
+
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container max-w-7xl">
@@ -21,37 +50,40 @@ export default function SuccessStories() {
           </p>
         </div>
         <div className="relative w-full overflow-hidden group">
-          <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
-            {extendedSuccessStories.map((story, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4"
-              >
-                <Card className="h-full bg-secondary/50 shadow-sm flex flex-col p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
-                  <CardContent className="p-0 flex-grow">
-                    <p className="text-foreground/80 mb-6 italic">
-                      "{story.quote}"
-                    </p>
-                  </CardContent>
-                  <div className="flex items-center gap-4 mt-auto pt-4 border-t">
-                    <Image
-                      src={story.avatar}
-                      alt={story.name}
-                      width={48}
-                      height={48}
-                      className="rounded-full object-cover"
-                      data-ai-hint={story.hint}
-                    />
-                    <div>
-                      <p className="font-semibold text-primary">{story.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {story.role}
+          <div className="flex animate-marquee-right group-hover:[animation-play-state:paused]">
+            {isLoading ? (
+              Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+            ) : error ? (
+              <p className="text-destructive text-center w-full">Failed to load testimonials.</p>
+            ) : (
+              extendedSuccessStories.map((story, index) => (
+                <div key={`${story._id}-${index}`} className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4">
+                  <Card className="h-full bg-secondary/50 shadow-sm flex flex-col p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+                    <CardContent className="p-0 flex-grow">
+                      <p className="text-foreground/80 mb-6 italic">
+                        "{story.quote}"
                       </p>
+                    </CardContent>
+                    <div className="flex items-center gap-4 mt-auto pt-4 border-t">
+                      <Image
+                        src={story.avatar}
+                        alt={story.name}
+                        width={48}
+                        height={48}
+                        className="rounded-full object-cover"
+                        data-ai-hint={story.hint}
+                      />
+                      <div>
+                        <p className="font-semibold text-primary">{story.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {story.role}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              </div>
-            ))}
+                  </Card>
+                </div>
+              ))
+            )}
           </div>
           <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-background via-transparent to-background"></div>
         </div>

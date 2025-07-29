@@ -2,22 +2,28 @@ import {
   Card,
   CardHeader,
   CardTitle,
-  CardDescription,
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
 import { FaMapMarkerAlt, FaBriefcase, FaClock, FaLightbulb } from "react-icons/fa";
 
 interface Job {
+  _id: string;
   title: string;
-  experience: string;
+  type: string;
   location: string;
+  status: string;
+  published: boolean;
   description: string;
   skills: string[];
-  posted: string;
+  publishDate: string;
+  applicants: string[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  posted: string; // Derived from publishDate
 }
 
 interface JobCardProps {
@@ -31,10 +37,6 @@ export default function JobCard({ job, onApplyClick }: JobCardProps) {
       <CardHeader>
         <CardTitle>{job.title}</CardTitle>
         <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground pt-2">
-          <div className="flex items-center gap-1.5">
-            <FaBriefcase className="w-4 h-4" />
-            <span>{job.experience}</span>
-          </div>
           <div className="flex items-center gap-1.5">
             <FaMapMarkerAlt className="w-4 h-4" />
             <span>{job.location}</span>
@@ -54,9 +56,9 @@ export default function JobCard({ job, onApplyClick }: JobCardProps) {
                 {skill}
               </Badge>
             ))}
+            </div>
           </div>
-        </div>
-      </CardContent>
+        </CardContent>
       <CardFooter className="flex justify-between items-center mt-auto">
         <p className="text-sm text-muted-foreground flex items-center gap-1.5">
           <FaClock className="w-4 h-4" />

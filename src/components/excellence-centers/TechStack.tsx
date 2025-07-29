@@ -1,6 +1,40 @@
-
 import { Badge } from "@/components/ui/badge";
 import { techStack } from "@/lib/excellenceCentersData";
+
+const technologies = [
+  "React",
+  "Next.js",
+  "TypeScript",
+  "Python",
+  "Django",
+  "Node.js",
+  "PostgreSQL",
+  "MySQL",
+  "MongoDB",
+  "Docker",
+  "Kubernetes",
+  "AWS",
+  "Google Cloud",
+  "Firebase",
+  "Tailwind CSS",
+  "Java",
+  "Spring Boot",
+  "Kotlin",
+];
+
+// Split the array into two halves
+const midPoint = Math.ceil(technologies.length / 2);
+const firstRow = technologies.slice(0, midPoint);
+const secondRow = technologies.slice(midPoint);
+
+const TechBadge = ({ name }: { name: string }) => (
+  <Badge
+    variant="outline"
+    className="text-lg px-6 py-2 border-primary/20 bg-primary/5 shadow-sm text-nowrap"
+  >
+    {name}
+  </Badge>
+);
 
 export default function TechStack() {
   return (
@@ -15,16 +49,23 @@ export default function TechStack() {
             students are industry-ready.
           </p>
         </div>
-        <div className="flex flex-wrap justify-center items-center gap-4">
-          {techStack.map((tech) => (
-            <Badge
-              key={tech}
-              variant="outline"
-              className="text-lg px-6 py-2 border-primary/20 bg-primary/5 hover:bg-primary/10 hover:scale-105 transition-all duration-300 cursor-pointer shadow-sm"
-            >
-              {tech}
-            </Badge>
-          ))}
+        <div className="relative flex flex-col gap-4 overflow-hidden">
+          {/* Left-to-Right Scrolling Row */}
+          <div className="flex animate-marquee-right space-x-4">
+            {[...firstRow, ...firstRow].map((tech, index) => (
+              <TechBadge key={`first-${index}-${tech}`} name={tech} />
+            ))}
+          </div>
+
+          {/* Right-to-Left Scrolling Row */}
+          <div className="flex animate-marquee-left space-x-4">
+            {[...secondRow, ...secondRow].map((tech, index) => (
+              <TechBadge key={`second-${index}-${tech}`} name={tech} />
+            ))}
+          </div>
+
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/12 bg-gradient-to-r from-background"></div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/12 bg-gradient-to-l from-background"></div>
         </div>
       </div>
     </section>

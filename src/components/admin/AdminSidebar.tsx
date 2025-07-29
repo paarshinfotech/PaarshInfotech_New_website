@@ -52,7 +52,6 @@ const mainLinks = [
   { href: "/admin/products", label: "Products", icon: LuLayers },
   { href: "/admin/productreview", label: "ProductTestimonial", icon: LuLayers },
   { href: "/admin/clients", label: "Clients", icon: LuPackage },
-  { href: "/admin/careers", label: "Careers", icon: LuFileText },
   { href: "/admin/media", label: "Media", icon: LuImage },
   { href: "/admin/testimonial", label: "Testimonials", icon: LuPackage },
   { href: "/admin/site-images", label: "Site Images", icon: LuImage },
@@ -65,6 +64,12 @@ const mainLinks = [
 const teamLinks = [
   { href: "/admin/team", label: "Members" },
   { href: "/admin/team/categories", label: "Categories" },
+];
+
+const careerLinks = [
+  { href: "/admin/careers", label: "Job Openings" },
+  { href: "/admin/careers/media", label: "Media" },
+  { href: "/admin/careers/testimonials", label: "Testimonials" },
 ];
 
 const excellenceCenterLinks = [
@@ -90,6 +95,7 @@ export function AdminSidebar() {
   const { logout } = useAuth();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const isTeamSectionOpen = pathname.startsWith("/admin/team");
+  const isCareerSectionOpen = pathname.startsWith("/admin/careers");
   const isExcellenceCenterSectionOpen = pathname.startsWith("/admin/excellence-center");
 
   const handleLogout = () => {
@@ -151,6 +157,22 @@ export function AdminSidebar() {
             </CollapsibleContent>
           </Collapsible>
           
+          <Collapsible defaultOpen={isCareerSectionOpen}>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between">
+                <span className="flex items-center gap-2">
+                  <LuBriefcase className="h-4 w-4" /> Careers
+                </span>
+                <LuChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-1 pt-1">
+              {careerLinks.map((link) => (
+                <NavLink key={link.href} {...link} isSubItem />
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+
           <Collapsible defaultOpen={isExcellenceCenterSectionOpen}>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="w-full justify-between">

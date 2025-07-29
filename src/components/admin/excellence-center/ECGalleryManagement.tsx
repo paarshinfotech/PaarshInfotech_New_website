@@ -88,7 +88,7 @@ export function ECGalleryManagement() {
 
         reorderItems({ items: reorderedData })
           .unwrap()
-          .then(() => toast({ title: "Reordered successfully" }))
+          .then(() => toast({ title: "Reordered successfully", description: `Changed the order of ${active.id} and ${over.id}` }))
           .catch((error) => {
             toast({
               title: "Error reordering",

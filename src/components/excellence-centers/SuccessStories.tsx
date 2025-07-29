@@ -21,7 +21,7 @@ export default function SuccessStories() {
           </p>
         </div>
         <div className="relative w-full overflow-hidden group">
-          <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
+          <div className="flex animate-marquee-right group-hover:[animation-play-state:paused]">
             {extendedStories.map((story, index) => (
               <div
                 key={index}
