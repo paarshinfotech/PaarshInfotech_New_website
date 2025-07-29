@@ -10,10 +10,29 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { photoSliderImages } from "@/lib/mediaData";
 import { ImagePreviewModal } from "../common/ImagePreviewModal";
+import { useGetMediaItemsQuery } from "@/services/api";
+import { Skeleton } from "../ui/skeleton";
 
 export default function PhotoSlider() {
+  const { data: sliderImages = [], isLoading } = useGetMediaItemsQuery('slider');
+
+  if (isLoading) {
+    return (
+       <section className="py-16 md:py-24 bg-secondary">
+          <div className="container max-w-7xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="p-1 aspect-video">
+                  <Skeleton className="w-full h-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+       </section>
+    )
+  }
+
   return (
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
@@ -36,20 +55,20 @@ export default function PhotoSlider() {
           className="w-full"
         >
           <CarouselContent>
-            {photoSliderImages.map((image, index) => (
+            {sliderImages.map((image: any, index: number) => (
               <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                 <div className="p-1">
-                  <ImagePreviewModal imgSrc={image.src} alt={image.alt}>
+                  <ImagePreviewModal imgSrc={image.imageUrl} alt={image.title}>
                     <div className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer">
                       <Image
-                        src={image.src}
-                        alt={image.alt}
+                        src={image.imageUrl}
+                        alt={image.title}
                         fill
                         className="object-cover"
-                        data-ai-hint={image.hint}
+                        data-ai-hint={image.description}
                       />
                       <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300 flex items-end p-4">
-                        <p className="text-white font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">{image.alt}</p>
+                        <p className="text-white font-semibold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">{image.title}</p>
                       </div>
                     </div>
                   </ImagePreviewModal>

@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useMemo } from "react";
@@ -11,17 +12,19 @@ import EventRecapCards from "@/components/media/EventRecapCards";
 import SocialWall from "@/components/media/SocialWall";
 import MediaTestimonials from "@/components/media/MediaTestimonials";
 import CallToActionBox from "@/components/media/CallToActionBox";
-import { mediaCategories, mediaGalleryItems } from "@/lib/mediaData";
+import { mediaCategories } from "@/lib/mediaData";
+import { useGetMediaItemsQuery } from "@/services/api";
 
 export default function MediaPage() {
   const [activeCategory, setActiveCategory] = useState("All");
+  const { data: mediaGalleryItems = [], isLoading } = useGetMediaItemsQuery('gallery');
 
   const filteredMedia = useMemo(() => {
     if (activeCategory === "All") {
       return mediaGalleryItems;
     }
-    return mediaGalleryItems.filter((item) => item.category === activeCategory);
-  }, [activeCategory]);
+    return mediaGalleryItems.filter((item: any) => item.category === activeCategory);
+  }, [activeCategory, mediaGalleryItems]);
 
   return (
     <>
@@ -31,7 +34,7 @@ export default function MediaPage() {
         activeCategory={activeCategory}
         setActiveCategory={setActiveCategory}
       />
-      <MediaGalleryGrid items={filteredMedia} />
+      <MediaGalleryGrid items={filteredMedia} isLoading={isLoading} />
       <PhotoSlider />
       <BehindTheScenes />
       <EmployeeSpotlight />

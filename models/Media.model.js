@@ -1,3 +1,4 @@
+
 const mongoose = require("mongoose");
 
 // Base schema for common media properties
@@ -32,7 +33,7 @@ const galleryItemSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ["event", "office", "team", "other"],
+      enum: ["all", "office culture", "sports", "parties", "celebrations"],
     },
   },
   { timestamps: true }
@@ -42,6 +43,7 @@ const galleryItemSchema = new mongoose.Schema(
 const sliderImageSchema = new mongoose.Schema(
   {
     ...baseMediaSchema,
+    hint: String,
   },
   { timestamps: true }
 );
@@ -50,9 +52,7 @@ const sliderImageSchema = new mongoose.Schema(
 const btsItemSchema = new mongoose.Schema(
   {
     ...baseMediaSchema,
-    videoUrl: {
-      type: String,
-    },
+    hint: String,
     date: {
       type: Date,
       required: true,
@@ -74,8 +74,9 @@ const eventRecapSchema = new mongoose.Schema(
       required: true,
     },
     images: [{
-      type: String,
-      required: true,
+      imageUrl: { type: String, required: true },
+      alt: { type: String, required: true },
+      hint: { type: String }
     }],
   },
   { timestamps: true }
@@ -114,4 +115,4 @@ module.exports = {
   BtsItem,
   EventRecap,
   EmployeeSpotlight,
-}; 
+};
