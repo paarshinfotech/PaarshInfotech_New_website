@@ -32,6 +32,10 @@ export function QuoteViewModal({ isOpen, onOpenChange, quote }: QuoteViewModalPr
         </DialogHeader>
         <div className="space-y-4 py-4">
             <div>
+              <h4 className="font-semibold text-foreground mb-1">Contact</h4>
+              <p className="text-sm text-muted-foreground">{quote.phone}</p>
+            </div>
+            <div>
                 <h4 className="font-semibold text-foreground mb-2">Interested Services</h4>
                 <div className="flex flex-wrap gap-2">
                     {quote.services.map(service => (

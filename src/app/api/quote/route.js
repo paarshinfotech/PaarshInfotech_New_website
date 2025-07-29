@@ -17,15 +17,16 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { name, email, message, services } = data;
+    const { name, email, phone, message, services } = data;
 
-    if (!name || !email || !message || !services || services.length === 0) {
+    if (!name || !email || !phone || !message || !services || services.length === 0) {
       return NextResponse.json({ error: "All fields are required" }, { status: 400 });
     }
 
     const newQuote = new QuoteModel({
       name,
       email,
+      phone,
       message,
       services,
     });

@@ -43,6 +43,7 @@ export interface Quote {
   _id: string;
   name: string;
   email: string;
+  phone: string;
   message: string;
   services: string[];
   createdAt: string;
@@ -126,6 +127,9 @@ export default function QuotesManagementPage() {
                     <div className="font-medium">{quote.name}</div>
                     <div className="text-sm text-muted-foreground">
                       {quote.email}
+                    </div>
+                     <div className="text-sm text-muted-foreground">
+                      {quote.phone}
                     </div>
                   </TableCell>
                   <TableCell className="max-w-xs truncate">

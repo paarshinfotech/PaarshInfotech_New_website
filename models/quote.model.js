@@ -14,6 +14,17 @@ const quoteSchema = new mongoose.Schema(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Please enter a valid email address."],
     },
+    phone: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: function(v) {
+          return /\d{10,15}/.test(v);
+        },
+        message: props => `${props.value} is not a valid phone number!`
+      },
+      required: [true, 'User phone number required']
+    },
     message: {
       type: String,
       required: true,

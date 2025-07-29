@@ -28,6 +28,7 @@ const services = [
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  phone: z.string().regex(/^\d{10,15}$/, { message: "Please enter a valid phone number." }),
   message: z.string().min(10, { message: "Please describe your project briefly." }),
   services: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one service.",
@@ -48,6 +49,7 @@ export function QuoteForm() {
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
       message: "",
       services: [],
     },
@@ -117,6 +119,13 @@ export function QuoteForm() {
                   </FormItem>
                 )} />
               </div>
+               <FormField control={form.control} name="phone" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl><Input placeholder="Your Phone Number" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
 
               <FormField control={form.control} name="services" render={() => (
                 <FormItem>
