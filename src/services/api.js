@@ -31,8 +31,9 @@ export const api = createApi({
     "Workshop",
     "Award",
     "ECJourney",
-    "ECGallery"
-    
+    "ECGallery",
+    "CareerImage",
+    "CareerTestimonial"
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -433,38 +434,6 @@ export const api = createApi({
       invalidatesTags: ['SiteImage'],
     }),
 
-    // ================================================== Testimonial Endpoints ================================================== //
-
-    getTestimonials: builder.query({
-      query: () => '/testimonial',
-      providesTags: ['Testimonial'],
-    }),
-
-    addTestimonial: builder.mutation({
-      query: (testimonial) => ({
-        url: '/testimonial',
-        method: 'POST',
-        body: testimonial,
-      }),
-      invalidatesTags: ['Testimonial'],
-    }),
-
-    updateTestimonial: builder.mutation({
-      query: (testimonial) => ({
-        url: '/testimonial',
-        method: 'PATCH',
-        body: testimonial,
-      }),
-      invalidatesTags: ['Testimonial'],
-    }),
-
-    deleteTestimonial: builder.mutation({
-      query: (id) => ({
-        url: `/testimonial?id=${id}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Testimonial'],
-    }),
     // ================================================== Journey Milestone Endpoints ================================================== //
 
     getJourneyMilestones: builder.query({
@@ -766,6 +735,51 @@ export const api = createApi({
       query: (body) => ({ url: "/ec-gallery", method: "PATCH", body }),
       invalidatesTags: ["ECGallery"],
     }),
+
+    // ================================================== Career Page Endpoints ================================================== //
+
+    getCareerImages: builder.query({
+      query: () => "/career-image",
+      providesTags: ["CareerImage"],
+    }),
+    addCareerImage: builder.mutation({
+      query: (image) => ({ url: "/career-image", method: "POST", body: image }),
+      invalidatesTags: ["CareerImage"],
+    }),
+    updateCareerImage: builder.mutation({
+      query: (image) => ({ url: "/career-image", method: "PUT", body: image }),
+      invalidatesTags: ["CareerImage"],
+    }),
+    deleteCareerImage: builder.mutation({
+      query: (body) => ({ url: "/career-image", method: "DELETE", body }),
+      invalidatesTags: ["CareerImage"],
+    }),
+    reorderCareerImages: builder.mutation({
+      query: (body) => ({ url: "/career-image", method: "PATCH", body }),
+      invalidatesTags: ["CareerImage"],
+    }),
+
+    getCareerTestimonials: builder.query({
+      query: () => "/career-testimonial",
+      providesTags: ["CareerTestimonial"],
+    }),
+    addCareerTestimonial: builder.mutation({
+      query: (testimonial) => ({ url: "/career-testimonial", method: "POST", body: testimonial }),
+      invalidatesTags: ["CareerTestimonial"],
+    }),
+    updateCareerTestimonial: builder.mutation({
+      query: (testimonial) => ({ url: "/career-testimonial", method: "PUT", body: testimonial }),
+      invalidatesTags: ["CareerTestimonial"],
+    }),
+    deleteCareerTestimonial: builder.mutation({
+      query: (body) => ({ url: "/career-testimonial", method: "DELETE", body }),
+      invalidatesTags: ["CareerTestimonial"],
+    }),
+    reorderCareerTestimonials: builder.mutation({
+      query: (body) => ({ url: "/career-testimonial", method: "PATCH", body }),
+      invalidatesTags: ["CareerTestimonial"],
+    }),
+
   }),
 
 });
@@ -899,5 +913,17 @@ export const {
   useUpdateProductTestimonialMutation,
   useDeleteProductTestimonialMutation,
   useReorderProductTestimonialsMutation,
+
+  // Career Page Dynamic Content
+  useGetCareerImagesQuery,
+  useAddCareerImageMutation,
+  useUpdateCareerImageMutation,
+  useDeleteCareerImageMutation,
+  useReorderCareerImagesMutation,
+  useGetCareerTestimonialsQuery,
+  useAddCareerTestimonialMutation,
+  useUpdateCareerTestimonialMutation,
+  useDeleteCareerTestimonialMutation,
+  useReorderCareerTestimonialsMutation,
 
 } = api;
