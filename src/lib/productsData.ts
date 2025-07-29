@@ -3,6 +3,7 @@ import { LuLayers, LuBriefcase, LuBot, LuGraduationCap, LuZap, LuShieldCheck, Lu
 import type { IconType } from 'react-icons';
 
 export interface Product {
+    heroImageBase64: string;
     _id?: string;
     id: string;
     name: string;
@@ -11,7 +12,9 @@ export interface Product {
     published: boolean;
     Icon: IconType;
     heroImage: string;
-    gallery: { src: string; alt: string; hint: string; }[];
+    gallery: {
+      srcBase64: string; src: string; alt: string; hint: string; 
+}[];
     features: { title: string; description: string; Icon: IconType; }[];
 }
 

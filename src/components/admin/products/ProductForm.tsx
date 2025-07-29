@@ -21,15 +21,23 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-
 import { GoPlusCircle } from "react-icons/go";
 import { ImSpinner2 } from "react-icons/im";
 import { FaTrash } from "react-icons/fa";
-
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/productsData";
 import { useRouter } from "next/navigation";
 import { useAddProductMutation, useUpdateProductMutation } from "@/services/api";
+
+// Helper function to convert file to base64
+const convertFileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+    reader.readAsDataURL(file);
+  });
+};
 
 const featureSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -37,20 +45,20 @@ const featureSchema = z.object({
 });
 
 const galleryItemSchema = z.object({
-  src: z.string().url("Must be a valid URL."),
-  alt: z.string().min(1, "Alt text is required."),
+  srcBase64: z.string().min(1, "Image is required"),
+  alt: z.string().min(1, "Alt text is required"),
   hint: z.string(),
 });
 
 const formSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters."),
+  name: z.string().min(3, "Name must be at least 3 characters"),
   id: z
     .string()
-    .min(3, "Slug/ID must be at least 3 characters.")
-    .refine((s) => !s.includes(" "), "Slug cannot contain spaces."),
-  tagline: z.string().min(10, "Tagline is required."),
-  description: z.string().min(20, "Description is required."),
-  heroImage: z.string().url("Must be a valid URL."),
+    .min(3, "Slug/ID must be at least 3 characters")
+    .refine((s) => !s.includes(" "), "Slug cannot contain spaces"),
+  tagline: z.string().min(10, "Tagline is required"),
+  description: z.string().min(20, "Description is required"),
+  heroImageBase64: z.string().min(1, "Hero image is required"),
   features: z.array(featureSchema),
   gallery: z.array(galleryItemSchema),
 });
@@ -64,14 +72,26 @@ interface ProductFormProps {
 export function ProductForm({ product }: ProductFormProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const [addProduct, { isLoading: isAdding }] = useAddProductMutation();
+  const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
+
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: product
       ? {
-          ...product,
+          name: product.name || "",
+          id: product.id || "",
+          tagline: product.tagline || "",
+          description: product.description || "",
+          heroImageBase64: product.heroImageBase64 || "",
           features: product.features.map((f) => ({
             title: f.title,
             description: f.description,
+          })),
+          gallery: product.gallery.map((g) => ({
+            srcBase64: g.srcBase64 || "",
+            alt: g.alt || "",
+            hint: g.hint || "",
           })),
         }
       : {
@@ -79,7 +99,7 @@ export function ProductForm({ product }: ProductFormProps) {
           id: "",
           tagline: "",
           description: "",
-          heroImage: "https://placehold.co/1200x800.png",
+          heroImageBase64: "",
           features: [],
           gallery: [],
         },
@@ -103,22 +123,72 @@ export function ProductForm({ product }: ProductFormProps) {
     name: "gallery",
   });
 
-  const [_ADDPRODUCT] = useAddProductMutation();
-  const [_EDITPRODUCT] = useUpdateProductMutation();
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    fieldName: string
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Image file size must be less than 5MB",
+        });
+        return;
+      }
+      try {
+        const base64 = await convertFileToBase64(file);
+        form.setValue(fieldName as any, base64, { shouldValidate: true });
+      } catch (error) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to process image",
+        });
+      }
+    }
+  };
 
   const onSubmit = async (values: ProductFormValues) => {
-    
-    if (product) {
-     const result = await _EDITPRODUCT({ _id: product._id , ...values }).unwrap();
-    } else {
-      const result = await _ADDPRODUCT(values).unwrap();
-    }
+    try {
+      const payload = {
+        _id: product?._id,
+        ...values,
+        gallery: values.gallery.map((item) => ({
+          srcBase64: item.srcBase64,
+          alt: item.alt,
+          hint: item.hint,
+        })),
+      };
 
-    toast({
-      title: `Product ${product ? "Updated" : "Created"}!`,
-      description: `The product "${values.name}" has been saved successfully.`,
-    });
-    router.push("/admin/products");
+      const result = product
+        ? await updateProduct(payload).unwrap()
+        : await addProduct(payload).unwrap();
+
+      toast({
+        title: `Product ${product ? "Updated" : "Created"}!`,
+        description: `The product "${values.name}" has been saved successfully`,
+      });
+      router.push("/admin/products");
+    } catch (error: any) {
+      let errorMessage = "Something went wrong while saving the product";
+      if (error?.data?.error) {
+        errorMessage = error.data.error;
+      } else if (error?.data?.message) {
+        errorMessage = error.data.message;
+      } else if (typeof error?.error === "string") {
+        errorMessage = error.error;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    }
   };
 
   return (
@@ -128,8 +198,8 @@ export function ProductForm({ product }: ProductFormProps) {
           <h1 className="text-3xl font-bold">
             {product ? "Edit Product" : "Create New Product"}
           </h1>
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting && (
+          <Button type="submit" disabled={isAdding || isUpdating}>
+            {(isAdding || isUpdating) && (
               <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
             )}
             Save {product ? "Changes" : "Product"}
@@ -139,7 +209,7 @@ export function ProductForm({ product }: ProductFormProps) {
         <Card>
           <CardHeader>
             <CardTitle>Basic Information</CardTitle>
-            <CardDescription>Core details of the product.</CardDescription>
+            <CardDescription>Core details of the product</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -200,12 +270,26 @@ export function ProductForm({ product }: ProductFormProps) {
             />
             <FormField
               control={form.control}
-              name="heroImage"
+              name="heroImageBase64"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Hero Image URL</FormLabel>
+                  <FormLabel>Hero Image</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <div className="space-y-2">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleFileChange(e, "heroImageBase64")}
+                        required={!product}
+                      />
+                      {field.value && (
+                        <img
+                          src={field.value}
+                          alt="Hero image preview"
+                          className="mt-2 h-32 w-32 object-cover rounded"
+                        />
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -280,7 +364,7 @@ export function ProductForm({ product }: ProductFormProps) {
           <CardHeader>
             <CardTitle>Product Gallery</CardTitle>
             <CardDescription>
-              Showcase images of the product interface.
+              Showcase images of the product interface
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -292,12 +376,28 @@ export function ProductForm({ product }: ProductFormProps) {
                 <div className="grid gap-2 flex-1">
                   <FormField
                     control={form.control}
-                    name={`gallery.${index}.src`}
+                    name={`gallery.${index}.srcBase64`}
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Image URL</FormLabel>
+                        <FormLabel>Image</FormLabel>
                         <FormControl>
-                          <Input {...field} />
+                          <div className="space-y-2">
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) =>
+                                handleFileChange(e, `gallery.${index}.srcBase64`)
+                              }
+                              required={!product}
+                            />
+                            {field.value && (
+                              <img
+                                src={field.value}
+                                alt="Gallery image preview"
+                                className="mt-2 h-32 w-32 object-cover rounded"
+                              />
+                            )}
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -325,7 +425,7 @@ export function ProductForm({ product }: ProductFormProps) {
                         <FormControl>
                           <Input
                             {...field}
-                            placeholder="e.g. dashboard analytics"
+                            placeholder="e.g., dashboard analytics"
                           />
                         </FormControl>
                         <FormMessage />
@@ -348,7 +448,7 @@ export function ProductForm({ product }: ProductFormProps) {
               variant="outline"
               onClick={() =>
                 appendGallery({
-                  src: "https://placehold.co/800x600.png",
+                  srcBase64: "",
                   alt: "",
                   hint: "",
                 })

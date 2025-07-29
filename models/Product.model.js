@@ -20,12 +20,6 @@ const galleryItemSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    validate: {
-      validator: function (v) {
-        return /^(https?:\/\/[^\s$.?#].[^\s]*)$/.test(v);
-      },
-      message: "Must be a valid URL.",
-    },
   },
   alt: {
     type: String,
@@ -54,12 +48,6 @@ const productSchema = new mongoose.Schema(
       required: true,
       trim: true,
       minlength: 3,
-      validate: {
-        validator: function (v) {
-          return !v.includes(" ");
-        },
-        message: "Slug cannot contain spaces.",
-      },
     },
     tagline: {
       type: String,
@@ -73,16 +61,10 @@ const productSchema = new mongoose.Schema(
       trim: true,
       minlength: 20,
     },
-    heroImage: {
+    heroImageBase64: {
       type: String,
       required: true,
       trim: true,
-      validate: {
-        validator: function (v) {
-          return /^(https?:\/\/[^\s$.?#].[^\s]*)$/.test(v);
-        },
-        message: "Must be a valid URL.",
-      },
     },
     features: [featureSchema],
     gallery: [galleryItemSchema],

@@ -101,3 +101,32 @@
     transform: translateX(-50%);
   }
 }
+
+@layer utilities {
+  .bg-grid-pattern {
+    background-image: linear-gradient(to right, rgba(var(--border-rgb), 0.4) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(var(--border-rgb), 0.4) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .bg-size-200 {
+    background-size: 200% 200%;
+  }
+
+  .bg-pos-0 {
+    background-position: 0% 0%;
+  }
+
+  .animate-gradient-move {
+    animation: gradient-move 10s ease infinite;
+  }
+
+  @keyframes gradient-move {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+}

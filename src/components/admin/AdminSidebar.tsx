@@ -50,6 +50,7 @@ const mainLinks = [
   { href: "/admin/about", label: "About", icon: LuFileText },
   { href: "/admin/services", label: "Services", icon: LuBriefcase },
   { href: "/admin/products", label: "Products", icon: LuLayers },
+  { href: "/admin/productreview", label: "ProductTestimonial", icon: LuLayers },
   { href: "/admin/clients", label: "Clients", icon: LuPackage },
   { href: "/admin/careers", label: "Careers", icon: LuFileText },
   { href: "/admin/media", label: "Media", icon: LuImage },
