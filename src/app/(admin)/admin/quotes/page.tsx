@@ -114,6 +114,7 @@ export default function QuotesManagementPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>From</TableHead>
+                <TableHead>Phone</TableHead>
                 <TableHead>Message</TableHead>
                 <TableHead>Services</TableHead>
                 <TableHead>Date</TableHead>
@@ -128,7 +129,9 @@ export default function QuotesManagementPage() {
                     <div className="text-sm text-muted-foreground">
                       {quote.email}
                     </div>
-                     <div className="text-sm text-muted-foreground">
+                  </TableCell>
+                  <TableCell>
+                    <div className="text-sm text-muted-foreground">
                       {quote.phone}
                     </div>
                   </TableCell>
