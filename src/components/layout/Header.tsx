@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { LuMenu, LuX, LuPhone, LuMail, LuChevronDown } from "react-icons/lu";
 
 import { Button } from "@/components/ui/button";
@@ -37,13 +36,7 @@ const NavLink = ({ href, label, isActive, onClick }: { href: string; label: stri
   >
     {label}
     {isActive && (
-      <motion.span
-        layoutId="underline"
-        className="absolute left-0 -bottom-1 block h-[2px] w-full bg-primary"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      />
+      <span className="absolute left-0 -bottom-1 block h-[2px] w-full bg-primary" />
     )}
   </Link>
 );
@@ -62,26 +55,14 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const headerVariants = {
-    transparent: {
-      backgroundColor: "rgba(0, 0, 0, 0)",
-      backdropFilter: "blur(0px)",
-      boxShadow: "0 0 0 0 rgba(0, 0, 0, 0)",
-    },
-    scrolled: {
-      backgroundColor: "rgba(var(--background-rgb), 0.8)",
-      backdropFilter: "blur(8px)",
-      boxShadow: "0 2px 10px 0 rgba(0, 0, 0, 0.1)",
-    },
-  };
-
   return (
-    <motion.header
-      className="sticky top-0 z-50 w-full"
-      variants={headerVariants}
-      initial="transparent"
-      animate={isScrolled ? "scrolled" : "transparent"}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
+    <header
+      className={cn(
+        "sticky top-0 z-50 w-full",
+        isScrolled
+          ? "bg-background/80 backdrop-blur-md shadow-md"
+          : "bg-transparent"
+      )}
     >
       <div className="container flex h-20 max-w-7xl items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
@@ -97,9 +78,6 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center space-x-4">
-          <Button asChild variant="ghost" className="text-foreground/80 hover:text-primary">
-            <Link href="/contact">Contact Us</Link>
-          </Button>
           <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6">
             <Link href="/quote">Get a Quote</Link>
           </Button>
@@ -149,6 +127,6 @@ export function Header() {
           </SheetContent>
         </Sheet>
       </div>
-    </motion.header>
+    </header>
   );
 }
