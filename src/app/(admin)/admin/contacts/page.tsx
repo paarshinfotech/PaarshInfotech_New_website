@@ -42,9 +42,11 @@ import {
 import { format } from "date-fns";
 
 export interface Contact {
+  id: Number;
   _id: string;
   name: string;
   email: string;
+  subject: string;
   message: string;
   date: string;
   status: "New" | "Read" | "Archived";

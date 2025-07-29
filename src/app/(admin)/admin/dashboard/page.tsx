@@ -74,6 +74,7 @@ const userDemographicsConfig = {
 const recentContacts: Contact[] = [
   {
     id: 1,
+    _id: "1",
     name: "John Doe",
     email: "john@example.com",
     subject: "Web Development Inquiry",
@@ -84,6 +85,7 @@ const recentContacts: Contact[] = [
   },
   {
     id: 2,
+    _id: "2",
     name: "Jane Smith",
     email: "jane@example.com",
     subject: "Question about AI services",
@@ -93,6 +95,7 @@ const recentContacts: Contact[] = [
   },
   {
     id: 3,
+    _id: "3",
     name: "Peter Jones",
     email: "peter@example.com",
     subject: "Partnership Proposal",
@@ -355,7 +358,7 @@ export default function DashboardPage() {
                 </TableHeader>
                 <TableBody>
                   {recentContacts.map((contact) => (
-                    <TableRow key={contact.id}>
+                    <TableRow key={contact._id}>
                       <TableCell>
                         <div className="font-medium">{contact.name}</div>
                         <div className="text-sm text-muted-foreground">

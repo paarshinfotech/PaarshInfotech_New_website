@@ -36,45 +36,7 @@ import { Switch } from "@/components/ui/switch";
 import { useGetProductsQuery, useDeleteProductMutation, useUpdateProductMutation } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 import type { Product } from "@/lib/productsData";
-
-// Skeleton component for table loading state
-const ProductsTableSkeleton = () => {
-  return (
-    <div className="animate-pulse">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Slug</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {[...Array(3)].map((_, index) => (
-            <TableRow key={index}>
-              <TableCell>
-                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-              </TableCell>
-              <TableCell>
-                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-              </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-2">
-                  <div className="h-6 w-12 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 rounded w-16"></div>
-                </div>
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="h-4 bg-gray-200 rounded w-8 ml-auto"></div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  );
-};
+import { AdminTableSkeleton } from "@/components/ui/skeletons";
 
 export default function ProductsManagementPage() {
   const router = useRouter();
@@ -88,25 +50,7 @@ export default function ProductsManagementPage() {
 
   // Handle loading state
   if (isLoading) {
-    return (
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Products Management</CardTitle>
-            <CardDescription>
-              Manage your company's product offerings and their visibility.
-            </CardDescription>
-          </div>
-          <Button size="sm" disabled>
-            <GoPlusCircle className="mr-2 h-4 w-4" />
-            Add Product
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <ProductsTableSkeleton />
-        </CardContent>
-      </Card>
-    );
+    return <AdminTableSkeleton title="Products Management" />;
   }
 
   // Handle error state

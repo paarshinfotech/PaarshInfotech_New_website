@@ -3,8 +3,9 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { PlayCircle } from "lucide-react";
+import { FaPlayCircle, FaRegPlayCircle } from "react-icons/fa";
 import { VideoPlayerModal } from "@/components/common/VideoPlayerModal";
+import { Button } from "@/components/ui/button";
 
 export default function CompanyIntroVideo() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,33 +15,31 @@ export default function CompanyIntroVideo() {
 
   return (
     <>
-      <section className="py-16 md:py-24 bg-background">
-        <div className="container max-w-5xl text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-            Meet the Innovators
-          </h2>
-          <p className="text-lg text-foreground/70 mb-12 max-w-3xl mx-auto">
-            A glimpse into our world, where ideas come to life and technology
-            meets passion.
-          </p>
-          <div
-            className="relative aspect-video w-full rounded-lg overflow-hidden shadow-2xl shadow-primary/20 group cursor-pointer"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <Image
-              src="https://placehold.co/1280x720.png"
-              alt="Company Introduction Video"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-              data-ai-hint="office presentation"
-            />
-            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-              <PlayCircle className="w-20 h-20 text-white/80 transform transition-all duration-300 group-hover:scale-110 group-hover:text-white" />
+      <section className="py-20 md:py-32 bg-background">
+        <div className="container max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-16 items-center">
+            <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-2xl shadow-primary/20 group cursor-pointer" onClick={() => setIsModalOpen(true)}>
+              <Image
+                src="https://placehold.co/1280x720.png"
+                alt="Company Introduction Video Thumbnail"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                data-ai-hint="team working in modern office"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-center justify-center">
+                <FaRegPlayCircle className="w-24 h-24 text-white/80 transform transition-all duration-300 group-hover:scale-110 group-hover:text-white" />
+              </div>
             </div>
-            <div className="absolute bottom-0 left-0 p-6">
-              <p className="text-xl md:text-2xl font-semibold text-white italic drop-shadow-lg">
-                "Building tomorrow's technology, today."
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold text-primary mb-6">
+                Discover Our Culture
+              </h2>
+              <p className="text-lg text-foreground/70 mb-8">
+                Take a look behind the scenes at Paarsh Infotech. See how our team collaborates, innovates, and brings ideas to life in a dynamic and supportive environment.
               </p>
+              <Button onClick={() => setIsModalOpen(true)} size="lg" className="rounded-full px-8 py-6 text-base font-semibold">
+                Watch Our Story
+              </Button>
             </div>
           </div>
         </div>

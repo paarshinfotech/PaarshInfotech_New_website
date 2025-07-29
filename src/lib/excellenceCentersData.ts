@@ -10,7 +10,6 @@ import {
   LuFlag,
   LuTrophy,
   LuBrainCircuit,
-  LuBarChart,
   LuTrendingUp,
 } from "react-icons/lu";
 import type { IconType } from "react-icons";

@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import Image from 'next/image';
-import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
@@ -31,10 +30,14 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+interface SaveData extends FormValues {
+  imageUrl?: string;
+}
+
 interface ImageFormModalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (data: FormValues) => Promise<void>;
+  onSave: (data: SaveData) => Promise<void>;
   image: SiteImage | null;
   page: string;
 }
@@ -107,7 +110,8 @@ export function ImageFormModal({ isOpen, onOpenChange, onSave, image, page }: Im
             imageUrl = await convertToBase64(file);
         }
       
-      await onSave({ ...values, imageUrl });
+      const saveData: SaveData = { ...values, imageUrl };
+      await onSave(saveData);
       onOpenChange(false);
     } finally {
       setIsSubmitting(false);
