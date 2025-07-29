@@ -94,7 +94,7 @@ export default function SocialManagementPage() {
   const confirmDelete = async () => {
     if (selectedPost) {
       try {
-        await deleteSocialPost(selectedPost._id).unwrap();
+        await deleteSocialPost({ _id: selectedPost._id }).unwrap();
         toast({
           title: "Post Deleted",
           description: `Post has been deleted successfully.`,
@@ -311,7 +311,7 @@ export default function SocialManagementPage() {
         isOpen={isDeleteAlertOpen}
         onOpenChange={setIsDeleteAlertOpen}
         onConfirm={confirmDelete}
-        itemName={`Post #${selectedPost?._id}`}
+        itemName={`Post #${selectedPost?._id.slice(-6)}`}
       />
     </>
   );

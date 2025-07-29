@@ -14,7 +14,7 @@ export default function AdminAreaLayout({ children }: PropsWithChildren) {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated && pathname !== '/admin/login') {
+    if (!isLoading && !isAuthenticated && !pathname.endsWith('/admin/login')) {
       router.push('/admin/login');
     }
   }, [isAuthenticated, isLoading, router, pathname]);
@@ -24,7 +24,7 @@ export default function AdminAreaLayout({ children }: PropsWithChildren) {
   }
 
   // Do not render the sidebar layout for the login page itself
-  if (pathname === '/admin/login') {
+  if (pathname.endsWith('/admin/login')) {
     return <>{children}</>;
   }
   
