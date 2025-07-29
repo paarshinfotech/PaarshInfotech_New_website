@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, useFieldArray } from "react-hook-form";
@@ -163,16 +164,31 @@ export function ProductForm({ product }: ProductFormProps) {
 
   const onSubmit = async (values: ProductFormValues) => {
     try {
-      const payload = {
+      const payload: any = {
         _id: product?._id,
-        ...values,
-        heroImageBase64: values.heroImageBase64 || product?.heroImageBase64 || "",
-        gallery: values.gallery.map((item, index) => ({
-          srcBase64: item.srcBase64 || product?.gallery[index]?.srcBase64 || "",
-          alt: item.alt,
-          hint: item.hint,
-        })),
+        name: values.name,
+        tagline: values.tagline,
+        description: values.description,
+        features: values.features,
       };
+
+      // Only include heroImageBase64 if it's a new file (starts with data:image)
+      if (values.heroImageBase64?.startsWith('data:image')) {
+        payload.heroImageBase64 = values.heroImageBase64;
+      }
+
+      // Handle gallery images
+      payload.gallery = values.gallery.map((item, index) => {
+        const newItem: any = { alt: item.alt, hint: item.hint };
+        // Only include srcBase64 if it's a new file
+        if (item.srcBase64?.startsWith('data:image')) {
+          newItem.srcBase64 = item.srcBase64;
+        } else if (product?.gallery[index]?.src) {
+           // Keep existing image URL if no new one is provided
+          newItem.src = product.gallery[index].src;
+        }
+        return newItem;
+      });
 
       const result = product
         ? await updateProduct(payload).unwrap()
@@ -292,7 +308,6 @@ export function ProductForm({ product }: ProductFormProps) {
                         type="file"
                         accept="image/*"
                         onChange={(e) => handleFileChange(e, "heroImageBase64")}
-                        required={!product}
                       />
                       {field.value && (
                         <img
@@ -389,7 +404,7 @@ export function ProductForm({ product }: ProductFormProps) {
                   <FormField
                     control={form.control}
                     name={`gallery.${index}.srcBase64`}
-                    render={({ field }) => (
+                    render={({ field: imageField }) => (
                       <FormItem>
                         <FormLabel>Image</FormLabel>
                         <FormControl>
@@ -400,11 +415,10 @@ export function ProductForm({ product }: ProductFormProps) {
                               onChange={(e) =>
                                 handleFileChange(e, `gallery.${index}.srcBase64`)
                               }
-                              required={!product}
                             />
-                            {field.value && (
+                            {imageField.value && (
                               <img
-                                src={field.value}
+                                src={imageField.value}
                                 alt="Gallery image preview"
                                 className="mt-2 h-32 w-32 object-cover rounded"
                               />
