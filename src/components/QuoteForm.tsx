@@ -12,6 +12,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useState } from "react";
 import { LuLoader } from "react-icons/lu";
 import { getSmartReply } from "@/app/actions";
+import { useAddQuoteMutation } from "@/services/api";
+import { useToast } from "@/hooks/use-toast";
+
 
 const services = [
   { id: "web", label: "Web Development" },
@@ -37,6 +40,8 @@ export function QuoteForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [smartReply, setSmartReply] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [addQuote] = useAddQuoteMutation();
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -53,18 +58,37 @@ export function QuoteForm() {
     setSmartReply(null);
     setError(null);
 
-    const reply = await getSmartReply({
-        clientMessage: values.message,
-        selectedServices: values.services,
-    });
-    
-    if(reply.success) {
-        setSmartReply(reply.content || '');
-    } else {
-        setError(reply.error || 'An unexpected error occurred.');
-    }
+    try {
+      // First, save the quote to the database
+      await addQuote(values).unwrap();
+      
+      toast({
+        title: "Quote Request Sent!",
+        description: "Thank you for your request. We'll be in touch shortly.",
+      });
 
-    setIsLoading(false);
+      // Then, get the AI-generated smart reply
+      const reply = await getSmartReply({
+          clientMessage: values.message,
+          selectedServices: values.services,
+      });
+      
+      if(reply.success) {
+          setSmartReply(reply.content || '');
+      } else {
+          setError(reply.error || 'An unexpected error occurred while generating the email draft.');
+      }
+
+    } catch (err: any) {
+        toast({
+          title: "Error",
+          description: err.data?.error || "Failed to submit quote request. Please try again.",
+          variant: "destructive",
+        });
+        setError("Could not submit your quote request. Please try again later.");
+    } finally {
+        setIsLoading(false);
+    }
   }
 
   return (

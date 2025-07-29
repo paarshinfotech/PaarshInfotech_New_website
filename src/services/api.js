@@ -12,6 +12,7 @@ export const api = createApi({
     "DBStatus",
     "TeamCategory",
     "Contact",
+    "Quote",
     "SocialPost",
     "Job",
     "Applicant",
@@ -357,6 +358,29 @@ export const api = createApi({
         body: { _id },
       }),
       invalidatesTags: ["Contact"],
+    }),
+
+    // ================================================== Quote Endpoints ================================================== //
+
+    getQuotes: builder.query({
+      query: () => "/quote",
+      providesTags: ["Quote"],
+    }),
+    addQuote: builder.mutation({
+      query: (quote) => ({
+        url: "/quote",
+        method: "POST",
+        body: quote,
+      }),
+      invalidatesTags: ["Quote"],
+    }),
+    deleteQuote: builder.mutation({
+      query: (_id) => ({
+        url: `/quote`,
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["Quote"],
     }),
 
     // ================================================== Media Endpoints ================================================== //
@@ -874,10 +898,15 @@ export const {
   useAddProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
+  
   useGetContactsQuery,
   useAddContactMutation,
   useUpdateContactStatusMutation,
   useDeleteContactMutation,
+
+  useGetQuotesQuery,
+  useAddQuoteMutation,
+  useDeleteQuoteMutation,
 
   // Media exports
   useGetMediaItemsQuery,
