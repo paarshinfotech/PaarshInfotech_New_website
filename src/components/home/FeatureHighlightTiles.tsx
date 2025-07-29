@@ -35,28 +35,30 @@ const features: {
 
 export default function FeatureHighlightTiles() {
   return (
-    <section className="py-20 md:py-32 bg-secondary/50">
+    <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-primary">
-            Why Partner with Paarsh
+          <h2 className="text-3xl md:text-4xl font-bold text-primary">
+            More Than a Workplace
           </h2>
           <p className="mt-4 text-lg text-foreground/70 max-w-3xl mx-auto">
-            We combine expertise, passion, and a commitment to excellence to deliver exceptional results.
+            We're building a community dedicated to growth, learning, and making
+            a real impact.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map(({ title, description, Icon }) => (
             <div
               key={title}
-              className="group relative rounded-2xl border border-primary/10 bg-background/80 p-8 text-center shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 backdrop-blur-sm"
+              className="group relative rounded-md border border-primary/10 bg-background/50 p-6 text-center shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 backdrop-blur-sm overflow-hidden"
             >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(400px_circle_at_var(--x,_0)_var(--y,_0),_hsl(var(--primary)/_0.2),_transparent_80%)]"></div>
               <div className="relative z-10 flex flex-col items-center h-full">
-                <div className="p-5 bg-primary/10 rounded-full mb-6 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary">
-                  <Icon className="w-10 h-10 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
+                <div className="p-4 bg-primary/10 rounded-full mb-6 transition-all duration-300 group-hover:scale-110 group-hover:bg-primary">
+                  <Icon className="w-8 h-8 text-primary transition-colors duration-300 group-hover:text-primary-foreground" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-4">{title}</h3>
-                <p className="text-foreground/60 flex-grow">
+                <h3 className="text-xl font-bold text-primary mb-3">{title}</h3>
+                <p className="text-muted-foreground flex-grow">
                   {description}
                 </p>
               </div>
@@ -64,6 +66,21 @@ export default function FeatureHighlightTiles() {
           ))}
         </div>
       </div>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            document.querySelectorAll('.group.relative').forEach(card => {
+              card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--x', x + 'px');
+                card.style.setProperty('--y', y + 'px');
+              });
+            });
+          `,
+        }}
+      />
     </section>
   );
 }

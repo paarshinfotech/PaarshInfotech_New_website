@@ -1,3 +1,4 @@
+
 import _db from "../../../lib/utils/db";
 import { uploadBase64, deleteFile } from "../../../lib/utils/upload";
 import {
@@ -84,20 +85,22 @@ export async function POST(request) {
     // Handle multiple images for event recaps
     if (type === "event" && mediaData.imagesBase64) {
       const uploadPromises = mediaData.imagesBase64.map((base64, index) =>
-        uploadBase64(base64, `${type}-image-${index}`)
+        uploadBase64(base64, `${type}-image-gallery-${index}`)
       );
       const imageUrls = await Promise.all(uploadPromises);
       if (imageUrls.some(url => !url)) {
-        throw new Error("Failed to upload one or more images");
+        throw new Error("Failed to upload one or more gallery images");
       }
       mediaData.images = imageUrls;
       delete mediaData.imagesBase64;
     }
 
-    // Set order to highest current order + 1
-    const maxOrder = await Model.find().sort({ order: -1 }).limit(1);
-    const newOrder = maxOrder.length > 0 ? maxOrder[0].order + 1 : 0;
-    mediaData.order = newOrder;
+    // Set order to highest current order + 1 if applicable
+    if (type !== 'spotlight') { // Spotlight is usually a single item
+        const maxOrder = await Model.find().sort({ order: -1 }).limit(1);
+        const newOrder = maxOrder.length > 0 ? maxOrder[0].order + 1 : 0;
+        mediaData.order = newOrder;
+    }
 
     const newItem = new Model(mediaData);
     await newItem.save();
@@ -134,38 +137,35 @@ export async function PUT(request) {
 
     // Handle image update if present
     if (updateData.imageBase64) {
+      const oldItem = await Model.findById(_id);
+      if (oldItem?.imageUrl) {
+        await deleteFile(oldItem.imageUrl);
+      }
       const imageUrl = await uploadBase64(updateData.imageBase64, `${type}-image`);
       if (!imageUrl) {
         throw new Error("Failed to upload image");
       }
       updateData.imageUrl = imageUrl;
       delete updateData.imageBase64;
-
-      // Delete old image
-      const oldItem = await Model.findById(_id);
-      if (oldItem?.imageUrl) {
-        await deleteFile(oldItem.imageUrl);
-      }
     }
 
     // Handle multiple images for event recaps
     if (type === "event" && updateData.imagesBase64) {
-      const uploadPromises = updateData.imagesBase64.map((base64, index) =>
-        uploadBase64(base64, `${type}-image-${index}`)
-      );
-      const imageUrls = await Promise.all(uploadPromises);
-      if (imageUrls.some(url => !url)) {
-        throw new Error("Failed to upload one or more images");
-      }
-      updateData.images = imageUrls;
-      delete updateData.imagesBase64;
-
-      // Delete old images
-      const oldItem = await Model.findById(_id);
-      if (oldItem?.images) {
-        await Promise.all(oldItem.images.map(url => deleteFile(url)));
-      }
+        const oldItem = await Model.findById(_id);
+        if (oldItem?.images) {
+            await Promise.all(oldItem.images.map(url => deleteFile(url)));
+        }
+        const uploadPromises = updateData.imagesBase64.map((base64, index) =>
+            uploadBase64(base64, `${type}-image-gallery-${index}`)
+        );
+        const imageUrls = await Promise.all(uploadPromises);
+        if (imageUrls.some(url => !url)) {
+            throw new Error("Failed to upload one or more gallery images");
+        }
+        updateData.images = imageUrls;
+        delete updateData.imagesBase64;
     }
+
 
     const updatedItem = await Model.findByIdAndUpdate(
       _id,
@@ -223,7 +223,7 @@ export async function DELETE(request) {
     if (item.imageUrl) {
       await deleteFile(item.imageUrl);
     }
-    if (item.images) {
+    if (item.images && Array.isArray(item.images)) {
       await Promise.all(item.images.map(url => deleteFile(url)));
     }
 
@@ -288,4 +288,4 @@ export async function PATCH(request) {
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
-} 
+}

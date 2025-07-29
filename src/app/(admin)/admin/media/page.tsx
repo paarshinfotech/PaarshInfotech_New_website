@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -42,7 +43,7 @@ export default function MediaManagementPage() {
     if (spotlightData?.[0]?._id !== spotlight?._id) {
       setSpotlight(spotlightData?.[0] || null);
     }
-  }, [galleryData, sliderData, btsData, eventData, spotlightData]);
+  }, [galleryData, sliderData, btsData, eventData, spotlightData, galleryItems, sliderImages, btsItems, eventRecaps, spotlight]);
 
   return (
     <div className="space-y-6">
