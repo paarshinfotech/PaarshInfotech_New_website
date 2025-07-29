@@ -83,17 +83,19 @@ export async function POST(request) {
     }
 
     // Handle multiple images for event recaps
-    if (type === "event" && mediaData.imagesBase64) {
-      const uploadPromises = mediaData.imagesBase64.map((base64, index) =>
-        uploadBase64(base64, `${type}-image-gallery-${index}`)
-      );
-      const imageUrls = await Promise.all(uploadPromises);
-      if (imageUrls.some(url => !url)) {
-        throw new Error("Failed to upload one or more gallery images");
-      }
-      mediaData.images = imageUrls;
-      delete mediaData.imagesBase64;
+    if (type === "event" && mediaData.images) {
+      const uploadPromises = mediaData.images.map(async (img, index) => {
+        if (img.image) { // New base64 image
+          const imageUrl = await uploadBase64(img.image, `${type}-gallery-${index}`);
+          if (!imageUrl) throw new Error("Failed to upload gallery image");
+          return { ...img, imageUrl };
+        }
+        return img; // Existing image
+      });
+      const processedImages = await Promise.all(uploadPromises);
+      mediaData.images = processedImages.map(({ image, ...rest }) => rest); // Remove base64 data
     }
+
 
     // Set order to highest current order + 1 if applicable
     if (type !== 'spotlight') { // Spotlight is usually a single item
@@ -150,20 +152,17 @@ export async function PUT(request) {
     }
 
     // Handle multiple images for event recaps
-    if (type === "event" && updateData.imagesBase64) {
-        const oldItem = await Model.findById(_id);
-        if (oldItem?.images) {
-            await Promise.all(oldItem.images.map(url => deleteFile(url)));
-        }
-        const uploadPromises = updateData.imagesBase64.map((base64, index) =>
-            uploadBase64(base64, `${type}-image-gallery-${index}`)
-        );
-        const imageUrls = await Promise.all(uploadPromises);
-        if (imageUrls.some(url => !url)) {
-            throw new Error("Failed to upload one or more gallery images");
-        }
-        updateData.images = imageUrls;
-        delete updateData.imagesBase64;
+    if (type === "event" && updateData.images) {
+        const uploadPromises = updateData.images.map(async (img, index) => {
+            if (img.image) { // New base64 image
+                const imageUrl = await uploadBase64(img.image, `${type}-gallery-${index}`);
+                if (!imageUrl) throw new Error("Failed to upload gallery image");
+                return { alt: img.alt, hint: img.hint, imageUrl };
+            }
+            return img; // Existing image with URL
+        });
+        const processedImages = await Promise.all(uploadPromises);
+        updateData.images = processedImages.map(({ image, ...rest }) => rest);
     }
 
 
@@ -224,7 +223,7 @@ export async function DELETE(request) {
       await deleteFile(item.imageUrl);
     }
     if (item.images && Array.isArray(item.images)) {
-      await Promise.all(item.images.map(url => deleteFile(url)));
+      await Promise.all(item.images.map(img => deleteFile(img.imageUrl)));
     }
 
     await Model.findByIdAndDelete(_id);
