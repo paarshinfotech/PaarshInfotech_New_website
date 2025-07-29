@@ -33,7 +33,7 @@ export const api = createApi({
     "ECJourney",
     "ECGallery",
     "CareerImage",
-    "CareerTestimonial"
+    "CareerTestimonial",
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -305,7 +305,7 @@ export const api = createApi({
       query: ({ _id, ...product }) => ({
         url: `/products`,
         method: "PUT",
-        body: { _id , ...product },
+        body: { _id, ...product },
       }),
       invalidatesTags: ["Product"],
     }),
@@ -401,43 +401,44 @@ export const api = createApi({
       }),
       invalidatesTags: ["Media"],
     }),
-    
+
     // ================================================== Site Image Endpoints ================================================== //
 
     getSiteImages: builder.query({
-      query: () => '/site-images',
-      providesTags: ['SiteImage'],
+      query: () => "/site-images",
+      providesTags: ["SiteImage"],
     }),
-    
+
     addSiteImage: builder.mutation({
       query: (imageData) => ({
-        url: '/site-images',
-        method: 'POST',
+        url: "/site-images",
+        method: "POST",
         body: imageData,
       }),
-      invalidatesTags: ['SiteImage'],
+      invalidatesTags: ["SiteImage"],
     }),
     updateSiteImage: builder.mutation({
       query: (imageData) => ({
         url: `/site-images`,
-        method: 'PUT',
+        method: "PUT",
         body: imageData,
       }),
-      invalidatesTags: ['SiteImage'],
+      invalidatesTags: ["SiteImage"],
     }),
     deleteSiteImage: builder.mutation({
       query: (_id) => ({
-        url: '/site-images',
-        method: 'DELETE',
+        url: "/site-images",
+        method: "DELETE",
         body: { _id },
       }),
-      invalidatesTags: ['SiteImage'],
+      invalidatesTags: ["SiteImage"],
     }),
 
     // ================================================== Journey Milestone Endpoints ================================================== //
 
     getJourneyMilestones: builder.query({
-      query: (activeOnly = false) => `/journey-milestone${activeOnly ? '?activeOnly=true' : ''}`,
+      query: (activeOnly = false) =>
+        `/journey-milestone${activeOnly ? "?activeOnly=true" : ""}`,
       providesTags: ["JourneyMilestone"],
     }),
     addJourneyMilestone: builder.mutation({
@@ -476,7 +477,8 @@ export const api = createApi({
     // ================================================== Culture Moment Endpoints ================================================== //
 
     getCultureMoments: builder.query({
-      query: (activeOnly = false) => `/culture-moment${activeOnly ? '?activeOnly=true' : ''}`,
+      query: (activeOnly = false) =>
+        `/culture-moment${activeOnly ? "?activeOnly=true" : ""}`,
       providesTags: ["CultureMoment"],
     }),
     addCultureMoment: builder.mutation({
@@ -515,7 +517,8 @@ export const api = createApi({
     // ================================================== Testimonial Endpoints ================================================== //
 
     getTestimonials: builder.query({
-      query: (activeOnly = false) => `/testimonial${activeOnly ? '?activeOnly=true' : ''}`,
+      query: (activeOnly = false) =>
+        `/testimonial${activeOnly ? "?activeOnly=true" : ""}`,
       providesTags: ["Testimonial"],
     }),
     addTestimonial: builder.mutation({
@@ -529,14 +532,14 @@ export const api = createApi({
     updateTestimonial: builder.mutation({
       query: ({ _id, ...testimonial }) => ({
         url: `/testimonial`,
-        method: "PUT",
+        method: "PATCH",
         body: { _id, ...testimonial },
       }),
       invalidatesTags: ["Testimonial"],
     }),
     deleteTestimonial: builder.mutation({
       query: (_id) => ({
-        url: `/testimonial`,
+        url: `/testimonial?id=${_id}`,
         method: "DELETE",
         body: { _id },
       }),
@@ -558,11 +561,19 @@ export const api = createApi({
       providesTags: ["Partner"],
     }),
     addPartner: builder.mutation({
-      query: (partner) => ({ url: "/ec-partner", method: "POST", body: partner }),
+      query: (partner) => ({
+        url: "/ec-partner",
+        method: "POST",
+        body: partner,
+      }),
       invalidatesTags: ["Partner"],
     }),
     updatePartner: builder.mutation({
-      query: (partner) => ({ url: "/ec-partner", method: "PUT", body: partner }),
+      query: (partner) => ({
+        url: "/ec-partner",
+        method: "PUT",
+        body: partner,
+      }),
       invalidatesTags: ["Partner"],
     }),
     deletePartner: builder.mutation({
@@ -579,11 +590,19 @@ export const api = createApi({
       providesTags: ["Program"],
     }),
     addProgram: builder.mutation({
-      query: (program) => ({ url: "/ec-program", method: "POST", body: program }),
+      query: (program) => ({
+        url: "/ec-program",
+        method: "POST",
+        body: program,
+      }),
       invalidatesTags: ["Program"],
     }),
     updateProgram: builder.mutation({
-      query: (program) => ({ url: "/ec-program", method: "PUT", body: program }),
+      query: (program) => ({
+        url: "/ec-program",
+        method: "PUT",
+        body: program,
+      }),
       invalidatesTags: ["Program"],
     }),
     deleteProgram: builder.mutation({
@@ -611,22 +630,30 @@ export const api = createApi({
       query: (body) => ({ url: "/ec-center", method: "DELETE", body }),
       invalidatesTags: ["Center"],
     }),
-    
+
     getWorkshops: builder.query({
-        query: () => '/ec-workshop',
-        providesTags: ['Workshop'],
+      query: () => "/ec-workshop",
+      providesTags: ["Workshop"],
     }),
     addWorkshop: builder.mutation({
-        query: (workshop) => ({ url: '/ec-workshop', method: 'POST', body: workshop }),
-        invalidatesTags: ['Workshop'],
+      query: (workshop) => ({
+        url: "/ec-workshop",
+        method: "POST",
+        body: workshop,
+      }),
+      invalidatesTags: ["Workshop"],
     }),
     updateWorkshop: builder.mutation({
-        query: (workshop) => ({ url: '/ec-workshop', method: 'PUT', body: workshop }),
-        invalidatesTags: ['Workshop'],
+      query: (workshop) => ({
+        url: "/ec-workshop",
+        method: "PUT",
+        body: workshop,
+      }),
+      invalidatesTags: ["Workshop"],
     }),
     deleteWorkshop: builder.mutation({
-        query: (body) => ({ url: '/ec-workshop', method: 'DELETE', body }),
-        invalidatesTags: ['Workshop'],
+      query: (body) => ({ url: "/ec-workshop", method: "DELETE", body }),
+      invalidatesTags: ["Workshop"],
     }),
     reorderWorkshops: builder.mutation({
       query: (body) => ({ url: "/ec-workshop", method: "PATCH", body }),
@@ -634,26 +661,27 @@ export const api = createApi({
     }),
 
     getAwards: builder.query({
-        query: () => '/ec-award',
-        providesTags: ['Award'],
+      query: () => "/ec-award",
+      providesTags: ["Award"],
     }),
     addAward: builder.mutation({
-        query: (award) => ({ url: '/ec-award', method: 'POST', body: award }),
-        invalidatesTags: ['Award'],
+      query: (award) => ({ url: "/ec-award", method: "POST", body: award }),
+      invalidatesTags: ["Award"],
     }),
     updateAward: builder.mutation({
-        query: (award) => ({ url: '/ec-award', method: 'PUT', body: award }),
-        invalidatesTags: ['Award'],
+      query: (award) => ({ url: "/ec-award", method: "PUT", body: award }),
+      invalidatesTags: ["Award"],
     }),
     deleteAward: builder.mutation({
-        query: (body) => ({ url: '/ec-award', method: 'DELETE', body }),
-        invalidatesTags: ['Award'],
+      query: (body) => ({ url: "/ec-award", method: "DELETE", body }),
+      invalidatesTags: ["Award"],
     }),
 
     // ================================================== Product Testimonials Endpoints ================================================== //
-    
-      getProductTestimonials: builder.query({
-      query: (activeOnly = false) => `/producttestimonial${activeOnly ? '?activeOnly=true' : ''}`,
+
+    getProductTestimonials: builder.query({
+      query: (activeOnly = false) =>
+        `/producttestimonial${activeOnly ? "?activeOnly=true" : ""}`,
       providesTags: ["Testimonial"],
     }),
     addProductTestimonial: builder.mutation({
@@ -688,7 +716,7 @@ export const api = createApi({
       }),
       invalidatesTags: ["Testimonial"],
     }),
-  
+
     reorderAwards: builder.mutation({
       query: (body) => ({ url: "/ec-award", method: "PATCH", body }),
       invalidatesTags: ["Award"],
@@ -699,11 +727,19 @@ export const api = createApi({
       providesTags: ["ECJourney"],
     }),
     addECJourneyMilestone: builder.mutation({
-      query: (milestone) => ({ url: "/ec-journey", method: "POST", body: milestone }),
+      query: (milestone) => ({
+        url: "/ec-journey",
+        method: "POST",
+        body: milestone,
+      }),
       invalidatesTags: ["ECJourney"],
     }),
     updateECJourneyMilestone: builder.mutation({
-      query: (milestone) => ({ url: "/ec-journey", method: "PUT", body: milestone }),
+      query: (milestone) => ({
+        url: "/ec-journey",
+        method: "PUT",
+        body: milestone,
+      }),
       invalidatesTags: ["ECJourney"],
     }),
     deleteECJourneyMilestone: builder.mutation({
@@ -764,11 +800,19 @@ export const api = createApi({
       providesTags: ["CareerTestimonial"],
     }),
     addCareerTestimonial: builder.mutation({
-      query: (testimonial) => ({ url: "/career-testimonial", method: "POST", body: testimonial }),
+      query: (testimonial) => ({
+        url: "/career-testimonial",
+        method: "POST",
+        body: testimonial,
+      }),
       invalidatesTags: ["CareerTestimonial"],
     }),
     updateCareerTestimonial: builder.mutation({
-      query: (testimonial) => ({ url: "/career-testimonial", method: "PUT", body: testimonial }),
+      query: (testimonial) => ({
+        url: "/career-testimonial",
+        method: "PUT",
+        body: testimonial,
+      }),
       invalidatesTags: ["CareerTestimonial"],
     }),
     deleteCareerTestimonial: builder.mutation({
@@ -779,9 +823,7 @@ export const api = createApi({
       query: (body) => ({ url: "/career-testimonial", method: "PATCH", body }),
       invalidatesTags: ["CareerTestimonial"],
     }),
-
   }),
-
 });
 
 export const {

@@ -50,20 +50,31 @@ const galleryItemSchema = z.object({
   hint: z.string(),
 });
 
-const formSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters"),
-  id: z
-    .string()
-    .min(3, "Slug/ID must be at least 3 characters")
-    .refine((s) => !s.includes(" "), "Slug cannot contain spaces"),
-  tagline: z.string().min(10, "Tagline is required"),
-  description: z.string().min(20, "Description is required"),
-  heroImageBase64: z.string().min(1, "Hero image is required"),
-  features: z.array(featureSchema),
-  gallery: z.array(galleryItemSchema),
-});
+const createFormSchema = (isEditing: boolean) =>
+  z.object({
+    name: z.string().min(3, "Name must be at least 3 characters"),
+    id: z
+      .string()
+      .min(3, "Slug/ID must be at least 3 characters")
+      .refine((s) => !s.includes(" "), "Slug cannot contain spaces"),
+    tagline: z.string().min(10, "Tagline is required"),
+    description: z.string().min(20, "Description is required"),
+    heroImageBase64: isEditing
+      ? z.string().optional()
+      : z.string().min(1, "Hero image is required"),
+    features: z.array(featureSchema),
+    gallery: z.array(
+      z.object({
+        srcBase64: isEditing
+          ? z.string().optional()
+          : z.string().min(1, "Image is required"),
+        alt: z.string().min(1, "Alt text is required"),
+        hint: z.string(),
+      })
+    ),
+  });
 
-type ProductFormValues = z.infer<typeof formSchema>;
+type ProductFormValues = z.infer<ReturnType<typeof createFormSchema>>;
 
 interface ProductFormProps {
   product?: Product;
@@ -76,7 +87,7 @@ export function ProductForm({ product }: ProductFormProps) {
   const [updateProduct, { isLoading: isUpdating }] = useUpdateProductMutation();
 
   const form = useForm<ProductFormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(createFormSchema(!!product)),
     defaultValues: product
       ? {
           name: product.name || "",
@@ -155,8 +166,9 @@ export function ProductForm({ product }: ProductFormProps) {
       const payload = {
         _id: product?._id,
         ...values,
-        gallery: values.gallery.map((item) => ({
-          srcBase64: item.srcBase64,
+        heroImageBase64: values.heroImageBase64 || product?.heroImageBase64 || "",
+        gallery: values.gallery.map((item, index) => ({
+          srcBase64: item.srcBase64 || product?.gallery[index]?.srcBase64 || "",
           alt: item.alt,
           hint: item.hint,
         })),

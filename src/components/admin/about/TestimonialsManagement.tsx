@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,22 +9,18 @@ import {
   useAddTestimonialMutation,
   useUpdateTestimonialMutation,
   useDeleteTestimonialMutation,
-  useReorderTestimonialsMutation,
 } from "@/services/api";
 import { TestimonialForm } from "./TestimonialForm";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
-import { FeedbackFormModal } from "@/components/common/FeedbackFormModal";
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { LuGripVertical, LuPencil, LuTrash2, LuPlus, LuStar, LuMessageSquare } from "react-icons/lu";
+import { LuPencil, LuTrash2, LuPlus, LuMessageSquare } from "react-icons/lu";
 
 interface Testimonial {
   _id: string;
   name: string;
-  designation: string;
-  rating: number;
-  feedback: string;
-  order: number;
-  isActive: boolean;
+  title: string;
+  quote: string;
+  avatar: string;
+  published: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -38,11 +32,12 @@ export function TestimonialsManagement() {
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null);
 
-  const { data: testimonials = [], isLoading } = useGetTestimonialsQuery(false);
+  const { data: testimonialsData, isLoading } = useGetTestimonialsQuery(false);
   const [addTestimonial] = useAddTestimonialMutation();
   const [updateTestimonial] = useUpdateTestimonialMutation();
   const [deleteTestimonial] = useDeleteTestimonialMutation();
-  const [reorderTestimonials] = useReorderTestimonialsMutation();
+
+  const testimonials = testimonialsData?.data || [];
 
   const handleAdd = () => {
     setSelectedTestimonial(null);
@@ -104,45 +99,19 @@ export function TestimonialsManagement() {
     }
   };
 
-  const handleDragEnd = async (result: any) => {
-    if (!result.destination) return;
-    const items = Array.from(testimonials) as Testimonial[];
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-    // Update order numbers with gaps
-    const updatedItems = items.map((item: Testimonial, index: number) => ({
-      ...item,
-      order: (index + 1) * 10,
-    }));
-    try {
-      await reorderTestimonials(updatedItems).unwrap();
-      toast({
-        title: "Order Updated",
-        description: "Testimonials have been reordered successfully.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to reorder testimonials. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const toggleActive = async (testimonial: Testimonial) => {
+  const togglePublished = async (testimonial: Testimonial) => {
     try {
       await updateTestimonial({
         _id: testimonial._id,
         name: testimonial.name,
-        designation: testimonial.designation,
-        rating: testimonial.rating,
-        feedback: testimonial.feedback,
-        order: testimonial.order,
-        isActive: !testimonial.isActive,
+        title: testimonial.title,
+        quote: testimonial.quote,
+        avatar: testimonial.avatar,
+        published: !testimonial.published,
       }).unwrap();
       toast({
         title: "Status Updated",
-        description: `${testimonial.name}'s testimonial has been ${!testimonial.isActive ? 'activated' : 'deactivated'}.`,
+        description: `${testimonial.name}'s testimonial has been ${!testimonial.published ? 'published' : 'unpublished'}.`,
       });
     } catch (error) {
       toast({
@@ -153,15 +122,12 @@ export function TestimonialsManagement() {
     }
   };
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <LuStar
-        key={i}
-        className={`h-4 w-4 ${
-          i < rating ? "text-yellow-400 fill-current" : "text-gray-300"
-        }`}
-      />
-    ));
+  const handleImageError = (testimonial: Testimonial) => {
+    toast({
+      title: "Image Load Error",
+      description: `Failed to load avatar for ${testimonial.name}. Please ensure the image is valid.`,
+      variant: "destructive",
+    });
   };
 
   if (isLoading) {
@@ -202,86 +168,77 @@ export function TestimonialsManagement() {
               <p>Click "Add Testimonial" to get started.</p>
             </div>
           ) : (
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="testimonials">
-                {(provided) => (
-                  <div
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                    className="space-y-3"
-                  >
-                    {testimonials.map((testimonial: Testimonial, index: number) => (
-                      <Draggable
-                        key={testimonial._id}
-                        draggableId={testimonial._id}
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className="flex items-center gap-3 p-4 border rounded-lg bg-background hover:bg-accent/50 transition-colors"
-                          >
-                            <div
-                              {...provided.dragHandleProps}
-                              className="cursor-grab hover:cursor-grabbing"
-                            >
-                              <LuGripVertical className="h-4 w-4 text-muted-foreground" />
-                            </div>
-                            
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <h3 className="font-semibold">{testimonial.name}</h3>
-                                <Badge variant="outline">{testimonial.designation}</Badge>
-                                <Badge variant={testimonial.isActive ? "default" : "secondary"}>
-                                  {testimonial.isActive ? "Active" : "Inactive"}
-                                </Badge>
-                              </div>
-                              <div className="flex items-center gap-2 mb-2">
-                                {renderStars(testimonial.rating)}
-                                <span className="text-sm text-muted-foreground">
-                                  ({testimonial.rating}/5)
-                                </span>
-                              </div>
-                              <p className="text-sm text-muted-foreground line-clamp-2">
-                                "{testimonial.feedback}"
-                              </p>
-                              <div className="flex items-center gap-2 mt-2">
-                                <span className="text-xs text-muted-foreground">
-                                  Order: {testimonial.order}
-                                </span>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              <Switch
-                                checked={testimonial.isActive}
-                                onCheckedChange={() => toggleActive(testimonial)}
-                              />
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleEdit(testimonial)}
-                              >
-                                <LuPencil className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleDelete(testimonial)}
-                              >
-                                <LuTrash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full table-auto">
+                <thead>
+                  <tr className="border-b">
+                    <th className="px-4 py-2 text-left">Avatar</th>
+                    <th className="px-4 py-2 text-left">Name</th>
+                    <th className="px-4 py-2 text-left">Title</th>
+                    <th className="px-4 py-2 text-left">Quote</th>
+                    <th className="px-4 py-2 text-left">Status</th>
+                    <th className="px-4 py-2 text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {testimonials.map((testimonial: Testimonial) => (
+                    <tr
+                      key={testimonial._id}
+                      className="border-b hover:bg-accent/50 transition-colors"
+                    >
+                      <td className="px-4 py-2">
+                        {testimonial.avatar ? (
+                          <img
+                            src={testimonial.avatar}
+                            alt={`${testimonial.name}'s avatar`}
+                            className="h-12 w-12 object-cover rounded-full"
+                            onError={() => handleImageError(testimonial)}
+                          />
+                        ) : (
+                          <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                            No Image
                           </div>
                         )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
+                      </td>
+                      <td className="px-4 py-2 font-semibold">{testimonial.name}</td>
+                      <td className="px-4 py-2">
+                        <Badge variant="outline">{testimonial.title}</Badge>
+                      </td>
+                      <td className="px-4 py-2 text-sm text-muted-foreground line-clamp-2">
+                        "{testimonial.quote}"
+                      </td>
+                      <td className="px-4 py-2">
+                        <Badge variant={testimonial.published ? "default" : "secondary"}>
+                          {testimonial.published ? "Published" : "Unpublished"}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-2">
+                        <div className="flex items-center gap-2">
+                          <Switch
+                            checked={testimonial.published}
+                            onCheckedChange={() => togglePublished(testimonial)}
+                          />
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEdit(testimonial)}
+                          >
+                            <LuPencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDelete(testimonial)}
+                          >
+                            <LuTrash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
         </CardContent>
       </Card>
@@ -293,11 +250,6 @@ export function TestimonialsManagement() {
         testimonial={selectedTestimonial}
       />
 
-      <FeedbackFormModal
-        isOpen={isFeedbackModalOpen}
-        onOpenChange={setIsFeedbackModalOpen}
-      />
-
       <DeleteConfirmationDialog
         isOpen={isDeleteAlertOpen}
         onOpenChange={setIsDeleteAlertOpen}
@@ -306,4 +258,4 @@ export function TestimonialsManagement() {
       />
     </>
   );
-} 
+}

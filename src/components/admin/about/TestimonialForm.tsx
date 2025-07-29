@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -17,15 +17,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { LuStar } from "react-icons/lu";
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
 const testimonialSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100, "Name must be less than 100 characters"),
-  designation: z.string().min(2, "Designation must be at least 2 characters").max(100, "Designation must be less than 100 characters"),
-  rating: z.number().min(1, "Rating must be at least 1").max(5, "Rating must be at most 5"),
-  feedback: z.string().min(10, "Feedback must be at least 10 characters").max(1000, "Feedback must be less than 1000 characters"),
-  order: z.number().min(1, "Order must be at least 1"),
-  isActive: z.boolean(),
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name must be less than 100 characters"),
+  title: z.string().trim().min(2, "Title must be at least 2 characters").max(100, "Title must be less than 100 characters"),
+  quote: z.string().trim().min(10, "Quote must be at least 10 characters").max(500, "Quote must be less than 500 characters"),
+  avatar: z.string().trim().min(1, "An image must be selected"),
+  published: z.boolean(),
 });
 
 type TestimonialFormData = z.infer<typeof testimonialSchema>;
@@ -37,17 +38,15 @@ interface TestimonialFormProps {
   testimonial?: {
     _id: string;
     name: string;
-    designation: string;
-    rating: number;
-    feedback: string;
-    order: number;
-    isActive: boolean;
+    title: string;
+    quote: string;
+    avatar: string;
+    published: boolean;
   } | null;
 }
 
 export function TestimonialForm({ isOpen, onOpenChange, onSave, testimonial }: TestimonialFormProps) {
-  const [hoveredRating, setHoveredRating] = useState(0);
-  const [selectedRating, setSelectedRating] = useState(5);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const {
     register,
@@ -60,62 +59,58 @@ export function TestimonialForm({ isOpen, onOpenChange, onSave, testimonial }: T
     resolver: zodResolver(testimonialSchema),
     defaultValues: {
       name: "",
-      designation: "",
-      rating: 5,
-      feedback: "",
-      order: 1,
-      isActive: true,
+      title: "",
+      quote: "",
+      avatar: "",
+      published: true,
     },
   });
 
-  const isActive = watch("isActive");
+  const published = watch("published");
 
   useEffect(() => {
     if (testimonial) {
       setValue("name", testimonial.name);
-      setValue("designation", testimonial.designation);
-      setValue("rating", testimonial.rating);
-      setValue("feedback", testimonial.feedback);
-      setValue("order", testimonial.order);
-      setValue("isActive", testimonial.isActive);
-      setSelectedRating(testimonial.rating);
+      setValue("title", testimonial.title);
+      setValue("quote", testimonial.quote);
+      setValue("avatar", testimonial.avatar);
+      setValue("published", testimonial.published);
+      setPreviewImage(testimonial.avatar);
     } else {
       reset();
-      setSelectedRating(5);
+      setPreviewImage(null);
     }
   }, [testimonial, setValue, reset]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+        setValue("avatar", "");
+        setPreviewImage(null);
+        return;
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        setValue("avatar", "");
+        setPreviewImage(null);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        setValue("avatar", base64String);
+        setPreviewImage(base64String);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const onSubmit = (data: TestimonialFormData) => {
     onSave(data);
-  };
-
-  const handleRatingChange = (rating: number) => {
-    setSelectedRating(rating);
-    setValue("rating", rating);
-  };
-
-  const renderStars = () => {
-    return Array.from({ length: 5 }, (_, i) => {
-      const starNumber = i + 1;
-      const isFilled = starNumber <= (hoveredRating || selectedRating);
-      
-      return (
-        <button
-          key={i}
-          type="button"
-          className="p-1"
-          onMouseEnter={() => setHoveredRating(starNumber)}
-          onMouseLeave={() => setHoveredRating(0)}
-          onClick={() => handleRatingChange(starNumber)}
-        >
-          <LuStar
-            className={`h-6 w-6 transition-colors ${
-              isFilled ? "text-yellow-400 fill-current" : "text-gray-300"
-            }`}
-          />
-        </button>
-      );
-    });
+    if (!testimonial) {
+      reset();
+      setPreviewImage(null);
+    }
   };
 
   return (
@@ -146,63 +141,59 @@ export function TestimonialForm({ isOpen, onOpenChange, onSave, testimonial }: T
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="designation">Designation *</Label>
+            <Label htmlFor="title">Title *</Label>
             <Input
-              id="designation"
-              {...register("designation")}
+              id="title"
+              {...register("title")}
               placeholder="e.g., Software Engineer, CEO, etc."
             />
-            {errors.designation && (
-              <p className="text-sm text-red-500">{errors.designation.message}</p>
+            {errors.title && (
+              <p className="text-sm text-red-500">{errors.title.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label>Rating *</Label>
-            <div className="flex items-center gap-2">
-              {renderStars()}
-              <span className="text-sm text-muted-foreground ml-2">
-                ({selectedRating}/5)
-              </span>
-            </div>
-            {errors.rating && (
-              <p className="text-sm text-red-500">{errors.rating.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="feedback">Feedback *</Label>
+            <Label htmlFor="quote">Quote *</Label>
             <Textarea
-              id="feedback"
-              {...register("feedback")}
-              placeholder="Enter the testimonial feedback..."
+              id="quote"
+              {...register("quote")}
+              placeholder="Enter the testimonial quote..."
               rows={4}
             />
-            {errors.feedback && (
-              <p className="text-sm text-red-500">{errors.feedback.message}</p>
+            {errors.quote && (
+              <p className="text-sm text-red-500">{errors.quote.message}</p>
             )}
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="order">Display Order *</Label>
-            <Input
-              id="order"
-              type="number"
-              {...register("order", { valueAsNumber: true })}
-              placeholder="Enter display order"
-              min="1"
+            <Label htmlFor="avatar">Avatar Image *</Label>
+            <input
+              id="avatar"
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             />
-            {errors.order && (
-              <p className="text-sm text-red-500">{errors.order.message}</p>
+            {errors.avatar && (
+              <p className="text-sm text-red-500">{errors.avatar.message}</p>
+            )}
+            {previewImage && (
+              <div className="mt-2">
+                <img
+                  src={previewImage}
+                  alt="Avatar preview"
+                  className="h-24 w-24 object-cover rounded-full"
+                />
+              </div>
             )}
           </div>
 
           <div className="flex items-center justify-between">
-            <Label htmlFor="isActive">Active Status</Label>
+            <Label htmlFor="published">Published</Label>
             <Switch
-              id="isActive"
-              checked={isActive}
-              onCheckedChange={(checked) => setValue("isActive", checked)}
+              id="published"
+              checked={published}
+              onCheckedChange={(checked) => setValue("published", checked)}
             />
           </div>
 
@@ -222,4 +213,4 @@ export function TestimonialForm({ isOpen, onOpenChange, onSave, testimonial }: T
       </DialogContent>
     </Dialog>
   );
-} 
+}
