@@ -70,7 +70,7 @@ export default function SocialWall() {
                   </div>
                 </CardHeader>
                 <CardContent className="flex-grow space-y-4">
-                  <p className="whitespace-pre-wrap">{post.content}</p>
+                  <p className="whitespace-pre-wrap break-words">{post.content}</p>
                   {post.image && (
                      <ImagePreviewModal imgSrc={post.image} alt="Social media post image">
                       <div className="relative h-64 w-full rounded-lg overflow-hidden cursor-pointer bg-muted/30">

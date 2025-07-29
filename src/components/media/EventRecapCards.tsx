@@ -26,7 +26,7 @@ export default function EventRecapCards() {
   const { data: eventRecaps = [], isLoading } = useGetMediaItemsQuery('event');
 
   const openLightbox = (
-    gallery: { imageUrl: string; alt: string; }[],
+    gallery: { imageUrl: string; alt: string }[] = [],
     index: number
   ) => {
     const formattedGallery = gallery.map(g => ({ src: g.imageUrl, alt: g.alt }));
