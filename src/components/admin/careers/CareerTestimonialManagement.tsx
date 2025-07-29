@@ -94,7 +94,7 @@ export function CareerTestimonialManagement() {
       const reorderedData = newItems.map((item, index) => ({ _id: item._id, order: (index + 1) * 10 }));
       try {
         await reorderItems({ testimonials: reorderedData }).unwrap();
-        toast({ title: "Reordered successfully" });
+        toast({ title: "Reordered successfully", description: "The testimonials have been reordered successfully." });
       } catch (error) {
         toast({ title: "Error reordering", variant: "destructive" });
         setItems(items);
@@ -120,7 +120,7 @@ export function CareerTestimonialManagement() {
   const confirmDelete = async () => {
     if (selectedItem) {
       await deleteItem({ _id: selectedItem._id }).unwrap();
-      toast({ title: "Testimonial Deleted" });
+      toast({ title: "Testimonial Deleted", description: `${selectedItem.name}'s testimonial has been deleted successfully.` });
       setIsDeleteAlertOpen(false);
     }
   };
@@ -129,10 +129,10 @@ export function CareerTestimonialManagement() {
     try {
       if (selectedItem) {
         await updateItem({ _id: selectedItem._id, ...data }).unwrap();
-        toast({ title: "Testimonial Updated" });
+        toast({ title: "Testimonial Updated", description: `${data.name}'s testimonial has been updated successfully.` });
       } else {
         await addItem(data).unwrap();
-        toast({ title: "Testimonial Added" });
+        toast({ title: "Testimonial Added", description: `${data.name}'s testimonial has been added successfully.` });
       }
       setIsModalOpen(false);
     } catch (error: any) {

@@ -89,7 +89,7 @@ export function CareerImageManagement() {
       const reorderedData = newItems.map((item, index) => ({ _id: item._id, order: (index + 1) * 10 }));
       try {
         await reorderItems({ images: reorderedData }).unwrap();
-        toast({ title: "Reordered successfully" });
+        toast({ title: "Reordered successfully", description: "The images have been reordered successfully." });
       } catch (error) {
         toast({ title: "Error reordering", variant: "destructive" });
         setItems(items);
@@ -115,7 +115,7 @@ export function CareerImageManagement() {
   const confirmDelete = async () => {
     if (selectedItem) {
       await deleteItem({ _id: selectedItem._id }).unwrap();
-      toast({ title: "Image Deleted" });
+      toast({ title: "Image Deleted", description: `${selectedItem.alt} has been deleted successfully.` });
       setIsDeleteAlertOpen(false);
     }
   };
@@ -124,10 +124,10 @@ export function CareerImageManagement() {
     try {
       if (selectedItem) {
         await updateItem({ _id: selectedItem._id, ...data }).unwrap();
-        toast({ title: "Image Updated" });
+        toast({ title: "Image Updated", description: `${data.alt} has been updated successfully.` });
       } else {
         await addItem(data).unwrap();
-        toast({ title: "Image Added" });
+        toast({ title: "Image Added", description: `${data.alt} has been added successfully.` });
       }
       setIsModalOpen(false);
     } catch (error: any) {
