@@ -135,39 +135,6 @@ export const eventRecaps: EventRecap[] = [
   }
 ];
 
-export const socialWallPosts = [
-  {
-    id: 1,
-    timestamp: "2 hours ago",
-    content: "Thrilled to announce the launch of our new client project! A huge shoutout to the team for their hard work. #webdevelopment #success #teamwork",
-    image: "https://placehold.co/600x400.png",
-    hint: "laptop screen",
-    likes: 125,
-    comments: 12,
-    published: true,
-  },
-  {
-    id: 2,
-    timestamp: "1 day ago",
-    content: "It's not all work and no play! The team enjoying a competitive game of cricket after work. \n🏏 #worklifebalance #teamspirit",
-    image: "https://placehold.co/600x400.png",
-    hint: "cricket game",
-    likes: 240,
-    comments: 32,
-    published: true,
-  },
-  {
-    id: 3,
-    timestamp: "3 days ago",
-    content: "We're hiring! Looking for passionate developers to join our growing family. Check out our careers page for openings. #hiring #devjobs #techcareers",
-    image: null,
-    hint: "",
-    likes: 98,
-    comments: 8,
-    published: false,
-  }
-];
-
 export const mediaTestimonials = [
   {
     quote: "The culture at Paarsh is incredible. There's a real sense of family, and everyone is always willing to help each other out.",

@@ -14,7 +14,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { FaThumbsUp, FaComment } from "react-icons/fa";
+import { LuThumbsUp, LuMessageSquare } from "react-icons/lu";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 import { formatDistanceToNow } from "date-fns";
 
@@ -72,13 +72,13 @@ export function SocialPostPreviewModal({
               </div>
             </CardHeader>
             <CardContent className="flex-grow space-y-4">
-              <p>{post.content}</p>
+              <p className="whitespace-pre-wrap">{post.content}</p>
               {post.image && (
                 <ImagePreviewModal
                   imgSrc={post.image}
                   alt="Social media post image"
                 >
-                  <div className="relative h-96 w-full rounded-lg overflow-hidden cursor-pointer bg-muted/30">
+                  <div className="relative h-64 w-full rounded-lg overflow-hidden cursor-pointer bg-muted/30">
                     <Image
                       src={post.image}
                       alt="Social media post image"
@@ -90,14 +90,14 @@ export function SocialPostPreviewModal({
                 </ImagePreviewModal>
               )}
             </CardContent>
-            <CardFooter className="flex justify-start gap-8 border-t pt-4 mt-auto">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <FaThumbsUp className="w-5 h-5" />
-                <span className="text-sm">{post.likes} Likes</span>
+            <CardFooter className="flex justify-between items-center border-t pt-4 mt-auto">
+              <div className="flex items-center gap-2 text-muted-foreground hover:text-primary cursor-pointer transition-colors">
+                <LuThumbsUp className="w-5 h-5" />
+                <span className="text-sm font-medium">{post.likes} Likes</span>
               </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <FaComment className="w-5 h-5" />
-                <span className="text-sm">{post.comments} Comments</span>
+              <div className="flex items-center gap-2 text-muted-foreground hover:text-primary cursor-pointer transition-colors">
+                <LuMessageSquare className="w-5 h-5" />
+                <span className="text-sm font-medium">{post.comments} Comments</span>
               </div>
             </CardFooter>
           </Card>

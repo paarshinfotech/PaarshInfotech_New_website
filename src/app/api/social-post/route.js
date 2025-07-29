@@ -1,12 +1,13 @@
 import _db from "../../../lib/utils/db";
 import SocialPostModel from "../../../../models/SocialPost.model";
+import { NextResponse } from "next/server";
 
 // Establish MongoDB connection once at startup
 _db();
 
 export async function GET() {
   try {
-    const posts = await SocialPostModel.find().lean();
+    const posts = await SocialPostModel.find().sort({ timestamp: -1 }).lean();
     return new Response(JSON.stringify(posts), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -37,7 +38,7 @@ export async function POST(request) {
 
     const newPost = new SocialPostModel({
       content,
-      image: image || "https://placehold.co/600x400.png",
+      image: image || null,
       likes: likes || 0,
       comments: comments || 0,
       hint: hint || "social media",
@@ -113,8 +114,7 @@ export async function PUT(request) {
 
 export async function DELETE(request) {
   try {
-    const url = new URL(request.url);
-    const _id = url.pathname.split("/").pop();
+    const { _id } = await request.json();
 
     if (!_id) {
       return new Response(JSON.stringify({ error: "_id is required" }), {
