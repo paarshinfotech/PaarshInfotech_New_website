@@ -7,7 +7,7 @@ import { FiAward, FiBarChart, FiCode, FiLifeBuoy, FiPenTool, FiSmartphone, FiUse
 
 
 export interface Service {
-  heroImageBase64: string;
+  heroImageBase64?: string;
   _id: string;
   id: String;
   slug: string;
@@ -20,6 +20,7 @@ export interface Service {
   offerings: {
     title: string;
     description: string;
+    Icon?: IconType;
   }[];
   whyChooseUs: {
     title: string;
@@ -44,14 +45,14 @@ export interface Service {
     Icon: IconType;
   }[];
   testimonial: {
-    avatarBase64: string;
+    avatarBase64?: string;
     quote: string;
     name: string;
     role: string;
     avatar: string;
   };
   gallery: {
-    srcBase64: string;
+    srcBase64?: string;
     src: string;
     alt: string;
     dataAiHint: string;

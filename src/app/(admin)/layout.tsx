@@ -5,6 +5,7 @@ import { PropsWithChildren, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
+import { FullPageLoading } from '@/components/ui/skeletons';
 
 // This layout is specific to the (admin) group and includes route protection
 export default function AdminAreaLayout({ children }: PropsWithChildren) {
@@ -19,11 +20,7 @@ export default function AdminAreaLayout({ children }: PropsWithChildren) {
   }, [isAuthenticated, isLoading, router, pathname]);
 
   if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        Loading...
-      </div>
-    );
+    return <FullPageLoading message="Authenticating..." />;
   }
 
   // Do not render the sidebar layout for the login page itself

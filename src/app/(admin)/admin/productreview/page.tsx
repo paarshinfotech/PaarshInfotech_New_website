@@ -35,6 +35,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useAddProductTestimonialMutation, useDeleteProductTestimonialMutation, useGetProductTestimonialsQuery, useUpdateProductTestimonialMutation } from "../../../../services/api";
+import { AdminTableSkeleton } from "@/components/ui/skeletons";
 
 interface ProductReview {
   _id: string;
@@ -239,7 +240,7 @@ export default function ProductReviewsManagementPage() {
   };
 
   if (reviewsLoading) {
-    return <div>Loading...</div>;
+    return <AdminTableSkeleton title="Product Reviews Management" />;
   }
 
   if (reviewsError) {

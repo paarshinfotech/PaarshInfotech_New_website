@@ -90,7 +90,7 @@ export default function ProductShowcase() {
           <div className="bg-red-50 border border-red-200 rounded-md p-4 text-center">
             <h3 className="text-red-800 font-medium">Error loading products</h3>
             <p className="text-red-600 mt-1">
-              {error?.data?.error || "Failed to load products. Please try again."}
+              { "Failed to load products. Please try again."}
             </p>
           </div>
         </div>

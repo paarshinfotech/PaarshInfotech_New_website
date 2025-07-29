@@ -33,43 +33,34 @@ export default function Clients() {
   const publishedClients = clients.filter((c: Client) => c.published);
 
   return (
-    <section className="py-20 md:py-28 lg:py-32 bg-background">
+    <section className="py-20 md:py-32 bg-secondary/50">
       <div className="container max-w-7xl">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6">
-            Our Valued Clients
+          <h2 className="text-4xl md:text-5xl font-bold text-primary mb-4">
+            Trusted by Industry Leaders
           </h2>
-          <p className="text-xl md:text-2xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
-            We are proud to have worked with a diverse range of businesses.
+          <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
+            We're honored to collaborate with innovative companies and startups to create impactful digital products.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12 lg:gap-16 items-center">
-          {publishedClients.map((client: Client) => (
-            <div key={client._id} className="flex flex-col justify-center items-center space-y-4 p-6 rounded-xl hover:bg-muted/30 transition-all duration-300">
-              <div className="flex justify-center items-center h-24 w-40 lg:h-28 lg:w-48">
-                <img
-                  src={client.logo}
-                  alt={`${client.name} logo`}
-                  className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
-                  onError={(e) => {
-                    // Fallback to default logo if image fails to load
-                    const target = e.currentTarget;
-                    target.style.display = 'none';
-                    const fallback = target.nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'block';
-                  }}
-                />
-                <ClientLogo 
-                  className="w-40 h-16 lg:w-48 lg:h-20 text-muted-foreground/60 hover:text-foreground/80 transition-colors hidden" 
-                />
-              </div>
-              <div className="text-center space-y-2">
-                <h3 className="text-lg lg:text-xl font-semibold text-foreground/90">{client.name}</h3>
-                <p className="text-base lg:text-lg text-muted-foreground font-medium">{client.industry}</p>
-                <p className="text-sm text-muted-foreground/70">Since {client.since}</p>
-              </div>
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-secondary/50 to-transparent z-10" />
+          <div className="absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-secondary/50 to-transparent z-10" />
+          <div className="w-full overflow-hidden">
+            <div className="flex animate-marquee-slow hover:pause">
+              {[...publishedClients, ...publishedClients].map((client: Client, index: number) => (
+                <div key={`${client._id}-${index}`} className="flex-shrink-0 w-64 mx-8">
+                  <div className="flex justify-center items-center h-32 p-4 bg-background rounded-2xl shadow-sm">
+                    <img
+                      src={client.logo}
+                      alt={`${client.name} logo`}
+                      className="max-h-16 w-auto object-contain filter grayscale transition-all duration-300 hover:grayscale-0"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>

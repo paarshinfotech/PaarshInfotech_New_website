@@ -156,6 +156,19 @@ interface ServiceResponse {
   data: Service;
 }
 
+// Helper function to convert IconType to string key
+const getIconKey = (iconComponent: any): string | null => {
+  if (!iconComponent) return null;
+  
+  // Find the key in iconMap that corresponds to this icon component
+  for (const [key, component] of Object.entries(iconMap)) {
+    if (component === iconComponent) {
+      return key;
+    }
+  }
+  return null;
+};
+
 export function ServiceForm({ service }: ServiceFormProps) {
   const { toast } = useToast();
   const router = useRouter();
@@ -169,17 +182,34 @@ export function ServiceForm({ service }: ServiceFormProps) {
           description: service.description || "",
           overview: service.overview || "",
           heroImageBase64: service.heroImageBase64 || "",
-          Icon: service.Icon || null,
-          offerings: service.offerings || [{ title: "", description: "", Icon: null }],
-          whyChooseUs: service.whyChooseUs || [{ title: "", description: "", Icon: null }],
+          Icon: getIconKey(service.Icon),
+          offerings: service.offerings?.map(offering => ({
+            title: offering.title || "",
+            description: offering.description || "",
+            Icon: getIconKey(offering.Icon) || null
+          })) || [{ title: "", description: "", Icon: null }],
+          whyChooseUs: service.whyChooseUs?.map(item => ({
+            title: item.title || "",
+            description: item.description || "",
+            Icon: getIconKey(item.Icon)
+          })) || [{ title: "", description: "", Icon: null }],
           techStack: {
             frontend: service.techStack?.frontend || [],
             backend: service.techStack?.backend || [],
             database: service.techStack?.database || [],
             tools: service.techStack?.tools || [],
           },
-          process: service.process || [{ title: "", description: "", Icon: null }],
-          impact: service.impact || [{ title: "", metric: "", description: "", Icon: null }],
+          process: service.process?.map(item => ({
+            title: item.title || "",
+            description: item.description || "",
+            Icon: getIconKey(item.Icon)
+          })) || [{ title: "", description: "", Icon: null }],
+          impact: service.impact?.map(item => ({
+            title: item.title || "",
+            metric: item.metric || "",
+            description: item.description || "",
+            Icon: getIconKey(item.Icon)
+          })) || [{ title: "", metric: "", description: "", Icon: null }],
           testimonial: {
             quote: service.testimonial?.quote || "",
             name: service.testimonial?.name || "",
@@ -298,12 +328,34 @@ export function ServiceForm({ service }: ServiceFormProps) {
       const payload = {
         id: service?._id,
         ...values,
+        Icon: values.Icon ? iconMap[values.Icon] : null,
+        offerings: values.offerings.map(offering => ({
+          title: offering.title,
+          description: offering.description,
+          Icon: offering.Icon ? iconMap[offering.Icon] : undefined,
+        })),
+        whyChooseUs: values.whyChooseUs.map(item => ({
+          title: item.title,
+          description: item.description,
+          Icon: item.Icon ? iconMap[item.Icon] : null,
+        })),
         techStack: {
           frontend: values.techStack.frontend,
           backend: values.techStack.backend,
           database: values.techStack.database,
           tools: values.techStack.tools,
         },
+        process: values.process.map(item => ({
+          title: item.title,
+          description: item.description,
+          Icon: item.Icon ? iconMap[item.Icon] : null,
+        })),
+        impact: values.impact.map(item => ({
+          title: item.title,
+          metric: item.metric,
+          description: item.description,
+          Icon: item.Icon ? iconMap[item.Icon] : null,
+        })),
         testimonial: {
           quote: values.testimonial.quote,
           name: values.testimonial.name,

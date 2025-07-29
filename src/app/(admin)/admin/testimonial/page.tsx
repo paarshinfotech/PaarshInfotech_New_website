@@ -40,6 +40,7 @@ import {
   useUpdateTestimonialMutation,
   useDeleteTestimonialMutation,
 } from "../../../../services/api";
+import { AdminTableSkeleton } from "@/components/ui/skeletons";
 
 interface Testimonial {
   _id: string;
@@ -244,7 +245,7 @@ export default function TestimonialsManagementPage() {
   };
 
   if (testimonialsLoading) {
-    return <div>Loading...</div>;
+    return <AdminTableSkeleton title="Testimonials Management" />;
   }
 
   if (testimonialsError) {

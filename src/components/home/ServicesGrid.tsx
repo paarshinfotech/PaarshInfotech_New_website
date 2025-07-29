@@ -9,6 +9,11 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Service } from "@/lib/servicesData";
+
+// Extended Service interface to handle API data where Icon might be a string
+interface ApiService extends Omit<Service, 'Icon'> {
+  Icon: string | IconType;
+}
 import { useGetServicesQuery } from "@/services/api";
 import Link from "next/link";
 import { LuArrowRight, LuCheck } from "react-icons/lu";
@@ -23,8 +28,12 @@ import {
   FaSearch,
   FaRocket,
   FaLifeRing,
-  FaCheckCircle
+  FaCheckCircle,
+  FaServer,
+  FaShoppingCart
 } from "react-icons/fa";
+import { FiSmartphone } from "react-icons/fi";
+import { LuBrainCircuit } from "react-icons/lu";
 
 // Map icon names to React icon components
 const iconMap: Record<string, IconType> = {
@@ -38,6 +47,17 @@ const iconMap: Record<string, IconType> = {
   Rocket: FaRocket,
   LifeBuoy: FaLifeRing,
   CheckCircle: FaCheckCircle,
+  Server: FaServer,
+  ShoppingCart: FaShoppingCart,
+  Smartphone: FiSmartphone,
+  BrainCircuit: LuBrainCircuit,
+  // Add fallback mappings for common icon names
+  FaCode: FaCode,
+  FaServer: FaServer,
+  FiSmartphone: FiSmartphone,
+  FaShoppingCart: FaShoppingCart,
+  LuBrainCircuit: LuBrainCircuit,
+  FiPenTool: FaPen,
 };
 
 // Skeleton component for loading state
@@ -110,7 +130,7 @@ export default function ServicesGrid() {
   }
 
   // Ensure servicesData.data is an array, fallback to empty array if undefined
-  const publishedServices = servicesData?.data?.filter((s: Service) => s.published) || [];
+  const publishedServices = servicesData?.data?.filter((s: ApiService) => s.published) || [];
 
   return (
     <section className="py-16 md:py-24 bg-background">
@@ -130,11 +150,20 @@ export default function ServicesGrid() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-            {publishedServices.map((service: Service) => {
+            {publishedServices.map((service: ApiService) => {
               // Get the icon from the service data, fallback to Code icon
-              const ServiceIcon = service.Icon && iconMap[service.Icon] 
-                ? iconMap[service.Icon] 
-                : iconMap.Code;
+              // Handle both string icon names (from API) and IconType components (from local data)
+              let ServiceIcon;
+              if (typeof service.Icon === 'string') {
+                // If Icon is a string, use it as a key in iconMap
+                ServiceIcon = iconMap[service.Icon] || iconMap.Code;
+              } else if (service.Icon && typeof service.Icon === 'function') {
+                // If Icon is already an IconType component, use it directly
+                ServiceIcon = service.Icon;
+              } else {
+                // Fallback to Code icon
+                ServiceIcon = iconMap.Code;
+              }
               
               return (
                 <Link
