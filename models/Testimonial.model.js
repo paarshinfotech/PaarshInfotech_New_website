@@ -24,6 +24,14 @@ const testimonialSchema = new mongoose.Schema({
     required: [true, 'A testimonial must have an avatar URL'],
     trim: true,
   },
+  type: {
+    type: String,
+    required: [true, 'A testimonial must have a type'],
+    enum: {
+      values: ['employee', 'client'],
+      message: 'Type must be either employee or client'
+    }
+  },
   published: {
     type: Boolean,
     default: true
