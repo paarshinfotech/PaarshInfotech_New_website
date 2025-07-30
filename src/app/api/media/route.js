@@ -1,4 +1,3 @@
-
 import _db from "../../../lib/utils/db";
 import { uploadBase64, deleteFile } from "../../../lib/utils/upload";
 import {
@@ -72,11 +71,15 @@ export async function POST(request) {
 
     const Model = getModelByType(type);
 
-    // Handle image uploads if present
+    // Validate and handle image uploads if present
     if (mediaData.imageBase64) {
+      // Validate base64 string
+      if (!mediaData.imageBase64.match(/^data:image\/(png|jpeg|jpg);base64,/)) {
+        throw new Error("Invalid image format. Only PNG or JPEG allowed.");
+      }
       const imageUrl = await uploadBase64(mediaData.imageBase64, `${type}-image`);
-      if (!imageUrl) {
-        throw new Error("Failed to upload image");
+      if (!imageUrl || !imageUrl.startsWith('/uploads/')) {
+        throw new Error("Failed to upload image or invalid image URL");
       }
       mediaData.imageUrl = imageUrl;
       delete mediaData.imageBase64;
@@ -84,22 +87,43 @@ export async function POST(request) {
 
     // Handle multiple images for event recaps
     if (type === "event" && mediaData.imagesBase64) {
-      const uploadPromises = mediaData.imagesBase64.map((base64, index) =>
-        uploadBase64(base64, `${type}-image-gallery-${index}`)
-      );
-      const imageUrls = await Promise.all(uploadPromises);
-      if (imageUrls.some(url => !url)) {
-        throw new Error("Failed to upload one or more gallery images");
+      if (!Array.isArray(mediaData.imagesBase64)) {
+        throw new Error("imagesBase64 must be an array");
       }
-      mediaData.images = imageUrls;
+      
+      // Ensure imageAlts array exists and has the same length
+      if (!mediaData.imageAlts || !Array.isArray(mediaData.imageAlts)) {
+        mediaData.imageAlts = mediaData.imagesBase64.map((_, index) => `Event image ${index + 1}`);
+      }
+      
+      const uploadPromises = mediaData.imagesBase64.map((base64, index) => {
+        // Validate each base64 string
+        if (!base64.match(/^data:image\/(png|jpeg|jpg);base64,/)) {
+          throw new Error(`Invalid image format for gallery image ${index}. Only PNG or JPEG allowed.`);
+        }
+        return uploadBase64(base64, `${type}-image-gallery-${index}`);
+      });
+      
+      const imageUrls = await Promise.all(uploadPromises);
+      if (imageUrls.some(url => !url || !url.startsWith('/uploads/'))) {
+        throw new Error("Failed to upload one or more gallery images or invalid image URL");
+      }
+      
+      // Transform imageUrls to match embedded document schema with alt and imageUrl
+      mediaData.images = imageUrls.map((url, index) => ({
+        imageUrl: url,
+        alt: mediaData.imageAlts[index] || `Event image ${index + 1}`
+      }));
+      
       delete mediaData.imagesBase64;
+      delete mediaData.imageAlts;
     }
 
     // Set order to highest current order + 1 if applicable
-    if (type !== 'spotlight') { // Spotlight is usually a single item
-        const maxOrder = await Model.find().sort({ order: -1 }).limit(1);
-        const newOrder = maxOrder.length > 0 ? maxOrder[0].order + 1 : 0;
-        mediaData.order = newOrder;
+    if (type !== 'spotlight') {
+      const maxOrder = await Model.find().sort({ order: -1 }).limit(1);
+      const newOrder = maxOrder.length > 0 ? maxOrder[0].order + 1 : 0;
+      mediaData.order = newOrder;
     }
 
     const newItem = new Model(mediaData);
@@ -115,7 +139,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error creating media item:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to create media item" }),
+      JSON.stringify({ error: `Failed to create media item: ${error.message}` }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
@@ -137,13 +161,19 @@ export async function PUT(request) {
 
     // Handle image update if present
     if (updateData.imageBase64) {
+      // Validate base64 string
+      if (!updateData.imageBase64.match(/^data:image\/(png|jpeg|jpg);base64,/)) {
+        throw new Error("Invalid image format. Only PNG or JPEG allowed.");
+      }
+      
       const oldItem = await Model.findById(_id);
       if (oldItem?.imageUrl) {
         await deleteFile(oldItem.imageUrl);
       }
+      
       const imageUrl = await uploadBase64(updateData.imageBase64, `${type}-image`);
-      if (!imageUrl) {
-        throw new Error("Failed to upload image");
+      if (!imageUrl || !imageUrl.startsWith('/uploads/')) {
+        throw new Error("Failed to upload image or invalid image URL");
       }
       updateData.imageUrl = imageUrl;
       delete updateData.imageBase64;
@@ -151,21 +181,43 @@ export async function PUT(request) {
 
     // Handle multiple images for event recaps
     if (type === "event" && updateData.imagesBase64) {
-        const oldItem = await Model.findById(_id);
-        if (oldItem?.images) {
-            await Promise.all(oldItem.images.map(url => deleteFile(url)));
+      if (!Array.isArray(updateData.imagesBase64)) {
+        throw new Error("imagesBase64 must be an array");
+      }
+      
+      const oldItem = await Model.findById(_id);
+      if (oldItem?.images) {
+        // Delete old images - fix: access imageUrl property correctly
+        await Promise.all(oldItem.images.map(img => deleteFile(img.imageUrl || img.url)));
+      }
+      
+      // Ensure imageAlts array exists and has the same length
+      if (!updateData.imageAlts || !Array.isArray(updateData.imageAlts)) {
+        updateData.imageAlts = updateData.imagesBase64.map((_, index) => `Event image ${index + 1}`);
+      }
+      
+      const uploadPromises = updateData.imagesBase64.map((base64, index) => {
+        // Validate each base64 string
+        if (!base64.match(/^data:image\/(png|jpeg|jpg);base64,/)) {
+          throw new Error(`Invalid image format for gallery image ${index}. Only PNG or JPEG allowed.`);
         }
-        const uploadPromises = updateData.imagesBase64.map((base64, index) =>
-            uploadBase64(base64, `${type}-image-gallery-${index}`)
-        );
-        const imageUrls = await Promise.all(uploadPromises);
-        if (imageUrls.some(url => !url)) {
-            throw new Error("Failed to upload one or more gallery images");
-        }
-        updateData.images = imageUrls;
-        delete updateData.imagesBase64;
+        return uploadBase64(base64, `${type}-image-gallery-${index}`);
+      });
+      
+      const imageUrls = await Promise.all(uploadPromises);
+      if (imageUrls.some(url => !url || !url.startsWith('/uploads/'))) {
+        throw new Error("Failed to upload one or more gallery images or invalid image URL");
+      }
+      
+      // Transform imageUrls to match embedded document schema with alt and imageUrl
+      updateData.images = imageUrls.map((url, index) => ({
+        imageUrl: url,
+        alt: updateData.imageAlts[index] || `Event image ${index + 1}`
+      }));
+      
+      delete updateData.imagesBase64;
+      delete updateData.imageAlts;
     }
-
 
     const updatedItem = await Model.findByIdAndUpdate(
       _id,
@@ -190,7 +242,7 @@ export async function PUT(request) {
   } catch (error) {
     console.error("Error updating media item:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to update media item" }),
+      JSON.stringify({ error: `Failed to update media item: ${error.message}` }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );
   }
@@ -224,7 +276,8 @@ export async function DELETE(request) {
       await deleteFile(item.imageUrl);
     }
     if (item.images && Array.isArray(item.images)) {
-      await Promise.all(item.images.map(url => deleteFile(url)));
+      // Fix: access imageUrl property correctly from embedded documents
+      await Promise.all(item.images.map(img => deleteFile(img.imageUrl || img.url)));
     }
 
     await Model.findByIdAndDelete(_id);
