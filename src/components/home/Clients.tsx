@@ -44,7 +44,7 @@ export default function Clients() {
             We are proud to have worked with a diverse range of businesses.
           </p>
         </div>
-        <div className="overflow-x-hidden">
+        <div className="overflow-hidden">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12 lg:gap-16 items-center">
             {publishedClients.map((client: Client) => (
               <div key={client._id} className="flex flex-col justify-center items-center space-y-4 p-6 rounded-xl hover:bg-muted/30 transition-all duration-300">

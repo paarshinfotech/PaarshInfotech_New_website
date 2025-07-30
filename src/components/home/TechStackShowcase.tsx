@@ -34,7 +34,7 @@ export default function TechStackShowcase() {
           </p>
         </div>
         
-        <div className="relative flex flex-col gap-4 overflow-x-hidden">
+        <div className="relative flex flex-col gap-4 overflow-hidden">
             {/* Left-to-Right Scrolling Row */}
             <div className="flex animate-marquee-right space-x-4">
               {[...firstRow, ...firstRow].map((tech, index) => (
