@@ -6,6 +6,7 @@ import MapEmbed from "@/components/contact/MapEmbed";
 import ContactFAQs from "@/components/contact/ContactFAQs";
 import ContactCTA from "@/components/contact/ContactCTA";
 import { Card, CardContent } from "@/components/ui/card";
+import { ResponseTimeInfo } from "@/components/contact/ResponseTimeInfo";
 
 export default function ContactPage() {
   return (
@@ -21,8 +22,9 @@ export default function ContactPage() {
             </div>
             
             {/* Right Column: Form */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 space-y-8">
               <ContactForm />
+              <ResponseTimeInfo />
             </div>
           </div>
         </div>
