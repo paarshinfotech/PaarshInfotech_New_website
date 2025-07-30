@@ -1,3 +1,5 @@
+
+import { FadeInSection } from "@/components/common/FadeInSection";
 import Hero from "@/components/home/Hero";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import About from "@/components/home/About";
@@ -13,17 +15,39 @@ import ServicesGrid from "@/components/home/ServicesGrid";
 export default function Home() {
   return (
     <>
-      <Hero />
-      <Clients />
-      <About />
-      <ServicesGrid />
-      <TechStackShowcase />
-      <CompanyIntroVideo />
-      <FeatureHighlightTiles />
-      <Stats />
-      <Testimonials />
-      <WhyChooseUs />
-      <Newsletter />
+      <FadeInSection>
+        <Hero />
+      </FadeInSection>
+      <FadeInSection>
+        <Clients />
+      </FadeInSection>
+      <FadeInSection>
+        <About />
+      </FadeInSection>
+      <FadeInSection>
+        <ServicesGrid />
+      </FadeInSection>
+      <FadeInSection>
+        <TechStackShowcase />
+      </FadeInSection>
+      <FadeInSection>
+        <CompanyIntroVideo />
+      </FadeInSection>
+      <FadeInSection>
+        <FeatureHighlightTiles />
+      </FadeInSection>
+      <FadeInSection>
+        <Stats />
+      </FadeInSection>
+      <FadeInSection>
+        <Testimonials />
+      </FadeInSection>
+      <FadeInSection>
+        <WhyChooseUs />
+      </FadeInSection>
+      <FadeInSection>
+        <Newsletter />
+      </FadeInSection>
     </>
   );
 }
