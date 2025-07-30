@@ -19,10 +19,10 @@ export default function Hero() {
   ];
   
   return (
-    <WavyBackground className="max-w-4xl mx-auto pb-40" backgroundFill="black">
-        <div className="text-center md:text-left">
+    <WavyBackground className="max-w-4xl mx-auto py-20 md:py-32 lg:py-40" backgroundFill="black">
+        <div className="text-center">
           <TypewriterEffectSmooth words={words} />
-          <p className="max-w-2xl mx-auto md:mx-0 text-lg md:text-xl text-white/80 mb-8 text-center">
+          <p className="max-w-2xl mx-auto text-lg md:text-xl text-white/80 mb-8">
             We deliver high-quality, reliable, and scalable software solutions to help your business grow.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -36,7 +36,7 @@ export default function Hero() {
               <Link href="/contact">Contact Us</Link>
             </Button>
           </div>
-           <div className="flex justify-center space-x-8 text-sm text-white/70">
+           <div className="flex flex-col sm:flex-row justify-center items-center gap-y-4 gap-x-8 text-sm text-white/70">
               <div className="flex items-center gap-2">
                   <FaBriefcase className="w-4 h-4 text-primary" />
                   <span className="font-medium">200+ Projects Completed</span>
