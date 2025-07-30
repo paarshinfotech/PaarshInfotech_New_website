@@ -15,9 +15,9 @@ export default function ContactPage() {
 
       <section className="py-16 md:py-24 bg-background">
         <div className="container max-w-7xl">
-          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16">
+          <div className="grid lg:grid-cols-4 gap-6 lg:gap-6">
             {/* Left Column: Details */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-2">
               <ContactDetails />
             </div>
             
