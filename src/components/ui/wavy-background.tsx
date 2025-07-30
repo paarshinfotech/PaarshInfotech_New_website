@@ -1,3 +1,4 @@
+
 "use client";
 import { cn } from "@/lib/utils";
 import React, { useEffect, useRef, useState } from "react";
@@ -35,6 +36,8 @@ export const WavyBackground = ({
     ctx: any,
     canvas: any;
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const getSpeed = () => {
     switch (speed) {
       case "slow":
@@ -48,15 +51,16 @@ export const WavyBackground = ({
 
   const init = () => {
     canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !containerRef.current) return;
     ctx = canvas.getContext("2d");
-    w = ctx.canvas.width = window.innerWidth;
-    h = ctx.canvas.height = window.innerHeight;
+    w = ctx.canvas.width = containerRef.current.clientWidth;
+    h = ctx.canvas.height = containerRef.current.clientHeight;
     ctx.filter = `blur(${blur}px)`;
     nt = 0;
     window.onresize = function () {
-      w = ctx.canvas.width = window.innerWidth;
-      h = ctx.canvas.height = window.innerHeight;
+      if (!containerRef.current) return;
+      w = ctx.canvas.width = containerRef.current.clientWidth;
+      h = ctx.canvas.height = containerRef.current.clientHeight;
       ctx.filter = `blur(${blur}px)`;
     };
     render();
@@ -113,9 +117,10 @@ export const WavyBackground = ({
   return (
     <div
       className={cn(
-        "h-screen flex flex-col items-center justify-center",
+        "h-screen flex flex-col items-center justify-center relative overflow-hidden",
         containerClassName
       )}
+      ref={containerRef}
     >
       <canvas
         className="absolute inset-0 z-0"
