@@ -1,3 +1,4 @@
+
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -126,7 +127,7 @@ export const TypewriterEffectSmooth = ({
               {word.text.map((char, index) => (
                 <span
                   key={`char-${index}`}
-                  className={cn(`dark:text-white text-black `, word.className)}
+                  className={cn(`dark:text-white text-white `, word.className)}
                 >
                   {char}
                 </span>
@@ -156,7 +157,7 @@ export const TypewriterEffectSmooth = ({
         }}
       >
         <div
-          className="text-xs sm:text-base md:text-xl lg:text:3xl xl:text-5xl font-bold"
+          className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold"
           style={{
             whiteSpace: "nowrap",
           }}
@@ -178,7 +179,7 @@ export const TypewriterEffectSmooth = ({
           repeatType: "reverse",
         }}
         className={cn(
-          "block rounded-sm w-[4px]  h-4 sm:h-6 xl:h-12 bg-blue-500",
+          "block rounded-sm w-[4px]  h-6 sm:h-8 xl:h-12 bg-blue-500",
           cursorClassName
         )}
       ></motion.span>
