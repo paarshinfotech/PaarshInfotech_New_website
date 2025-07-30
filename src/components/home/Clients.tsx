@@ -1,3 +1,4 @@
+
 "use client";
 import { useGetClientsQuery } from "@/services/api";
 
@@ -43,33 +44,35 @@ export default function Clients() {
             We are proud to have worked with a diverse range of businesses.
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12 lg:gap-16 items-center">
-          {publishedClients.map((client: Client) => (
-            <div key={client._id} className="flex flex-col justify-center items-center space-y-4 p-6 rounded-xl hover:bg-muted/30 transition-all duration-300">
-              <div className="flex justify-center items-center h-24 w-40 lg:h-28 lg:w-48">
-                <img
-                  src={client.logo}
-                  alt={`${client.name} logo`}
-                  className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
-                  onError={(e) => {
-                    // Fallback to default logo if image fails to load
-                    const target = e.currentTarget;
-                    target.style.display = 'none';
-                    const fallback = target.nextElementSibling as HTMLElement;
-                    if (fallback) fallback.style.display = 'block';
-                  }}
-                />
-                <ClientLogo 
-                  className="w-40 h-16 lg:w-48 lg:h-20 text-muted-foreground/60 hover:text-foreground/80 transition-colors hidden" 
-                />
+        <div className="overflow-x-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-12 lg:gap-16 items-center">
+            {publishedClients.map((client: Client) => (
+              <div key={client._id} className="flex flex-col justify-center items-center space-y-4 p-6 rounded-xl hover:bg-muted/30 transition-all duration-300">
+                <div className="flex justify-center items-center h-24 w-40 lg:h-28 lg:w-48">
+                  <img
+                    src={client.logo}
+                    alt={`${client.name} logo`}
+                    className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
+                    onError={(e) => {
+                      // Fallback to default logo if image fails to load
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      const fallback = target.nextElementSibling as HTMLElement;
+                      if (fallback) fallback.style.display = 'block';
+                    }}
+                  />
+                  <ClientLogo 
+                    className="w-40 h-16 lg:w-48 lg:h-20 text-muted-foreground/60 hover:text-foreground/80 transition-colors hidden" 
+                  />
+                </div>
+                <div className="text-center space-y-2">
+                  <h3 className="text-lg lg:text-xl font-semibold text-foreground/90">{client.name}</h3>
+                  <p className="text-base lg:text-lg text-muted-foreground font-medium">{client.industry}</p>
+                  <p className="text-sm text-muted-foreground/70">Since {client.since}</p>
+                </div>
               </div>
-              <div className="text-center space-y-2">
-                <h3 className="text-lg lg:text-xl font-semibold text-foreground/90">{client.name}</h3>
-                <p className="text-base lg:text-lg text-muted-foreground font-medium">{client.industry}</p>
-                <p className="text-sm text-muted-foreground/70">Since {client.since}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>

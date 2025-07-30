@@ -1,3 +1,4 @@
+
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -33,7 +34,7 @@ export default function TechStackShowcase() {
           </p>
         </div>
         
-        <div className="relative flex flex-col gap-4 overflow-hidden">
+        <div className="relative flex flex-col gap-4 overflow-x-hidden">
             {/* Left-to-Right Scrolling Row */}
             <div className="flex animate-marquee-right space-x-4">
               {[...firstRow, ...firstRow].map((tech, index) => (
