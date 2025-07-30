@@ -33,7 +33,7 @@ const galleryItemSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      enum: ["all", "office culture", "sports", "parties", "celebrations"],
+      enum: ["all", "office culture", "sports", "parties", "celebrations","event", "office", "team", "other"],
     },
   },
   { timestamps: true }
