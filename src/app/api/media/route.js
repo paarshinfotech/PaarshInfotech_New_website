@@ -119,6 +119,7 @@ export async function POST(request) {
       delete mediaData.imageAlts;
     }
 
+
     // Set order to highest current order + 1 if applicable
     if (type !== 'spotlight') {
       const maxOrder = await Model.find().sort({ order: -1 }).limit(1);

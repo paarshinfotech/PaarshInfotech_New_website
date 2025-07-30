@@ -12,6 +12,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useState } from "react";
 import { LuLoader } from "react-icons/lu";
 import { getSmartReply } from "@/app/actions";
+import { useAddQuoteMutation } from "@/services/api";
+import { useToast } from "@/hooks/use-toast";
+
 
 const services = [
   { id: "web", label: "Web Development" },
@@ -25,6 +28,7 @@ const services = [
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  phone: z.string().regex(/^\d{10,15}$/, { message: "Please enter a valid phone number." }),
   message: z.string().min(10, { message: "Please describe your project briefly." }),
   services: z.array(z.string()).refine((value) => value.some((item) => item), {
     message: "You have to select at least one service.",
@@ -37,12 +41,15 @@ export function QuoteForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [smartReply, setSmartReply] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [addQuote] = useAddQuoteMutation();
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
       message: "",
       services: [],
     },
@@ -53,18 +60,37 @@ export function QuoteForm() {
     setSmartReply(null);
     setError(null);
 
-    const reply = await getSmartReply({
-        clientMessage: values.message,
-        selectedServices: values.services,
-    });
-    
-    if(reply.success) {
-        setSmartReply(reply.content || '');
-    } else {
-        setError(reply.error || 'An unexpected error occurred.');
-    }
+    try {
+      // First, save the quote to the database
+      await addQuote(values).unwrap();
+      
+      toast({
+        title: "Quote Request Sent!",
+        description: "Thank you for your request. We'll be in touch shortly.",
+      });
 
-    setIsLoading(false);
+      // Then, get the AI-generated smart reply
+      const reply = await getSmartReply({
+          clientMessage: values.message,
+          selectedServices: values.services,
+      });
+      
+      if(reply.success) {
+          setSmartReply(reply.content || '');
+      } else {
+          setError(reply.error || 'An unexpected error occurred while generating the email draft.');
+      }
+
+    } catch (err: any) {
+        toast({
+          title: "Error",
+          description: err.data?.error || "Failed to submit quote request. Please try again.",
+          variant: "destructive",
+        });
+        setError("Could not submit your quote request. Please try again later.");
+    } finally {
+        setIsLoading(false);
+    }
   }
 
   return (
@@ -93,6 +119,13 @@ export function QuoteForm() {
                   </FormItem>
                 )} />
               </div>
+               <FormField control={form.control} name="phone" render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl><Input placeholder="Your Phone Number" {...field} /></FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )} />
 
               <FormField control={form.control} name="services" render={() => (
                 <FormItem>

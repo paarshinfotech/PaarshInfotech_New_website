@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from "react";
@@ -15,10 +16,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 
 const galleryItemSchema = z.object({
-    imageFile: z.any().optional(),
+    image: z.any().optional(), // For new file uploads
     alt: z.string().min(1, "Alt text is required"),
     hint: z.string().min(1, "Hint is required"),
-    imageUrl: z.string().optional(),
+    imageUrl: z.string().optional(), // For existing images
 });
 
 const formSchema = z.object({
@@ -27,7 +28,7 @@ const formSchema = z.object({
   location: z.string().min(3, "Location is required."),
   description: z.string().min(10, "Description is required."),
   hint: z.string().min(2, "AI hint is required."),
-  imageFile: z.any().optional(),
+  image: z.any().optional(), // Main cover image file
   gallery: z.array(galleryItemSchema),
 });
 
@@ -36,7 +37,8 @@ type FormValues = z.infer<typeof formSchema>;
 interface GalleryImage {
   alt: string;
   hint: string;
-  image: string;
+  image?: string; // base64 for new images
+  imageUrl?: string; // URL for existing images
 }
 
 interface EventRecapFormModalProps {
@@ -63,61 +65,59 @@ export function EventRecapFormModal({ isOpen, onOpenChange, onSave, item }: Even
     }
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, replace } = useFieldArray({
     control: form.control,
     name: "gallery"
   });
 
   useEffect(() => {
-    if (item) {
-      try {
-        // Safely format the date
-        let formattedDate = '';
-        if (item.eventDate) {
-          const date = new Date(item.eventDate);
-          if (!isNaN(date.getTime())) {
-            formattedDate = date.toISOString().split('T')[0];
-          }
+    if (isOpen) {
+        if (item) {
+            try {
+                let formattedDate = '';
+                if (item.eventDate) {
+                    const date = new Date(item.eventDate);
+                    if (!isNaN(date.getTime())) {
+                        formattedDate = date.toISOString().split('T')[0];
+                    }
+                }
+
+                form.reset({
+                    title: item.title || '',
+                    date: formattedDate,
+                    location: item.location || '',
+                    description: item.description || '',
+                    hint: item.hint || '',
+                    gallery: [], // Reset gallery to be populated by replace
+                });
+                
+                const galleryItems = item.images?.map((img: any) => ({
+                    alt: img.alt || '',
+                    hint: img.hint || '',
+                    image: undefined,
+                    imageUrl: img.imageUrl
+                })) || [];
+                replace(galleryItems);
+
+            } catch (error) {
+                console.error('Error setting form data:', error);
+                form.reset();
+                replace([]);
+            }
+        } else {
+            form.reset({
+                title: "",
+                date: "",
+                location: "",
+                description: "",
+                hint: "",
+                gallery: []
+            });
+            replace([]);
         }
-
-        // Map existing images to gallery items with their alt text and hints
-        const galleryItems = item.images?.map((img: any) => ({
-          alt: img.alt || '',
-          hint: img.hint || '',
-          imageFile: undefined,
-          imageUrl: img.imageUrl // Keep the imageUrl for display
-        })) || [];
-
-        form.reset({
-          title: item.title || '',
-          date: formattedDate,
-          location: item.location || '',
-          description: item.description || '',
-          hint: item.hint || '',
-          gallery: galleryItems
-        });
-      } catch (error) {
-        console.error('Error formatting date:', error);
-        form.reset({
-          title: item.title || '',
-          date: '',
-          location: item.location || '',
-          description: item.description || '',
-          hint: item.hint || '',
-          gallery: []
-        });
-      }
-    } else {
-      form.reset({
-        title: "",
-        date: "",
-        location: "",
-        description: "",
-        hint: "",
-        gallery: []
-      });
     }
-  }, [item, form, isOpen]);
+  }, [item, form, isOpen, replace]);
+
 
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -132,26 +132,35 @@ export function EventRecapFormModal({ isOpen, onOpenChange, onSave, item }: Even
     try {
       setIsSubmitting(true);
       
-      // Convert main cover image if provided
       let coverImageBase64: string | undefined;
-      if (values.imageFile?.[0]) {
-        coverImageBase64 = await convertToBase64(values.imageFile[0]);
+      if (values.image?.[0]) {
+        coverImageBase64 = await convertToBase64(values.image[0]);
       }
 
-      // Convert gallery images
       const galleryImagesPromises = values.gallery.map(async (item) => {
-        if (!item.imageFile?.[0]) return null;
-        const imageBase64 = await convertToBase64(item.imageFile[0]);
-        return {
-          alt: item.alt,
-          hint: item.hint,
-          image: imageBase64
-        };
+        // If it's a new image (has a file)
+        if (item.image?.[0]) {
+          const imageBase64 = await convertToBase64(item.image[0]);
+          return {
+            alt: item.alt,
+            hint: item.hint,
+            image: imageBase64, // base64 for new
+          };
+        } 
+        // If it's an existing image (has a URL)
+        else if (item.imageUrl) {
+          return {
+            alt: item.alt,
+            hint: item.hint,
+            imageUrl: item.imageUrl, // URL for existing
+          };
+        }
+        return null;
       });
 
       const galleryImagesWithNull = await Promise.all(galleryImagesPromises);
       const galleryImages: GalleryImage[] = galleryImagesWithNull.filter((img): img is GalleryImage => img !== null);
-
+      
       await onSave({
         title: values.title,
         description: values.description,
@@ -163,9 +172,6 @@ export function EventRecapFormModal({ isOpen, onOpenChange, onSave, item }: Even
       });
 
       onOpenChange(false);
-      if (!item) {
-        form.reset();
-      }
     } catch (error) {
       console.error('Error processing form:', error);
     } finally {
@@ -199,7 +205,7 @@ export function EventRecapFormModal({ isOpen, onOpenChange, onSave, item }: Even
                   <FormField control={form.control} name="description" render={({ field }) => (
                     <FormItem><FormLabel>Description</FormLabel><FormControl><Textarea {...field} rows={4} /></FormControl><FormMessage /></FormItem>
                   )} />
-                  <FormField control={form.control} name="imageFile" render={({ field }) => (
+                  <FormField control={form.control} name="image" render={({ field }) => (
                     <FormItem>
                       <FormLabel>Cover Image (16:9)</FormLabel>
                       <FormControl><Input type="file" accept="image/*" onChange={(e) => field.onChange(e.target.files)} /></FormControl>
@@ -218,16 +224,16 @@ export function EventRecapFormModal({ isOpen, onOpenChange, onSave, item }: Even
                         {field.imageUrl && (
                           <Image 
                             src={field.imageUrl} 
-                            alt={field.alt} 
+                            alt={field.alt || "Gallery image"} 
                             width={64} 
                             height={64} 
                             className="aspect-square object-cover rounded-md" 
                           />
                         )}
                         <div className="flex-grow space-y-2">
-                          <FormField control={form.control} name={`gallery.${index}.imageFile`} render={({ field: imageField }) => (
+                          <FormField control={form.control} name={`gallery.${index}.image`} render={({ field: imageField }) => (
                             <FormItem>
-                              <FormLabel className="text-xs">Image</FormLabel>
+                              <FormLabel className="text-xs">Image File {field.imageUrl ? "(Optional: Replace existing)" : "(Required)"}</FormLabel>
                               <FormControl>
                                 <Input 
                                   type="file" 
@@ -263,7 +269,7 @@ export function EventRecapFormModal({ isOpen, onOpenChange, onSave, item }: Even
                         </Button>
                       </div>
                     ))}
-                    <Button type="button" variant="outline" className="w-full" onClick={() => append({ imageFile: undefined, alt: '', hint: '', imageUrl: undefined })}>
+                    <Button type="button" variant="outline" className="w-full" onClick={() => append({ image: undefined, alt: '', hint: '', imageUrl: undefined })}>
                       <FaPlus className="mr-2 h-4 w-4" /> Add Gallery Image
                     </Button>
                   </div>

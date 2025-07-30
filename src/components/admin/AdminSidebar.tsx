@@ -41,6 +41,7 @@ import {
   LuLoader,
   LuImage,
   LuGraduationCap,
+  LuFileQuestion,
 } from "react-icons/lu";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -57,6 +58,7 @@ const mainLinks = [
   { href: "/admin/site-images", label: "Site Images", icon: LuImage },
   { href: "/admin/social", label: "Social Posts", icon: LuRss },
   { href: "/admin/contacts", label: "Contacts", icon: LuMessageSquare },
+  { href: "/admin/quotes", label: "Quotes", icon: LuFileQuestion },
   { href: "/admin/feedback", label: "Feedback", icon: LuStar },
   { href: "/admin/analytics", label: "Analytics", icon: FaChartBar },
 ];

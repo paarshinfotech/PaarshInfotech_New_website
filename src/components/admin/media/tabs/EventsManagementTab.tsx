@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -14,6 +15,13 @@ import { useGetMediaItemsQuery, useAddMediaItemMutation, useUpdateMediaItemMutat
 interface EventsManagementTabProps {
     items: any[];
     setItems: React.Dispatch<React.SetStateAction<any[]>>;
+}
+
+interface GalleryImage {
+    alt: string;
+    hint: string;
+    image?: string; // base64 for new images
+    imageUrl?: string; // URL for existing images
 }
 
 export function EventsManagementTab({ items: propItems, setItems: setPropItems }: EventsManagementTabProps) {
@@ -49,50 +57,54 @@ export function EventsManagementTab({ items: propItems, setItems: setPropItems }
         setIsDeleteAlertOpen(true);
     };
 
-    const handleSave = async (data: { 
-        title: string; 
-        description: string; 
-        hint: string; 
+    const handleSave = async (data: {
+        title: string;
+        description: string;
+        hint: string;
         date: string;
         location: string;
-        image?: string;
-        galleryImages?: { alt: string; hint: string; image: string; }[];
+        image?: string; // Main cover image base64
+        galleryImages?: GalleryImage[];
     }) => {
         try {
             const formData = {
                 title: data.title,
                 description: data.description,
-                eventDate: new Date(data.date), // Use eventDate instead of date
-                location: data.location, // Add location field
+                hint: data.hint,
+                eventDate: new Date(data.date),
+                location: data.location,
                 published: true,
+                images: data.galleryImages, // Send the whole gallery array
             };
+
+            const mutationData: any = {
+                type: 'event',
+                ...formData
+            };
+            
+            if (data.image) {
+                mutationData.imageBase64 = data.image;
+            }
 
             if (selectedItem) {
                 // Update existing item
                 await updateMediaItem({
-                    type: 'event',
                     _id: selectedItem._id,
-                    ...formData,
-                    ...(data.image ? { imageBase64: data.image } : {}),
-                    ...(data.galleryImages ? { imagesBase64: data.galleryImages.map(img => img.image) } : {})
+                    ...mutationData,
                 }).unwrap();
             } else {
                 // Add new item
                 if (!data.image) {
                     throw new Error('Cover image is required for new events');
                 }
-                await addMediaItem({
-                    type: 'event',
-                    ...formData,
-                    imageBase64: data.image,
-                    ...(data.galleryImages ? { imagesBase64: data.galleryImages.map(img => img.image) } : {})
-                }).unwrap();
+                await addMediaItem(mutationData).unwrap();
             }
             setIsModalOpen(false);
         } catch (error) {
             console.error('Failed to save event:', error);
         }
     };
+
 
     const confirmDelete = async () => {
         if (selectedItem) {
@@ -137,7 +149,7 @@ export function EventsManagementTab({ items: propItems, setItems: setPropItems }
                                 </ImagePreviewModal>
                                 <CardHeader>
                                     <CardTitle>{item.title}</CardTitle>
-                                    <CardDescription>{new Date(item.date).toLocaleDateString()}</CardDescription>
+                                    <CardDescription>{new Date(item.eventDate).toLocaleDateString()}</CardDescription>
                                 </CardHeader>
                                 <CardContent className="flex-grow">
                                     <p className="text-muted-foreground text-sm">{item.description}</p>

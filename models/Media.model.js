@@ -98,6 +98,7 @@ const employeeSpotlightSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    hint: String,
   },
   { timestamps: true }
 );
