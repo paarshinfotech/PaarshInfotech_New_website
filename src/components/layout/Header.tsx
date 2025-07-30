@@ -64,7 +64,7 @@ export function Header() {
           : "bg-transparent"
       )}
     >
-      <div className="container flex h-20 max-w-7xl items-center justify-between">
+      <div className="container flex h-16 max-w-7xl items-center justify-between">
         <Link href="/" className="flex items-center space-x-2">
           <span className="font-bold text-xl text-primary tracking-tight">
             Paarsh Infotech
