@@ -1,6 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { LuMapPin } from "react-icons/lu";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { LuMapPin, LuArrowRight } from "react-icons/lu";
 import { officeLocations } from "@/lib/contactData";
+import { Button } from "../ui/button";
+import Link from "next/link";
 
 export default function OfficeLocations() {
   return (
@@ -27,6 +29,13 @@ export default function OfficeLocations() {
                   PIN - {location.pincode}
                 </p>
               </CardContent>
+              <CardFooter>
+                <Button asChild variant="link" className="p-0 h-auto">
+                  <Link href={location.mapUrl} target="_blank" rel="noopener noreferrer">
+                    View on Map <LuArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
+              </CardFooter>
             </Card>
           ))}
         </div>

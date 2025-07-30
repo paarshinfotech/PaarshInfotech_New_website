@@ -26,37 +26,44 @@ export const officeLocations = [
     {
         city: "Nashik Office (HQ)",
         address: "Office No. 1, Bhakti Apartment, near Hotel Rasoi, Suchita Nagar, Mumbai Naka, Nashik, Maharashtra, India",
-        pincode: "422009"
+        pincode: "422009",
+        mapUrl: "https://goo.gl/maps/bK7bJ8eR7z9y9A8t9"
     },
     {
         city: "Nashik Office",
         address: "Pandit Colony, Nashik, Maharashtra, India",
-        pincode: "422009"
+        pincode: "422002",
+        mapUrl: "https://goo.gl/maps/example"
     },
     {
         city: "Pune Office",
         address: "Pune, Maharashtra, India",
-        pincode: "422009"
+        pincode: "411001",
+        mapUrl: "https://goo.gl/maps/example"
     },
     {
         city: "Sangli Office",
         address: "G1 Pragati Residency, Lane No. 4, Pragati Colony, Near Diamond Hotel, 100 Ft. Road, Sangli, Maharashtra, India",
-        pincode: "422009"
+        pincode: "416416",
+        mapUrl: "https://goo.gl/maps/example"
     },
     {
         city: "Surat Office",
         address: "Office No. 12, Exceluss Business Space, Bhimrad Canal Road, Althan, Surat, Gujarat, India",
-        pincode: "395017"
+        pincode: "395017",
+        mapUrl: "https://goo.gl/maps/example"
     },
     {
         city: "Dharwad Office",
         address: "Office No. 1, Shelke Complex, Near Harimandir Mankilla, Dharwad, Karnataka, India",
-        pincode: "580001"
+        pincode: "580001",
+        mapUrl: "https://goo.gl/maps/example"
     },
     {
         city: "Jalgaon Office",
         address: "Gurukul Colony, near MJ College, Beside JDCC Bank, Jalgaon, Maharashtra, India",
-        pincode: "425001"
+        pincode: "425001",
+        mapUrl: "https://goo.gl/maps/example"
     }
 ];
 
