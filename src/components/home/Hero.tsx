@@ -65,7 +65,7 @@ export default function Hero() {
               src={heroImage}
               alt="Innovative Software Solutions"
               fill
-              className="relative object-cover rounded-lg shadow-2xl transition-transform duration-500 group-hover:scale-105"
+              className="relative object-cover rounded-lg shadow-2xl transition-transform duration-500 group-hover:scale-100"
               data-ai-hint={heroImageHint}
             />
           </div>
