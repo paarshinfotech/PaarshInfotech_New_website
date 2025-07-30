@@ -2,8 +2,6 @@ import { ContactForm } from "@/components/ContactForm";
 import ContactHero from "@/components/contact/ContactHero";
 import ContactDetails from "@/components/contact/ContactDetails";
 import OfficeLocations from "@/components/contact/OfficeLocations";
-import WorkingHours from "@/components/contact/WorkingHours";
-import SocialLinks from "@/components/contact/SocialLinks";
 import MapEmbed from "@/components/contact/MapEmbed";
 import ContactFAQs from "@/components/contact/ContactFAQs";
 import ContactCTA from "@/components/contact/ContactCTA";
