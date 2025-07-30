@@ -9,7 +9,7 @@ await _db();
 export async function POST(request) {
   try {
     const data = await request.json();
-    let { quote, name, title, avatarBase64, published } = data;
+    let { quote, name, title, avatarBase64, type, published } = data;
 
     if (!quote || !name || !title) {
       return NextResponse.json(
@@ -18,9 +18,22 @@ export async function POST(request) {
       );
     }
 
+    // Default to 'client' if type is not provided
+    if (!type) {
+      type = 'client';
+    }
+
+    // Validate type
+    if (!['employee', 'client'].includes(type)) {
+      return NextResponse.json(
+        { success: false, error: "Type must be either 'employee' or 'client'" },
+        { status: 400 }
+      );
+    }
+
     let avatar = "https://placehold.co/40x40.png"; // Default avatar
     if (avatarBase64) {
-      const imageUrl = await uploadBase64(avatarBase64, `testimonial-${Date.now()}`);
+      const imageUrl = await uploadBase64(avatarBase64, `testimonial-${type}-${Date.now()}`);
       if (!imageUrl) {
         throw new Error("Failed to upload avatar image");
       }
@@ -32,6 +45,7 @@ export async function POST(request) {
       name,
       title,
       avatar,
+      type,
       published: published ?? true,
     });
 
@@ -51,15 +65,24 @@ export async function POST(request) {
   }
 }
 
-export async function GET() {
+export async function GET(request) {
   try {
-    const testimonials = await TestimonialModel.find().sort({ createdAt: -1 });
+    const { searchParams } = new URL(request.url);
+    const type = searchParams.get("type"); // Get type filter from query params
+
+    let filter = {};
+    if (type && ['employee', 'client'].includes(type)) {
+      filter.type = type;
+    }
+
+    const testimonials = await TestimonialModel.find(filter).sort({ createdAt: -1 });
 
     return NextResponse.json(
       {
         success: true,
         results: testimonials.length,
         data: testimonials,
+        filter: type || 'all'
       },
       { status: 200 }
     );
@@ -72,19 +95,27 @@ export async function GET() {
   }
 }
 
-export async function PATCH(request,) {
+export async function PATCH(request) {
   try {
     const data = await request.json();
-    let { _id, quote, name, title, avatarBase64, published } = data;
+    let { _id, quote, name, title, avatarBase64, type, published } = data;
 
-    if (!quote && !name && !title && !avatarBase64 && published === undefined) {
+    if (!quote && !name && !title && !avatarBase64 && !type && published === undefined) {
       return NextResponse.json(
         { success: false, error: "At least one field is required to update" },
         { status: 400 }
       );
     }
 
-    const updateData = { quote, name, title, published };
+    // Validate type if provided
+    if (type && !['employee', 'client'].includes(type)) {
+      return NextResponse.json(
+        { success: false, error: "Type must be either 'employee' or 'client'" },
+        { status: 400 }
+      );
+    }
+
+    const updateData = { quote, name, title, type, published };
     if (avatarBase64) {
       const imageUrl = await uploadBase64(avatarBase64, `testimonial-${_id}-${Date.now()}`);
       if (!imageUrl) {
@@ -141,7 +172,7 @@ export async function DELETE(request) {
         data: null,
       },
       { status: 200 }
-    ); // Using 200 instead of 204 to match the response format
+    );
   } catch (error) {
     console.error("Error deleting testimonial:", error);
     return NextResponse.json(
