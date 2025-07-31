@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -16,7 +17,7 @@ interface ApiService extends Omit<Service, 'Icon'> {
 }
 import { useGetServicesQuery } from "@/services/api";
 import Link from "next/link";
-import { LuArrowRight, LuCheck } from "react-icons/lu";
+import { LuArrowRight, LuCheck, LuTriangleAlert } from "react-icons/lu";
 import { IconType } from "react-icons";
 import {
   FaCode,
@@ -34,6 +35,7 @@ import {
 } from "react-icons/fa";
 import { FiSmartphone } from "react-icons/fi";
 import { LuBrainCircuit } from "react-icons/lu";
+import { Button } from "../ui/button";
 
 // Map icon names to React icon components
 const iconMap: Record<string, IconType> = {
@@ -100,7 +102,7 @@ const ServicesGridSkeleton = () => {
 };
 
 export default function ServicesGrid() {
-  const { data: servicesData, isLoading, isError, error } = useGetServicesQuery(undefined);
+  const { data: servicesData, isLoading, isError, error, refetch } = useGetServicesQuery(undefined);
 
   console.log("servicesData", servicesData);
 
@@ -118,12 +120,18 @@ export default function ServicesGrid() {
     return (
       <section className="py-16 md:py-24 bg-background">
         <div className="container max-w-7xl">
-          <div className="bg-red-50 border border-red-200 rounded-md p-4 text-center">
-            <h3 className="text-red-800 font-medium">Error loading services</h3>
-            <p className="text-red-600 mt-1">
-              {"Failed to load services. Please try again."}
+          <Card className="border-destructive/50 bg-destructive/5 text-center p-8">
+            <div className="flex justify-center mb-4">
+                <LuTriangleAlert className="w-12 h-12 text-destructive" />
+            </div>
+            <h3 className="text-xl font-bold text-destructive">Oops! Something went wrong.</h3>
+            <p className="text-destructive/80 mt-2 mb-6">
+              We couldn't load our services right now. Please try again in a few moments.
             </p>
-          </div>
+            <Button onClick={() => refetch()} variant="destructive" >
+                Try Again
+            </Button>
+          </Card>
         </div>
       </section>
     );

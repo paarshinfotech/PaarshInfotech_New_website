@@ -19,7 +19,7 @@ export default function MediaTestimonials() {
           </p>
         </div>
         <div className="relative w-full overflow-hidden group">
-            <div className="flex animate-marquee group-hover:[animation-play-state:paused]">
+            <div className="flex animate-marquee-left group-hover:[animation-play-state:paused]">
                 {extendedTestimonials.map((testimonial, index) => (
                     <div key={index} className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4">
                         <Card className="h-full bg-background shadow-lg text-center flex flex-col items-center p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
