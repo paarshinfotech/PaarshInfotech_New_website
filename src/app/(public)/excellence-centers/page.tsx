@@ -22,15 +22,15 @@ export default function ExcellenceCentersPage() {
       <Introduction />
       <PartnerColleges />
       <StudentBenefits />
-      <ProgramsOffered />
+      {/* <ProgramsOffered /> */}
       <CollegeLocator />
       <TechStack />
       <MediaGallery />
       <SuccessStories />
       <Testimonials />
-      <Milestones />
-      <UpcomingEvents />
-      <Awards />
+      {/* <Milestones /> */}
+      {/* <UpcomingEvents />
+      <Awards /> */}
       <Collaborate />
       <Faqs />
     </>

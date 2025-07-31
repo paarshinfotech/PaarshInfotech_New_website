@@ -14,6 +14,7 @@ import MediaTestimonials from "@/components/media/MediaTestimonials";
 import CallToActionBox from "@/components/media/CallToActionBox";
 import { mediaCategories } from "@/lib/mediaData";
 import { useGetMediaItemsQuery } from "@/services/api";
+import SuccessStories from "@/components/careers/SuccessStories";
 
 export default function MediaPage() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -40,7 +41,8 @@ export default function MediaPage() {
       <EmployeeSpotlight />
       <EventRecapCards />
       <SocialWall />
-      <MediaTestimonials />
+       {/* <MediaTestimonials /> */}
+      <SuccessStories />
       <CallToActionBox />
     </>
   );
