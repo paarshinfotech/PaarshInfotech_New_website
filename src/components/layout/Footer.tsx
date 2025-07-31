@@ -17,7 +17,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4 md:col-span-2 lg:col-span-1">
-            <h3 className="text-xl font-bold text-primary">Paarsh Infotech</h3>
+            <img className="w-56" src="/uploads/paarsh-infotech-6 (1).png" alt="Paarsh Infotech" />
             <p className="text-sm">
               Your complete technology partner for fast, scalable, and reliable software solutions. We are the emerging tech experts.
             </p>
@@ -33,6 +33,7 @@ export function Footer() {
               <li><Link href="/careers" className="hover:text-primary transition-colors">Careers</Link></li>
               <li><Link href="/media" className="hover:text-primary transition-colors">Media</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
+               <li><Link href="/excellence-centers" className="hover:text-primary transition-colors">Excellence Centers</Link></li>
             </ul>
           </div>
           

@@ -29,11 +29,6 @@ export const officeLocations = [
         pincode: "422009"
     },
     {
-        city: "Nashik Office",
-        address: "Pandit Colony, Nashik, Maharashtra, India",
-        pincode: "422009"
-    },
-    {
         city: "Pune Office",
         address: "Pune, Maharashtra, India",
         pincode: "422009"

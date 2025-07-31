@@ -3,42 +3,65 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LuMenu, LuX, LuPhone, LuMail, LuChevronDown } from "react-icons/lu";
+import { LuMenu, LuX } from "react-icons/lu";
+import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/about", label: "About" },
   { href: "/services", label: "Services" },
   { href: "/products", label: "Products" },
-  { href: "/excellence-centers", label: "Excellence Centers" },
   { href: "/careers", label: "Careers" },
   { href: "/media", label: "Media" },
   { href: "/contact", label: "Contact" },
 ];
 
-const NavLink = ({ href, label, isActive, onClick }: { href: string; label: string; isActive: boolean; onClick?: () => void }) => (
-  <Link
-    href={href}
-    className={cn(
-      "relative text-sm font-medium transition-colors text-foreground/60 hover:text-primary",
-      isActive && "text-primary"
-    )}
-    onClick={onClick}
+const NavLink = ({ 
+  href, 
+  label, 
+  isActive,
+  onClick,
+  isMobile = false
+}: { 
+  href: string; 
+  label: string; 
+  isActive: boolean; 
+  onClick?: () => void;
+  isMobile?: boolean;
+}) => (
+  <motion.div
+    whileHover={{ 
+      scale: 1.05,
+      transition: { duration: 0.2 }
+    }}
+    whileTap={{ scale: 0.95 }}
   >
-    {label}
-    {isActive && (
-      <span className="absolute left-0 -bottom-1 block h-[2px] w-full bg-primary" />
-    )}
-  </Link>
+    <Link
+      href={href}
+      className={cn(
+        "relative text-base font-semibold transition-all duration-300",
+        isMobile ? "text-xl py-3 block" : "px-4 py-2",
+        isActive 
+          ? "text-blue-600" 
+          : "text-gray-700 hover:text-blue-600"
+      )}
+      onClick={onClick}
+    >
+      {label}
+      {isActive && !isMobile && (
+        <motion.div
+          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"
+          layoutId="active-nav"
+          initial={false}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        />
+      )}
+    </Link>
+  </motion.div>
 );
 
 export function Header() {
@@ -48,7 +71,7 @@ export function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
     handleScroll();
@@ -56,77 +79,149 @@ export function Header() {
   }, []);
 
   return (
-    <header
+    <motion.header
       className={cn(
-        "sticky top-0 z-50 w-full",
+        "sticky top-0 z-50 w-full border-b transition-all duration-300",
         isScrolled
-          ? "bg-background/80 backdrop-blur-md shadow-md"
-          : "bg-transparent"
+          ? "bg-white/90 backdrop-blur-md border-gray-200 shadow-lg" 
+          : "bg-white/80 backdrop-blur-sm border-transparent"
       )}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
     >
       <div className="container flex h-20 max-w-7xl items-center justify-between">
-        <Link href="/" className="flex items-center space-x-2">
-          <span className="font-bold text-xl text-primary tracking-tight">
-            Paarsh Infotech
-          </span>
-        </Link>
+        {/* Logo */}
+        <motion.div
+          whileHover={{ 
+            scale: 1.08,
+            transition: { duration: 0.3 }
+          }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        >
+          <Link href="/" className="flex items-center space-x-3">
+            <img
+              className="h-12 w-auto"
+              src="/uploads/paarsh-infotech-6 (1).png"
+              alt="Paarsh Infotech"
+            />
+          </Link>
+        </motion.div>
 
-        <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
-            <NavLink key={link.href} {...link} isActive={pathname === link.href} />
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-2">
+          {navLinks.map((link, index) => (
+            <motion.div
+              key={link.href}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+            >
+              <NavLink
+                {...link}
+                isActive={pathname === link.href}
+              />
+            </motion.div>
           ))}
         </nav>
 
-        <div className="hidden md:flex items-center space-x-4">
-          <Button asChild className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-6">
-            <Link href="/quote">Get a Quote</Link>
-          </Button>
+        {/* CTA Button */}
+        <div className="hidden md:flex items-center">
+          <motion.div
+            whileHover={{ 
+              scale: 1.05,
+              boxShadow: "0 15px 30px -5px rgba(59, 130, 246, 0.4), 0 10px 15px -5px rgba(59, 130, 246, 0.3)",
+              transition: { duration: 0.3 }
+            }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <Button 
+              asChild 
+              size="lg" 
+              className="rounded-full px-6 py-2 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all"
+            >
+              <Link href="/quote">
+                Get a Quote
+              </Link>
+            </Button>
+          </motion.div>
         </div>
 
+        {/* Mobile Menu Button */}
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild className="md:hidden">
-            <Button variant="outline" size="icon">
-              <LuMenu className="h-5 w-5" />
-              <span className="sr-only">Open menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] bg-background p-0">
-            <div className="p-6">
-              <Link
-                href="/"
-                className="mb-8 flex items-center"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <span className="font-bold text-lg text-primary">
-                  Paarsh Infotech
-                </span>
-              </Link>
-              <nav className="flex flex-col space-y-5">
-                {navLinks.map((link) => (
-                  <NavLink
-                    key={link.href}
-                    {...link}
-                    isActive={pathname === link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  />
-                ))}
-              </nav>
-            </div>
-            <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-border/10">
-              <Button asChild className="w-full">
-                <Link href="/quote" onClick={() => setIsMobileMenuOpen(false)}>
-                  Get A Quote
-                </Link>
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+            >
+              <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
+                {isMobileMenuOpen ? (
+                  <LuX className="h-6 w-6 text-gray-700" />
+                ) : (
+                  <LuMenu className="h-6 w-6 text-gray-700" />
+                )}
+                <span className="sr-only">Toggle menu</span>
               </Button>
-              <div className="text-sm text-center text-foreground/60 mt-4">
-                <a href="mailto:info@paarshinfotech.com" className="hover:text-primary">
-                  info@paarshinfotech.com
-                </a>
+            </motion.div>
+          </SheetTrigger>
+          
+          <SheetContent side="right" className="w-[300px] p-0 bg-white">
+            <div className="flex flex-col h-full">
+              <div className="p-6 border-b border-gray-200">
+                <Link
+                  href="/"
+                  className="flex items-center"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="font-bold text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    Paarsh Infotech
+                  </span>
+                </Link>
+              </div>
+              
+              <nav className="flex-1 p-6">
+                <div className="flex flex-col space-y-4">
+                  {navLinks.map((link, index) => (
+                    <motion.div
+                      key={link.href}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: index * 0.1 }}
+                    >
+                      <NavLink
+                        {...link}
+                        isActive={pathname === link.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        isMobile={true}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+              </nav>
+              
+              <div className="p-6 border-t border-gray-200">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.5 }}
+                >
+                  <Button 
+                    asChild 
+                    size="lg"
+                    className="w-full rounded-full py-6 text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Link href="/quote">
+                      Get a Quote
+                    </Link>
+                  </Button>
+                </motion.div>
               </div>
             </div>
           </SheetContent>
         </Sheet>
       </div>
-    </header>
+    </motion.header>
   );
 }

@@ -38,7 +38,7 @@ type ClientFormValues = z.infer<typeof formSchema>;
 interface ClientFormModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (data: ClientFormValues & { _id?: string }) => void;
+  onSave: (data: ClientFormValues & { _id?: string; logo?: string }) => void;
   client: {
     _id?: string;
     name: string;
@@ -81,20 +81,31 @@ export function ClientFormModal({
     }
   }, [client, form, isOpen]);
 
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
   const onSubmit = async (values: ClientFormValues) => {
     setIsSubmitting(true);
     try {
-      const newLogoUrl =
-        values.logo && values.logo.length > 0
-          ? "https://placehold.co/40x40.png"
-          : client?.logo;
+      let logoBase64: string | undefined;
+      if (values.logo && values.logo.length > 0) {
+        logoBase64 = await convertToBase64(values.logo[0]);
+      }
       const dataToSave = {
         ...values,
         _id: client?._id,
-        logo: newLogoUrl || "https://placehold.co/40x40.png",
+        logo: logoBase64 || client?.logo || "https://placehold.co/40x40.png",
         published: values.published ?? client?.published ?? true,
       };
       await onSave(dataToSave);
+    } catch (error) {
+      console.error("Error processing logo:", error);
     } finally {
       setIsSubmitting(false);
       onOpenChange(false);

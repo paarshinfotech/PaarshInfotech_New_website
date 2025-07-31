@@ -1,74 +1,119 @@
-
-'use client'
+'use client';
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import { Badge } from '@/components/ui/badge';
-import { FaArrowRight, FaStar, FaBriefcase } from "react-icons/fa";
-import { useGetSiteImagesQuery } from '@/services/api';
+import { motion } from 'framer-motion';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the Three.js component to avoid SSR issues
+const HeroBackground = dynamic(() => import('@/components/three/HeroBackground'), { 
+  ssr: false,
+  loading: () => <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-purple-50" />
+});
 
 export default function Hero() {
-
-  const { data: images = [], isLoading } = useGetSiteImagesQuery(undefined);
-  
-  const heroImage = images.find((img: any) => img.section === 'home_hero')?.imageUrl || "https://placehold.co/600x400.png";
-  const heroImageHint = images.find((img: any) => img.section === 'home_hero')?.hint || "technology abstract";
-  
   return (
-    <section className="relative bg-secondary overflow-hidden">
-      <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-      {/* Animated Blobs */}
-      <div className="absolute top-0 -left-4 w-72 h-72 bg-primary/10 rounded-full filter blur-3xl opacity-70 animate-blob"></div>
-      <div className="absolute top-0 -right-4 w-72 h-72 bg-accent/10 rounded-full filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
-      <div className="absolute -bottom-8 left-20 w-72 h-72 bg-primary/10 rounded-full filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
-      <div className="absolute -bottom-8 -right-20 w-72 h-72 bg-accent/10 rounded-full filter blur-3xl opacity-70 animate-blob animation-delay-6000"></div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Three.js Background */}
+      <HeroBackground />
       
-      <div className="container relative z-10 py-24 md:py-32">
-        <div className="grid md:grid-cols-2 gap-12 items-center max-w-7xl mx-auto">
-          <div className="text-center md:text-left">
-            {/* <Badge variant="outline" className="mb-4 border-primary/20 bg-primary/5 text-primary font-semibold">
-              <FaStar className="w-4 h-4 mr-2" />
-              Welcome to Paarsh Infotech
-            </Badge> */}
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tighter text-primary mb-6">
-              Best Software Development Company in Nashik
-            </h1>
-            <p className="max-w-2xl mx-auto md:mx-0 text-lg md:text-xl text-foreground/80 mb-8">
-              We deliver high-quality, reliable, and scalable software solutions to help your business grow.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 mb-8">
-              <Button asChild size="lg" className="w-full sm:w-auto shadow-lg shadow-primary/20 hover:shadow-xl transition-shadow">
-                <Link href="/quote">
-                  Get A Quote
-                  <FaArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="w-full sm:w-auto">
-                <Link href="/contact">Contact Us</Link>
-              </Button>
-            </div>
-             <div className="flex justify-center md:justify-start space-x-8 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                    <FaBriefcase className="w-4 h-4 text-primary" />
-                    <span className="font-medium">200+ Projects Completed</span>
-                </div>
-                 <div className="flex items-center gap-2">
-                    <FaStar className="w-4 h-4 text-primary" />
-                    <span className="font-medium">150+ Happy Clients</span>
-                </div>
-            </div>
-          </div>
-          <div className="relative h-96 w-full rounded-lg group hidden md:block">
-            <div className="absolute -inset-2 bg-gradient-to-br from-primary/20 to-accent/20 rounded-xl blur-lg opacity-60 group-hover:opacity-80 transition-opacity duration-300"></div>
-            <Image
-              src={heroImage}
-              alt="Innovative Software Solutions"
-              fill
-              className="relative object-cover rounded-lg shadow-2xl transition-transform duration-500 group-hover:scale-105"
-              data-ai-hint={heroImageHint}
-            />
-          </div>
+      {/* Gradient Overlays */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/90 via-white/70 to-white/90 z-10" />
+      
+      {/* Content */}
+      <div className="container relative z-20 py-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: {
+                  staggerChildren: 0.2,
+                  delayChildren: 0.3
+                }
+              }
+            }}
+          >
+            <motion.h1 
+              className="text-5xl md:text-7xl font-extrabold tracking-tight mb-4"
+              variants={{
+                hidden: { opacity: 0, y: 30 },
+                visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+              }}
+            >
+              <motion.span 
+                className="block text-gray-800"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Best
+                <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Software Development </span>
+                Company
+              </motion.span>
+              <motion.span 
+                className="block text-gray-700 mt-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+              >
+                in Nashik
+              </motion.span>
+            </motion.h1>
+            
+            <motion.p 
+              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-12 font-medium"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              We create innovative software solutions that help businesses thrive in the digital landscape. 
+              Beautiful design, powerful functionality, and exceptional user experiences.
+            </motion.p>
+            
+            <motion.div 
+              className="flex flex-col sm:flex-row items-center justify-center gap-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <motion.div
+                whileHover={{ 
+                  scale: 1.05,
+                  y: -5,
+                  boxShadow: "0 25px 30px -10px rgba(59, 130, 246, 0.4), 0 15px 15px -10px rgba(59, 130, 246, 0.3)",
+                  transition: { duration: 0.3 }
+                }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <Button asChild size="lg" className="rounded-full px-10 py-7 text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-xl hover:shadow-2xl transition-all duration-300">
+                  <Link href="/quote">
+                    Start Your Project
+                  </Link>
+                </Button>
+              </motion.div>
+              <motion.div
+                whileHover={{ 
+                  scale: 1.05,
+                  y: -5,
+                  boxShadow: "0 25px 30px -10px rgba(139, 92, 246, 0.4), 0 15px 15px -10px rgba(139, 92, 246, 0.3)",
+                  transition: { duration: 0.3 }
+                }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <Button asChild size="lg" variant="outline" className="rounded-full px-10 py-7 text-lg font-bold border-4 border-blue-600 text-blue-600 hover:bg-blue-50 shadow-xl hover:shadow-2xl transition-all duration-300">
+                  <Link href="/services">
+                    Our Services
+                  </Link>
+                </Button>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>
