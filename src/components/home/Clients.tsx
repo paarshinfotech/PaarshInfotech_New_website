@@ -1,6 +1,6 @@
-
 "use client";
 import { useGetClientsQuery } from "@/services/api";
+import { motion } from "framer-motion";
 
 // Keep the ClientLogo as fallback (optional)
 const ClientLogo = ({ className }: { className?: string }) => (
@@ -28,38 +28,52 @@ interface Client {
 
 export default function Clients() {
   const { data: clientData } = useGetClientsQuery(undefined);
-  console.log("clientData", clientData);
-
+  
   const clients: Client[] = clientData || [];
   const publishedClients = clients.filter((c: Client) => c.published);
 
   return (
     <section className="py-20 md:py-28 lg:py-32 bg-background">
       <div className="container max-w-7xl">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl md:text-4xl  font-bold text-primary bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-6">
             Our Valued Clients
           </h2>
-          <p className="text-xl md:text-2xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
             We are proud to have worked with a diverse range of businesses.
           </p>
-        </div>
+        </motion.div>
 
         {/* Infinite Carousel Container */}
-        <div className="relative overflow-hidden">
+        <div className="relative overflow-hidden py-8">
           <div className="flex animate-scroll">
             {/* First set of logos */}
-            {publishedClients.map((client: Client) => (
-              <div
+            {publishedClients.map((client: Client, index: number) => (
+              <motion.div
                 key={`first-${client._id}`}
                 className="flex-shrink-0 mx-8 flex items-center justify-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                whileHover={{ 
+                  scale: 1.1,
+                  y: -5,
+                  transition: { duration: 0.2 }
+                }}
               >
                 <div className="h-20 w-32 lg:h-24 lg:w-40 flex items-center justify-center">
                   <img
                     src={client.logo}
                     alt={`${client.name} logo`}
-                    className="max-w-full max-h-full object-contain filter  transition-all duration-300 hover:scale-110"
-                    onError={(e) => {
+                    className="max-w-full max-h-full object-contain filter transition-all duration-300"
+                    onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                       // Fallback to default logo if image fails to load
                       const target = e.currentTarget;
                       target.style.display = 'none';
@@ -71,20 +85,29 @@ export default function Clients() {
                     className="w-32 h-16 lg:w-40 lg:h-20 text-muted-foreground/60 hover:text-foreground/80 transition-colors hidden"
                   />
                 </div>
-              </div>
+              </motion.div>
             ))}
             {/* Duplicate set for seamless loop */}
-            {publishedClients.map((client: Client) => (
-              <div
+            {publishedClients.map((client: Client, index: number) => (
+              <motion.div
                 key={`second-${client._id}`}
                 className="flex-shrink-0 mx-8 flex items-center justify-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                whileHover={{ 
+                  scale: 1.1,
+                  y: -5,
+                  transition: { duration: 0.2 }
+                }}
               >
                 <div className="h-20 w-32 lg:h-24 lg:w-40 flex items-center justify-center">
                   <img
                     src={client.logo}
                     alt={`${client.name} logo`}
-                    className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
-                    onError={(e) => {
+                    className="max-w-full max-h-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300"
+                    onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
                       // Fallback to default logo if image fails to load
                       const target = e.currentTarget;
                       target.style.display = 'none';
@@ -96,7 +119,7 @@ export default function Clients() {
                     className="w-32 h-16 lg:w-40 lg:h-20 text-muted-foreground/60 hover:text-foreground/80 transition-colors hidden"
                   />
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

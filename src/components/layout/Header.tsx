@@ -103,7 +103,7 @@ export function Header() {
         >
           <Link href="/" className="flex items-center space-x-3">
             <img
-              className="h-12 w-auto"
+              className="h-14 w-auto"
               src="/uploads/paarsh-infotech-6 (1).png"
               alt="Paarsh Infotech"
             />
