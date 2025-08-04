@@ -3,7 +3,7 @@ import ProductsHero from "@/components/products/ProductsHero";
 import ProductShowcase from "@/components/products/ProductShowcase";
 import CoreFeatures from "@/components/products/CoreFeatures";
 import ProductBenefits from "@/components/products/ProductBenefits";
-import IntegrationShowcase from "@/components/products/IntegrationShowcase";
+// import IntegrationShowcase from "@/components/products/IntegrationShowcase";
 import CustomerSuccess from "@/components/products/CustomerSuccess";
 import UseCases from "@/components/products/UseCases";
 import ProductVideoDemo from "@/components/products/ProductVideoDemo";
@@ -17,7 +17,7 @@ export default function ProductsPage() {
       <ProductShowcase />
       <CoreFeatures />
       <ProductBenefits />
-      <IntegrationShowcase />
+      {/* <IntegrationShowcase /> */}
       <CustomerSuccess />
       <UseCases />
       <ProductVideoDemo />

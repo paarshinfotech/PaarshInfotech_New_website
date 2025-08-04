@@ -126,7 +126,7 @@ export default function ServicesGrid() {
   const publishedServices = servicesData?.data?.filter((s: ApiService) => s.published) || [];
 
   return (
-    <section className="py-12 md:py-16 bg-background">
+    <section className="py-12 md:pb-16 pt-5 bg-background">
       <div className="container max-w-7xl">
         <motion.div
           className="text-center mb-12"
@@ -135,12 +135,6 @@ export default function ServicesGrid() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-primary bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Our Services
-          </h2>
-          <p className="mt-2 text-base text-foreground/70 max-w-2xl mx-auto">
-            We offer a wide range of services to cover all your digital needs.
-          </p>
         </motion.div>
         {publishedServices.length === 0 ? (
           <div className="text-center text-muted-foreground">
