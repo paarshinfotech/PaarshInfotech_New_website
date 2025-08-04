@@ -126,7 +126,8 @@ export default function TestimonialsManagementPage() {
   const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [selectedTestimonial, setSelectedTestimonial] = useState<Testimonial | null>(null);
+  const [selectedTestimonial, setSelectedTestimonial] =
+    useState<Testimonial | null>(null);
 
   const {
     data: testimonialsData,
@@ -214,15 +215,22 @@ export default function TestimonialsManagementPage() {
     } catch (error) {
       toast({
         title: "Error",
-        description: `Failed to ${selectedTestimonial ? "update" : "create"} testimonial.`,
+        description: `Failed to ${
+          selectedTestimonial ? "update" : "create"
+        } testimonial.`,
         variant: "destructive",
       });
     }
   };
 
-  const handleTogglePublished = async (testimonialId: string, published: boolean) => {
+  const handleTogglePublished = async (
+    testimonialId: string,
+    published: boolean
+  ) => {
     try {
-      const testimonial = testimonials.find((t: Testimonial) => t._id === testimonialId);
+      const testimonial = testimonials.find(
+        (t: Testimonial) => t._id === testimonialId
+      );
       if (!testimonial) return;
       await updateTestimonial({
         _id: testimonialId,
@@ -258,7 +266,8 @@ export default function TestimonialsManagementPage() {
         <div>
           <CardTitle>Testimonials Management</CardTitle>
           <CardDescription>
-            Manage your company's testimonials and their visibility on the public site.
+            Manage your company's testimonials and their visibility on the
+            public site.
           </CardDescription>
         </div>
         <Button size="sm" onClick={handleAdd}>
@@ -295,7 +304,9 @@ export default function TestimonialsManagementPage() {
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
         onSave={handleSave}
-        testimonial={selectedTestimonial}
+        testimonial={
+          selectedTestimonial && { ...selectedTestimonial, type: "client" }
+        }
       />
       <DeleteConfirmationDialog
         isOpen={isDeleteAlertOpen}
