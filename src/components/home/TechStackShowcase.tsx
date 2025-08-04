@@ -6,7 +6,8 @@ import {
   FaGoogle
 } from "react-icons/fa";
 import { SiTypescript, SiNextdotjs, SiDjango, SiPostgresql, 
-         SiMongodb, SiFirebase, SiTailwindcss, SiSpringboot, SiKotlin } from "react-icons/si";
+         SiMongodb, SiFirebase, SiTailwindcss, SiSpringboot, SiKotlin, 
+         SiKubernetes} from "react-icons/si";
 
 const technologies = [
   { name: "React", icon: FaReact, color: "text-blue-500" },
@@ -18,7 +19,7 @@ const technologies = [
   { name: "PostgreSQL", icon: SiPostgresql, color: "text-blue-700" },
   { name: "MongoDB", icon: SiMongodb, color: "text-green-500" },
   { name: "Docker", icon: FaDocker, color: "text-blue-500" },
-  { name: "Kubernetes", icon: SiKotlin, color: "text-blue-400" }, // Using Kotlin icon as placeholder
+  { name: "Kubernetes", icon: SiKubernetes, color: "text-blue-400" },
   { name: "AWS", icon: FaAws, color: "text-orange-500" },
   { name: "Google Cloud", icon: FaGoogle, color: "text-blue-400" },
   { name: "Firebase", icon: SiFirebase, color: "text-orange-500" },

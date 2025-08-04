@@ -9,6 +9,7 @@ import UseCases from "@/components/products/UseCases";
 import ProductVideoDemo from "@/components/products/ProductVideoDemo";
 import ProductRoadmap from "@/components/products/ProductRoadmap";
 import ProductsCTA from "@/components/products/ProductsCTA";
+import TechStackShowcase from "@/components/home/TechStackShowcase";
 
 export default function ProductsPage() {
   return (
@@ -18,6 +19,7 @@ export default function ProductsPage() {
       <CoreFeatures />
       <ProductBenefits />
       {/* <IntegrationShowcase /> */}
+      <TechStackShowcase />
       <CustomerSuccess />
       <UseCases />
       <ProductVideoDemo />
