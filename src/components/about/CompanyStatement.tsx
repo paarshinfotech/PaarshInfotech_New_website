@@ -26,7 +26,7 @@ export default function CompanyStatement() {
           <div className="relative h-96 w-full">
             <div className="absolute top-0 left-0 h-72 w-3/5 rounded-lg overflow-hidden shadow-2xl transform -rotate-3 transition-transform duration-500 hover:rotate-0 hover:scale-105">
               <Image
-                src="https://placehold.co/400x600.png"
+                src="/uploads/5259881_20616.jpg"
                 alt="Office collaboration"
                 fill
                 className="object-cover"
@@ -35,7 +35,7 @@ export default function CompanyStatement() {
             </div>
             <div className="absolute bottom-0 right-0 h-72 w-3/5 rounded-lg overflow-hidden shadow-2xl transform rotate-3 transition-transform duration-500 hover:rotate-0 hover:scale-105">
               <Image
-                src="https://placehold.co/400x600.png"
+                src="/uploads/12084748_20943892.jpg"
                 alt="Developer at work"
                 fill
                 className="object-cover"
