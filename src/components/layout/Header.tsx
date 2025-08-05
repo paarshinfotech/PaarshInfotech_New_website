@@ -139,8 +139,8 @@ export function Header() {
           >
             <Button 
               asChild 
-              size="lg" 
-              className="rounded-md px-6 py-1 text-base font-bold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all"
+              size="sm" 
+              className="rounded-md px-4 py-1 text-base font-bold bg-gradient-to-r from-blue-900 to-blue-900 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all"
             >
               <Link href="/quote">
                 Get a Quote

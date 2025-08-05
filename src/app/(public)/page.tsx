@@ -28,7 +28,7 @@ export default function Home() {
           <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r text-primary from-blue-600 to-purple-600 bg-clip-text ">
             Our Services
           </h2>
-          <p className="mt-2 text-base text-foreground/70 max-w-2xl mx-auto">
+          <p className="mt-2 text-lg text-foreground/70 max-w-2xl mx-auto">
             We offer a wide range of services to cover all your digital needs.
           </p>
         </div>

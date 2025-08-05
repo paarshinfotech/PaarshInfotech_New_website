@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Service } from "@/lib/servicesData";
@@ -61,7 +62,7 @@ export function Footer() {
                 <a href="mailto:info@paarshinfotech.com" className="hover:text-primary transition-colors">info@paarshinfotech.com</a>
               </p>
               <p>
-                <a href="tel:+911234567890" className="hover:text-primary transition-colors">+91 12345 67890</a>
+                <a href="+919075201035" className="hover:text-primary transition-colors">+91 90752 01035</a>
               </p>
             </address>
           </div>
@@ -70,9 +71,9 @@ export function Footer() {
         <div className="mt-8 pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center text-sm">
           <p>&copy; {new Date().getFullYear()} Paarsh Infotech Pvt Ltd. All Rights Reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
-            <Link href="#" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Terms & Conditions</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Refund Policy</Link>
+            <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
+            <Link href="/terms-and-conditions" className="hover:text-primary transition-colors">Terms & Conditions</Link>
+            <Link href="/refund-policy" className="hover:text-primary transition-colors">Refund Policy</Link>
           </div>
         </div>
       </div>

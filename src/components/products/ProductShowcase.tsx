@@ -134,7 +134,7 @@ export default function ProductShowcase() {
           transition={{ duration: 0.4 }}
         >
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
-            Our <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Flagship Products</span>
+            Our <span className="bg-gradient-to-r from-blue-900 to-blue-900 bg-clip-text text-transparent">Flagship Products</span>
           </h2>
           <p className="text-base text-foreground/70 max-w-2xl mx-auto">
             Discover our powerful software solutions designed for modern businesses.
@@ -202,7 +202,7 @@ export default function ProductShowcase() {
                   ))}
                 </div>
                 
-                <Button asChild size="sm" className="rounded-full px-5 py-2.5 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                <Button asChild size="sm" className="rounded-full px-5 py-2.5 text-sm font-medium bg-gradient-to-r from-blue-900 to-blue-900 hover:from-blue-950 hover:to-blue-950">
                   <Link href={`/products/${activeProduct._id}`} className="flex items-center">
                     Learn More <LuArrowRight className="ml-1.5 w-3.5 h-3.5" />
                   </Link>
