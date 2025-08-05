@@ -27,7 +27,7 @@ export default function IntroSection() {
           </div>
           <div className="relative h-96 w-full rounded-lg overflow-hidden shadow-lg">
             <Image
-              src={imageSrc}
+              src="/uploads/4667026_16.jpg"
               alt="Paarsh Infotech Team"
               fill
               className="object-cover"

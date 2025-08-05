@@ -4,8 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { useGetSiteImagesQuery } from "@/services/api";
 
 export default function About() {
+
+  const {data: images = []} = useGetSiteImagesQuery(undefined);
+
+  console.log("Images : ", images);
+
   return (
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
@@ -65,7 +71,7 @@ export default function About() {
             transition={{ duration: 0.6 }}
           >
             <Image
-              src="https://placehold.co/600x400.png"
+              src="/uploads/11667116_20944999.jpg"
               alt="Our Team"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"

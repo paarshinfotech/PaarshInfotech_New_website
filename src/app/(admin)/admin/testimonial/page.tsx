@@ -47,6 +47,7 @@ interface Testimonial {
   quote: string;
   name: string;
   title: string;
+  type: string;
   avatar: string;
   published: boolean;
   createdAt?: string;
@@ -180,6 +181,7 @@ export default function TestimonialsManagementPage() {
     quote: string;
     name: string;
     title: string;
+    type: string;
     avatarBase64?: string;
     published?: boolean;
   }) => {
@@ -190,6 +192,7 @@ export default function TestimonialsManagementPage() {
           quote: testimonialData.quote,
           name: testimonialData.name,
           title: testimonialData.title,
+          type: testimonialData.type,
           avatarBase64: testimonialData.avatarBase64,
           published: testimonialData.published ?? selectedTestimonial.published,
         }).unwrap();
@@ -202,6 +205,7 @@ export default function TestimonialsManagementPage() {
           quote: testimonialData.quote,
           name: testimonialData.name,
           title: testimonialData.title,
+          type: testimonialData.type,
           avatarBase64: testimonialData.avatarBase64,
           published: testimonialData.published ?? true,
         }).unwrap();
@@ -237,6 +241,7 @@ export default function TestimonialsManagementPage() {
         quote: testimonial.quote,
         name: testimonial.name,
         title: testimonial.title,
+        type: testimonial.type,
         published,
       }).unwrap();
       toast({

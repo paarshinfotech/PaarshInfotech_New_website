@@ -17,7 +17,7 @@ export default function ProductBenefits() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="relative h-96 w-full rounded-lg overflow-hidden shadow-lg group">
             <Image 
-              src="https://placehold.co/600x800.png"
+              src="/uploads/20220198_6242207.jpg"
               alt="Team collaborating on a project"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
