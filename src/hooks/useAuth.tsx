@@ -47,7 +47,7 @@ export function useAuth() {
   }, [checkAuth]);
 
   const login = (username?: string, password?: string): boolean => {
-    if (username === 'admin' && password === 'Pass@123') {
+    if (username === 'paarshinfotech.com' && password === 'PaarshInfotech#5891') {
       const expirationTime = new Date().getTime() + 5 * 24 * 60 * 60 * 1000; // 5 days
       const token: AuthToken = {
         token: 'fake-jwt-token', // In a real app, this would be a real JWT
