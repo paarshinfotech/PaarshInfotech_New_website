@@ -34,7 +34,7 @@ export default function ProductsHero() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground">
-              A Suite of Solutions to <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Power Your Business</span>
+              A Suite of Solutions to <span className="bg-gradient-to-r from-blue-900 to-blue-900 bg-clip-text text-transparent">Power Your Business</span>
             </h1>
             <p className="mt-6 text-lg text-foreground/80 max-w-2xl">
               From customer relationships to internal operations, our products are
@@ -42,13 +42,13 @@ export default function ProductsHero() {
               growth.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <Button asChild size="lg" className="rounded-full px-8 py-6 text-base font-semibold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+              <Button asChild size="lg" className="rounded-md px-8 py-6 text-base font-semibold bg-gradient-to-r from-blue-900 to-blue-900 hover:from-blue-900 hover:to-blue-900">
                 <Link href="#products">
                   Explore Products
                   <LuArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="rounded-full px-8 py-6 text-base font-semibold border-2">
+              <Button asChild size="lg" variant="outline" className="rounded-md px-8 py-6 text-base font-semibold border-2">
                 <Link href="/quote">Request a Demo</Link>
               </Button>
             </div>
