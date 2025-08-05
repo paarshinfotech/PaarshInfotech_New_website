@@ -7,7 +7,7 @@ const VPS_UPLOAD_DIR = "/root/Paarsh-Infotech/uploads";
 
 // Define base URLs
 const LOCAL_BASE_URL = "/uploads/";
-const VPS_BASE_URL = "https://paarshedu.com/Paarsh-Infotech/uploads/";
+const VPS_BASE_URL = "https://paarshinfotech.com/Paarsh-Infotech/uploads/";
 
 // Set current configuration
 const UPLOAD_DIR = VPS_UPLOAD_DIR ; // Switch to VPS_UPLOAD_DIR for VPS storage
