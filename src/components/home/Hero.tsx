@@ -107,7 +107,7 @@ export default function Hero() {
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-md px-10 py-7 text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-xl hover:shadow-2xl transition-all duration-300"
+                  className="rounded-md px-10 py-7 text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-600 hover:from-blue-700 hover:to-blue-800 text-white shadow-md hover:shadow-md transition-all duration-300"
                 >
                   <Link href="/quote">Start Your Project</Link>
                 </Button>
@@ -127,7 +127,7 @@ export default function Hero() {
                   asChild
                   size="lg"
                   variant="outline"
-                  className="rounded-md px-10 py-7 text-lg font-bold border-4 border-blue-600 text-blue-600 hover:bg-blue-50 shadow-xl hover:shadow-2xl transition-all duration-300"
+                  className="rounded-md px-10 py-7 text-lg font-bold border-2 border-blue-600 text-blue-600 hover:bg-blue-50 shadow-xl hover:shadow-2xl transition-all duration-300"
                 >
                   <Link href="/services">Our Services</Link>
                 </Button>
