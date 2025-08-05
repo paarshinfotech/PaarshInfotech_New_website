@@ -10,14 +10,30 @@ import {
   LuUsers,
   LuGraduationCap,
 } from "react-icons/lu";
+import { useGetProductsQuery } from "@/services/api";
+
+interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  link: string;
+}
+
+type IconType = typeof LuArrowRight;
 
 export default function ProductsHero() {
-  const products = [
-    { icon: LuUsers, name: "Paarsh CRM" },
-    { icon: LuBriefcase, name: "Paarsh HRMS" },
-    { icon: LuLayers, name: "Paarsh ERP" },
-    { icon: LuGraduationCap, name: "Paarsh E-Learn" },
-  ];
+  // Map API product names to icons
+  const productIcons: { [key: string]: IconType } = {
+    "GlowvitaSalon": LuUsers,
+    "PaarshEdu Product": LuGraduationCap,
+    "Paarsh CRM": LuUsers,
+    "Paarsh HRMS": LuBriefcase,
+    "Paarsh ERP": LuLayers,
+    "Paarsh E-Learn": LuGraduationCap,
+  };
+
+  const { data: productsData, isLoading, isError } = useGetProductsQuery(undefined);
 
   return (
     <section className="relative py-20 md:py-32 bg-background overflow-hidden">
@@ -62,24 +78,33 @@ export default function ProductsHero() {
             className="bg-gradient-to-br from-white to-gray-50 rounded-2xl p-8 shadow-xl border border-gray-200"
           >
             <h3 className="text-2xl font-bold text-foreground mb-6">Our Flagship Products</h3>
-            <div className="grid grid-cols-2 gap-6">
-              {products.map((product, index) => (
-                <motion.div
-                  key={product.name}
-                  className="flex items-center gap-3 p-4 rounded-xl bg-white border border-gray-100 hover:border-primary/30 transition-all duration-300"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.1 * index }}
-                  whileHover={{ y: -5 }}
-                >
-                  <div className="flex-shrink-0 p-3 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg">
-                    <product.icon className="w-6 h-6 text-primary" />
-                  </div>
-                  <span className="font-medium text-foreground">{product.name}</span>
-                </motion.div>
-              ))}
-            </div>
+            {isLoading ? (
+              <div>Loading products...</div>
+            ) : isError ? (
+              <div>Error loading products</div>
+            ) : (
+              <div className="grid grid-cols-2 gap-6">
+                {productsData?.data?.map((product : Product, index : number) => {
+                  const Icon = productIcons[product.name] || LuLayers; // Fallback to LuLayers if no icon match
+                  return (
+                    <motion.div
+                      key={product._id}
+                      className="flex items-center gap-3 p-4 rounded-xl bg-white border border-gray-100 hover:border-primary/30 transition-all duration-300"
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: 0.1 * index }}
+                      whileHover={{ y: -5 }}
+                    >
+                      <div className="flex-shrink-0 p-3 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg">
+                        <Icon className="w-6 h-6 text-primary" />
+                      </div>
+                      <span className="font-medium text-foreground">{product.name}</span>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
           </motion.div>
         </div>
       </div>

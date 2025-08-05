@@ -195,7 +195,7 @@ export default function PrivacyPolicyPage() {
 
           <div id="contact-us">
             <h2 className="text-2xl font-bold text-primary">10. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</h2>
-            <p>If you have questions or comments about this notice, you may contact our Data Protection Officer (DPO) by email at info@paarshinfotech.com, by phone at 9860988343, or contact us by post at:</p>
+            <p className="mb-4">If you have questions or comments about this notice, you may contact our Data Protection Officer (DPO) by email at info@paarshinfotech.com, by phone at 9860988343, or contact us by post at:</p>
             <address className="not-italic border-l-4 border-primary/20 pl-4">
               Paarsh Infotech Pvt Ltd<br />
               Data Protection Officer<br />
