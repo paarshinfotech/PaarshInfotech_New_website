@@ -72,8 +72,8 @@ export function Footer() {
           <p>&copy; {new Date().getFullYear()} Paarsh Infotech Pvt Ltd. All Rights Reserved.</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <Link href="/privacy-policy" className="hover:text-primary transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Terms & Conditions</Link>
-            <Link href="#" className="hover:text-primary transition-colors">Refund Policy</Link>
+            <Link href="/terms-and-conditions" className="hover:text-primary transition-colors">Terms & Conditions</Link>
+            <Link href="/refund-policy" className="hover:text-primary transition-colors">Refund Policy</Link>
           </div>
         </div>
       </div>
