@@ -3,7 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { IconType } from "react-icons";
 import { FaSmile, FaBriefcase, FaClock, FaUsers } from "react-icons/fa";
-import { useGetMembersQuery } from "@/services/api";
+import {
+  useGetMembersQuery,
+  useGetProductsQuery,
+  useGetClientsQuery,
+} from "@/services/api";
 
 function CountUp({ end }: { end: number }) {
   const [count, setCount] = useState(0);
@@ -40,14 +44,27 @@ export default function Stats() {
     error: membersError,
   } = useGetMembersQuery(undefined);
 
+  const {
+    data: products = [],
+    isLoading: productsLoading,
+    error: productsError,
+  } = useGetProductsQuery(undefined);
+
+  const {
+    data: clients = [],
+    isLoading: clientsLoading,
+    error: clientsError,
+  } = useGetClientsQuery(undefined);
+
   // total team members
   const totalTeamMembers = members.length;
-  console.log("Total Team Members : ", totalTeamMembers);
+  const totalProducts = products?.data?.length;
+  const totalClients = clients?.length;
 
   // Define stats array, using totalTeamMembers for "Hard Workers"
   const stats: { value: number; label: string; Icon: IconType }[] = [
-    { value: 150, label: "Happy Clients", Icon: FaSmile },
-    { value: 200, label: "Projects Completed", Icon: FaBriefcase },
+    { value: totalClients, label: "Happy Clients", Icon: FaSmile },
+    { value: totalProducts, label: "Projects Completed", Icon: FaBriefcase },
     { value: 9000, label: "Hours of Support", Icon: FaClock },
     { value: totalTeamMembers, label: "Hard Workers", Icon: FaUsers },
   ];

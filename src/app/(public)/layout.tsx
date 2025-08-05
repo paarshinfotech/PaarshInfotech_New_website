@@ -5,13 +5,13 @@ import { FadeInSection } from "@/components/common/FadeInSection";
 
 // This layout is for the public-facing pages and includes the header and footer
 export default function PublicLayout({ children }: PropsWithChildren) {
-    return (
-        <div className="flex flex-col min-h-screen">
-            <FadeInSection>
-                <Header />
-            </FadeInSection>
-            <main className="flex-grow">{children}</main>
-            <Footer />
-        </div>
-    )
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <FadeInSection>
+        <main className="flex-grow">{children}</main>
+      </FadeInSection>
+      <Footer />
+    </div>
+  );
 }

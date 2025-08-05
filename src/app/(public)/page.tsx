@@ -25,7 +25,7 @@ export default function Home() {
       </FadeInSection>
       <FadeInSection>
         <div className="text-center mt-16">
-          <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r text-primary from-blue-600 to-purple-600 bg-clip-text ">
             Our Services
           </h2>
           <p className="mt-2 text-base text-foreground/70 max-w-2xl mx-auto">

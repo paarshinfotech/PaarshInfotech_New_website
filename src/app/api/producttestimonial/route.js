@@ -20,7 +20,10 @@ export async function POST(request) {
 
     let avatar = "https://placehold.co/40x40.png"; // Default avatar
     if (avatarBase64) {
-      const imageUrl = await uploadBase64(avatarBase64, `testimonial-${Date.now()}`);
+      const imageUrl = await uploadBase64(
+        avatarBase64,
+        `testimonial-${Date.now()}`
+      );
       if (!imageUrl) {
         throw new Error("Failed to upload avatar image");
       }
@@ -37,11 +40,14 @@ export async function POST(request) {
 
     await newTestimonial.save();
 
-    return NextResponse.json({
-      success: true,
-      message: "Testimonial created successfully",
-      data: newTestimonial,
-    }, { status: 201 });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Testimonial created successfully",
+        data: newTestimonial,
+      },
+      { status: 201 }
+    );
   } catch (error) {
     console.error("Error creating testimonial:", error);
     return NextResponse.json(
@@ -53,7 +59,9 @@ export async function POST(request) {
 
 export async function GET() {
   try {
-    const testimonials = await ProductTestimonialModel.find().sort({ createdAt: -1 });
+    const testimonials = await ProductTestimonialModel.find().sort({
+      createdAt: -1,
+    });
 
     return NextResponse.json(
       {
@@ -72,7 +80,7 @@ export async function GET() {
   }
 }
 
-export async function PATCH(request,) {
+export async function PATCH(request) {
   try {
     const data = await request.json();
     let { _id, quote, name, title, avatarBase64, published } = data;
@@ -86,7 +94,10 @@ export async function PATCH(request,) {
 
     const updateData = { quote, name, title, published };
     if (avatarBase64) {
-      const imageUrl = await uploadBase64(avatarBase64, `testimonial-${_id}-${Date.now()}`);
+      const imageUrl = await uploadBase64(
+        avatarBase64,
+        `testimonial-${_id}-${Date.now()}`
+      );
       if (!imageUrl) {
         throw new Error("Failed to upload avatar image");
       }
@@ -106,11 +117,70 @@ export async function PATCH(request,) {
       );
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "Testimonial updated successfully",
-      data: testimonial,
-    }, { status: 200 });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Testimonial updated successfully",
+        data: testimonial,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("Error updating testimonial:", error);
+    return NextResponse.json(
+      { success: false, error: "Failed to update testimonial" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request) {
+  try {
+    const data = await request.json();
+    const { _id, quote, name, title, avatarBase64, published } = data;
+
+    if (!_id) {
+      return NextResponse.json(
+        { success: false, error: "Testimonial ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const testimonial = await ProductTestimonialModel.findById(_id);
+
+    if (!testimonial) {
+      return NextResponse.json(
+        { success: false, error: "Testimonial not found" },
+        { status: 404 }
+      );
+    }
+
+    const updateData = { quote, name, title, published };
+    if (avatarBase64) {
+      const imageUrl = await uploadBase64(
+        avatarBase64,
+        `testimonial-${_id}-${Date.now()}`
+      );
+      if (!imageUrl) {
+        throw new Error("Failed to upload avatar image");
+      }
+      updateData.avatar = imageUrl;
+    }
+
+    const updatedTestimonial = await ProductTestimonialModel.findByIdAndUpdate(
+      _id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Testimonial updated successfully",
+        data: updatedTestimonial,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error updating testimonial:", error);
     return NextResponse.json(
@@ -122,10 +192,16 @@ export async function PATCH(request,) {
 
 export async function DELETE(request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
+    const { _id } = await request.json();
 
-    const testimonial = await ProductTestimonialModel.findByIdAndDelete(id);
+    if (!_id) {
+      return NextResponse.json(
+        { success: false, error: "Testimonial ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const testimonial = await ProductTestimonialModel.findByIdAndDelete(_id);
 
     if (!testimonial) {
       return NextResponse.json(
