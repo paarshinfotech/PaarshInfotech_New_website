@@ -91,7 +91,7 @@ export function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="container flex h-20 max-w-7xl items-center justify-between">
+      <div className="container flex h-16 max-w-7xl items-center justify-between">
         {/* Logo */}
         <motion.div
           whileHover={{ 
@@ -140,7 +140,7 @@ export function Header() {
             <Button 
               asChild 
               size="lg" 
-              className="rounded-full px-6 py-2 text-base font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all"
+              className="rounded-md px-6 py-1 text-base font-bold bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all"
             >
               <Link href="/quote">
                 Get a Quote
