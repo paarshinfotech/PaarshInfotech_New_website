@@ -48,14 +48,14 @@ const NavLink = ({
         isMobile ? "text-xl py-3 block" : "px-4 py-2",
         isActive 
           ? "text-blue-600" 
-          : "text-gray-700 hover:text-blue-600"
+          : "text-white/80 hover:text-white"
       )}
       onClick={onClick}
     >
       {label}
       {isActive && !isMobile && (
         <motion.div
-          className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"
+          className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"
           layoutId="active-nav"
           initial={false}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -85,13 +85,13 @@ export function Header() {
         "sticky top-0 z-50 w-full border-b transition-all duration-300",
         isScrolled
           ? "bg-white/90 backdrop-blur-md border-gray-200 shadow-lg" 
-          : "bg-white/80 backdrop-blur-sm border-transparent"
+          : "bg-transparent border-transparent"
       )}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="container flex h-16 max-w-7xl items-center justify-between">
+      <div className="container flex h-20 max-w-7xl items-center justify-between">
         {/* Logo */}
         <motion.div
           whileHover={{ 
@@ -103,7 +103,7 @@ export function Header() {
         >
           <Link href="/" className="flex items-center space-x-3">
             <img
-              className="h-14 w-auto"
+              className="h-16 w-auto"
               src="/uploads/paarsh-infotech-6 (1).png"
               alt="Paarsh Infotech"
             />
@@ -111,7 +111,7 @@ export function Header() {
         </motion.div>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-2">
+        <nav className="hidden lg:flex items-center space-x-2">
           {navLinks.map((link, index) => (
             <motion.div
               key={link.href}
@@ -128,7 +128,7 @@ export function Header() {
         </nav>
 
         {/* CTA Button */}
-        <div className="hidden md:flex items-center">
+        <div className="hidden lg:flex items-center">
           <motion.div
             whileHover={{ 
               scale: 1.05,
@@ -140,7 +140,10 @@ export function Header() {
             <Button 
               asChild 
               size="sm" 
-              className="rounded-md px-4 py-1 text-base font-bold bg-gradient-to-r from-blue-900 to-blue-900 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transition-all"
+              className={cn(
+                "rounded-md px-4 py-1 text-base font-bold shadow-lg hover:shadow-xl transition-all",
+                isScrolled ? "bg-gradient-to-r from-blue-900 to-blue-900 hover:from-blue-950 hover:to-blue-950 text-white" : "bg-white text-blue-900 hover:bg-gray-100"
+              )}
             >
               <Link href="/quote">
                 Get a Quote
@@ -151,16 +154,16 @@ export function Header() {
 
         {/* Mobile Menu Button */}
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-          <SheetTrigger asChild className="md:hidden">
+          <SheetTrigger asChild className="lg:hidden">
             <motion.div
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
             >
               <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
                 {isMobileMenuOpen ? (
-                  <LuX className="h-6 w-6 text-gray-700" />
+                  <LuX className={cn("h-6 w-6", isScrolled ? "text-gray-700" : "text-white")} />
                 ) : (
-                  <LuMenu className="h-6 w-6 text-gray-700" />
+                  <LuMenu className={cn("h-6 w-6", isScrolled ? "text-gray-700" : "text-white")} />
                 )}
                 <span className="sr-only">Toggle menu</span>
               </Button>

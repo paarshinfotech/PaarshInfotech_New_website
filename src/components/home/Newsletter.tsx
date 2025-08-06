@@ -35,17 +35,17 @@ export default function Newsletter() {
                 </p>
               </div>
               <div className="w-full max-w-md mx-auto lg:mx-0">
-                <form className="relative">
+                <form className="flex flex-col sm:relative sm:flex-row gap-4 sm:gap-0">
                   <Input
                     type="email"
                     placeholder="Enter your email address"
-                    className="w-full h-14 pl-6 pr-36 rounded-full text-base border-2"
+                    className="w-full h-14 pl-6 rounded-full text-base border-2 sm:pr-36"
                     aria-label="Email for newsletter"
                   />
                   <Button
                     type="submit"
                     variant="default"
-                    className="absolute right-2 top-1/2 -translate-y-1/2 h-10 rounded-full px-6"
+                    className="w-full sm:w-auto sm:absolute sm:right-2 sm:top-1/2 sm:-translate-y-1/2 h-10 rounded-full px-6"
                   >
                     <LuSend className="w-4 h-4 mr-2" />
                     Subscribe
