@@ -19,12 +19,12 @@ export default function MediaPage() {
   const { data: mediaGalleryItems = [], isLoading } = useGetMediaItemsQuery('gallery');
 
   const mediaCategories = useMemo(() => {
-    if (!mediaGalleryItems || mediaGalleryItems.length === 0) {
-      return ["all"];
-    }
-    const categories = new Set(mediaGalleryItems.map((item: any) => item.category));
-    return ["all", ...Array.from(categories)];
-  }, [mediaGalleryItems]);
+  if (!mediaGalleryItems || mediaGalleryItems.length === 0) {
+    return ["all"];
+  }
+  const categories = new Set(mediaGalleryItems.map((item: any) => item.category));
+  return ["all", ...Array.from(categories)] as readonly string[];
+}, [mediaGalleryItems]);
 
   const filteredMedia = useMemo(() => {
     if (activeCategory === "all") {
