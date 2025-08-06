@@ -1,15 +1,16 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { FaPlus, FaTrash, FaEdit } from "react-icons/fa";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { MediaUploadModal } from "@/components/admin/media/MediaUploadModal";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
-import { useGetMediaItemsQuery, useAddMediaItemMutation, useDeleteMediaItemMutation, useGetGalleryCategoriesQuery, useGetMediaHeroQuery, useUpdateMediaHeroMutation } from "@/services/api";
+import { useGetMediaItemsQuery, useAddMediaItemMutation, useUpdateMediaItemMutation, useDeleteMediaItemMutation, useGetGalleryCategoriesQuery, useGetMediaHeroQuery, useUpdateMediaHeroMutation } from "@/services/api";
 import { ImageFormModal } from "../../site-images/ImageFormModal";
 import { useToast } from "@/hooks/use-toast";
 
@@ -30,20 +31,29 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
   const { data: mediaHeroData } = useGetMediaHeroQuery(undefined);
   
   const [addMediaItem] = useAddMediaItemMutation();
+  const [updateMediaItem] = useUpdateMediaItemMutation();
   const [deleteMediaItem] = useDeleteMediaItemMutation();
   const [updateMediaHero] = useUpdateMediaHeroMutation();
 
-  const mediaHeroImage = mediaHeroData?.data;
+  const mediaHeroImage = mediaHeroData;
 
   const categories = categoryData?.data || [];
 
   useEffect(() => {
-    if (galleryItems?.length !== propItems.length || JSON.stringify(galleryItems) !== JSON.stringify(propItems)) {
-      setPropItems(galleryItems);
-    }
-  }, [galleryItems, propItems, setPropItems]);
+    setPropItems(galleryItems);
+  }, [galleryItems, setPropItems]);
+  
+  const handleAdd = () => {
+    setSelectedItem(null);
+    setIsUploadModalOpen(true);
+  };
 
-  const handleSave = async (data: { alt: string; category: string; image?: string }) => {
+  const handleEdit = (item: any) => {
+    setSelectedItem(item);
+    setIsUploadModalOpen(true);
+  };
+
+  const handleSave = async (data: { alt: string; category: string; image?: string, _id?: string }) => {
     try {
       const formData = {
         type: "gallery",
@@ -54,10 +64,14 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
         published: true,
       };
 
-      await addMediaItem(formData).unwrap();
+      if (data._id) {
+        await updateMediaItem({ _id: data._id, ...formData }).unwrap();
+      } else {
+        await addMediaItem(formData).unwrap();
+      }
       setIsUploadModalOpen(false);
     } catch (error) {
-      console.error("Failed to add gallery item:", error);
+      console.error("Failed to save gallery item:", error);
     }
   };
   
@@ -113,9 +127,9 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
           </div>
           <div className="flex gap-2">
             <Button variant="outline" onClick={() => setIsHeroModalOpen(true)}>Manage Hero Image</Button>
-            <Button onClick={() => setIsUploadModalOpen(true)}>
+            <Button onClick={handleAdd}>
               <FaPlus className="h-4 w-4 mr-2" />
-              Upload Media
+              Add Media
             </Button>
           </div>
         </CardHeader>
@@ -140,14 +154,19 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
                 </CardHeader>
                 <CardFooter className="p-2 md:p-4 pt-0 flex justify-between items-center">
                   <Badge variant="outline">{item.category}</Badge>
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    className="h-7 w-7 opacity-50 group-hover:opacity-100"
-                    onClick={() => handleDelete(item)}
-                  >
-                    <FaTrash className="h-4 w-4" />
-                  </Button>
+                   <div className="flex gap-1">
+                    <Button variant="ghost" size="icon" className="h-7 w-7 opacity-50 group-hover:opacity-100" onClick={() => handleEdit(item)}>
+                        <FaEdit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="h-7 w-7 opacity-50 group-hover:opacity-100"
+                      onClick={() => handleDelete(item)}
+                    >
+                      <FaTrash className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </CardFooter>
               </Card>
             ))}
@@ -160,6 +179,7 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
         onOpenChange={setIsUploadModalOpen}
         onSave={handleSave}
         categories={categories}
+        item={selectedItem}
       />
       
       <ImageFormModal

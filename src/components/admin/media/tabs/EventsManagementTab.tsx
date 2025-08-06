@@ -29,17 +29,13 @@ export function EventsManagementTab({ items: propItems, setItems: setPropItems }
     const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
-    // RTK Query hooks
     const { data: eventItems = [], isLoading } = useGetMediaItemsQuery('event');
     const [addMediaItem] = useAddMediaItemMutation();
     const [updateMediaItem] = useUpdateMediaItemMutation();
     const [deleteMediaItem] = useDeleteMediaItemMutation();
 
-    // Update local state when RTK query data changes
     useEffect(() => {
-        if (eventItems) {
-            setPropItems(eventItems);
-        }
+        setPropItems(eventItems);
     }, [eventItems, setPropItems]);
 
     const handleAdd = () => {
@@ -63,48 +59,41 @@ export function EventsManagementTab({ items: propItems, setItems: setPropItems }
         hint: string;
         date: string;
         location: string;
-        image?: string; // Main cover image base64
+        image?: string;
         galleryImages?: GalleryImage[];
     }) => {
         try {
-            const formData = {
+            const formData: any = {
+                type: 'event',
                 title: data.title,
                 description: data.description,
                 hint: data.hint,
                 eventDate: new Date(data.date),
                 location: data.location,
                 published: true,
-                images: data.galleryImages, // Send the whole gallery array
+                images: data.galleryImages,
             };
 
-            const mutationData: any = {
-                type: 'event',
-                ...formData
-            };
-            
             if (data.image) {
-                mutationData.imageBase64 = data.image;
+                formData.imageBase64 = data.image;
             }
-
+            
             if (selectedItem) {
-                // Update existing item
                 await updateMediaItem({
                     _id: selectedItem._id,
-                    ...mutationData,
+                    ...formData,
                 }).unwrap();
             } else {
-                // Add new item
                 if (!data.image) {
                     throw new Error('Cover image is required for new events');
                 }
-                await addMediaItem(mutationData).unwrap();
+                await addMediaItem(formData).unwrap();
             }
             setIsModalOpen(false);
         } catch (error) {
             console.error('Failed to save event:', error);
         }
     };
-
 
     const confirmDelete = async () => {
         if (selectedItem) {

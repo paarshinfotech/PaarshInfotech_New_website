@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -29,17 +30,13 @@ export function BtsManagementTab({ items: propItems, setItems: setPropItems }: B
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
-  // RTK Query hooks
   const { data: btsItems = [], isLoading } = useGetMediaItemsQuery('bts');
   const [addMediaItem] = useAddMediaItemMutation();
   const [updateMediaItem] = useUpdateMediaItemMutation();
   const [deleteMediaItem] = useDeleteMediaItemMutation();
 
-  // Update local state when RTK query data changes
   useEffect(() => {
-    if (btsItems) {
-      setPropItems(btsItems);
-    }
+    setPropItems(btsItems);
   }, [btsItems, setPropItems]);
 
   const handleAdd = () => {
@@ -62,12 +59,12 @@ export function BtsManagementTab({ items: propItems, setItems: setPropItems }: B
       const formData = {
         title: data.title,
         description: data.description,
+        hint: data.hint,
         date: new Date(data.date),
         published: true,
       };
 
       if (selectedItem) {
-        // Update existing item
         await updateMediaItem({
           type: 'bts',
           _id: selectedItem._id,
@@ -75,7 +72,6 @@ export function BtsManagementTab({ items: propItems, setItems: setPropItems }: B
           ...(data.image ? { imageBase64: data.image } : {}),
         }).unwrap();
       } else {
-        // Add new item
         if (!data.image) {
           throw new Error('Image is required for new BTS items');
         }

@@ -63,10 +63,10 @@ export default function Stats() {
 
   // Define stats array, using totalTeamMembers for "Hard Workers"
   const stats: { value: number; label: string; Icon: IconType }[] = [
-    { value: totalClients, label: "Happy Clients", Icon: FaSmile },
-    { value: totalProducts, label: "Projects Completed", Icon: FaBriefcase },
+    { value: 120, label: "Happy Clients", Icon: FaSmile },
+    { value: 30, label: "Projects Completed", Icon: FaBriefcase },
     { value: 9000, label: "Hours of Support", Icon: FaClock },
-    { value: totalTeamMembers, label: "Hard Workers", Icon: FaUsers },
+    { value: 45, label: "Hard Workers", Icon: FaUsers },
   ];
 
   useEffect(() => {

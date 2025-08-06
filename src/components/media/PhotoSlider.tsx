@@ -76,8 +76,8 @@ export default function PhotoSlider() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          {/* <CarouselPrevious /> */}
+          {/* <CarouselNext /> */}
         </Carousel>
       </div>
     </section>
