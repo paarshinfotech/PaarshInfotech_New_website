@@ -8,6 +8,7 @@ import { AboutPageImages } from "@/components/admin/site-images/AboutPageImages"
 import { ServicesPageImages } from "@/components/admin/site-images/ServicesPageImages";
 import { ProductsPageImages } from "@/components/admin/site-images/ProductsPageImages";
 import { ExcellenceCentersPageImages } from "@/components/admin/site-images/ExcellenceCentersPageImages";
+import { MediaPageImages } from "@/components/admin/site-images/MediaPageImages";
 
 
 export default function SiteImagesPage() {
@@ -18,6 +19,7 @@ export default function SiteImagesPage() {
   const servicesPageImages = images.filter((img: any) => img.page === "services");
   const productsPageImages = images.filter((img: any) => img.page === "products");
   const excellenceCentersPageImages = images.filter((img: any) => img.page === "excellence-centers");
+  const mediaPageImages = images.filter((img: any) => img.page === "media");
 
   if (isLoading) {
     return <div>Loading image data...</div>;
@@ -33,12 +35,13 @@ export default function SiteImagesPage() {
       </div>
 
       <Tabs defaultValue="home">
-        <TabsList className="grid w-full grid-cols-1 md:grid-cols-5">
+        <TabsList className="grid w-full grid-cols-1 md:grid-cols-6">
           <TabsTrigger value="home">Home Page</TabsTrigger>
           <TabsTrigger value="about">About Page</TabsTrigger>
           <TabsTrigger value="services">Services</TabsTrigger>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="excellence-centers">Excellence Centers</TabsTrigger>
+          <TabsTrigger value="media">Media</TabsTrigger>
         </TabsList>
 
         <TabsContent value="home" className="mt-6">
@@ -55,6 +58,9 @@ export default function SiteImagesPage() {
         </TabsContent>
         <TabsContent value="excellence-centers" className="mt-6">
             <ExcellenceCentersPageImages images={excellenceCentersPageImages} />
+        </TabsContent>
+         <TabsContent value="media" className="mt-6">
+            <MediaPageImages images={mediaPageImages} />
         </TabsContent>
       </Tabs>
     </div>

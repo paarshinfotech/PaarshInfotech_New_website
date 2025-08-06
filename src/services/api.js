@@ -34,6 +34,7 @@ export const api = createApi({
     "ECGallery",
     "CareerImage",
     "CareerTestimonial",
+    "GalleryCategory",
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -848,6 +849,32 @@ export const api = createApi({
       query: (body) => ({ url: "/career-testimonial", method: "PATCH", body }),
       invalidatesTags: ["CareerTestimonial"],
     }),
+    
+    // ================================================== Gallery Category Endpoints ================================================== //
+    getGalleryCategories: builder.query({
+      query: () => "/gallery-category",
+      providesTags: ["GalleryCategory"],
+    }),
+    addGalleryCategory: builder.mutation({
+      query: (category) => ({
+        url: "/gallery-category",
+        method: "POST",
+        body: category,
+      }),
+      invalidatesTags: ["GalleryCategory"],
+    }),
+    updateGalleryCategory: builder.mutation({
+      query: (category) => ({
+        url: "/gallery-category",
+        method: "PUT",
+        body: category,
+      }),
+      invalidatesTags: ["GalleryCategory"],
+    }),
+    deleteGalleryCategory: builder.mutation({
+      query: (body) => ({ url: "/gallery-category", method: "DELETE", body }),
+      invalidatesTags: ["GalleryCategory"],
+    }),
   }),
 });
 
@@ -997,4 +1024,10 @@ export const {
   useUpdateCareerTestimonialMutation,
   useDeleteCareerTestimonialMutation,
   useReorderCareerTestimonialsMutation,
+
+  // Gallery Categories
+  useGetGalleryCategoriesQuery,
+  useAddGalleryCategoryMutation,
+  useUpdateGalleryCategoryMutation,
+  useDeleteGalleryCategoryMutation,
 } = api;
