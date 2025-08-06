@@ -9,7 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { MediaUploadModal } from "@/components/admin/media/MediaUploadModal";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
-import { useGetMediaItemsQuery, useAddMediaItemMutation, useDeleteMediaItemMutation, useGetGalleryCategoriesQuery } from "@/services/api";
+import { useGetMediaItemsQuery, useAddMediaItemMutation, useDeleteMediaItemMutation, useGetGalleryCategoriesQuery, useGetSiteImagesQuery, useUpdateSiteImageMutation } from "@/services/api";
+import { ImageFormModal } from "../../site-images/ImageFormModal";
+import { useToast } from "@/hooks/use-toast";
 
 interface GalleryManagementTabProps {
   items: any[];
@@ -17,14 +19,21 @@ interface GalleryManagementTabProps {
 }
 
 export function GalleryManagementTab({ items: propItems, setItems: setPropItems }: GalleryManagementTabProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isHeroModalOpen, setIsHeroModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
+  const { toast } = useToast();
   const { data: galleryItems = [], isLoading: isLoadingItems } = useGetMediaItemsQuery("gallery");
   const { data: categoryData, isLoading: isLoadingCategories } = useGetGalleryCategoriesQuery(undefined);
+  const { data: siteImages = [] } = useGetSiteImagesQuery(undefined);
+
   const [addMediaItem] = useAddMediaItemMutation();
   const [deleteMediaItem] = useDeleteMediaItemMutation();
+  const [updateSiteImage] = useUpdateSiteImageMutation();
+
+  const mediaHeroImage = siteImages.find((img: any) => img.section === 'media_hero_banner');
 
   const categories = categoryData?.data || [];
 
@@ -46,9 +55,23 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
       };
 
       await addMediaItem(formData).unwrap();
-      setIsModalOpen(false);
+      setIsUploadModalOpen(false);
     } catch (error) {
       console.error("Failed to add gallery item:", error);
+    }
+  };
+  
+  const handleHeroSave = async (data: any) => {
+    try {
+        const payload = {
+            _id: mediaHeroImage._id,
+            ...data
+        };
+      await updateSiteImage(payload).unwrap();
+      toast({ title: "Image Updated", description: "The image has been successfully updated." });
+      setIsHeroModalOpen(false);
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to save image.", variant: "destructive" });
     }
   };
 
@@ -88,10 +111,13 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
               Manage images for the filterable gallery on the Media page.
             </CardDescription>
           </div>
-          <Button onClick={() => setIsModalOpen(true)}>
-            <FaPlus className="h-4 w-4" />
-            Upload Media
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" onClick={() => setIsHeroModalOpen(true)}>Manage Hero Image</Button>
+            <Button onClick={() => setIsUploadModalOpen(true)}>
+              <FaPlus className="h-4 w-4 mr-2" />
+              Upload Media
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
@@ -130,11 +156,21 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
       </Card>
 
       <MediaUploadModal
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
+        isOpen={isUploadModalOpen}
+        onOpenChange={setIsUploadModalOpen}
         onSave={handleSave}
         categories={categories}
       />
+      
+      {mediaHeroImage && (
+        <ImageFormModal
+          isOpen={isHeroModalOpen}
+          onOpenChange={setIsHeroModalOpen}
+          onSave={handleHeroSave}
+          image={mediaHeroImage}
+          page="media"
+        />
+      )}
 
       <DeleteConfirmationDialog
         isOpen={isDeleteAlertOpen}
