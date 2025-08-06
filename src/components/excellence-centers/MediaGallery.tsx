@@ -6,13 +6,15 @@ import { ImagePreviewModal } from "../common/ImagePreviewModal";
 import { useGetECGalleryQuery } from "@/services/api";
 
 interface MediaGalleryItem {
-  image: string;
+  imageUrl: string;
   alt: string;
   hint: string;
 }
 
 export default function MediaGallery() {
   const { data: mediaGalleryData, isLoading } = useGetECGalleryQuery(undefined);
+
+  console.log("mediaGalleryData", mediaGalleryData);
 
   return (
     <section className="py-16 md:py-24 bg-secondary">
@@ -31,8 +33,8 @@ export default function MediaGallery() {
             (item: MediaGalleryItem, index: number) => (
               <ImagePreviewModal
                 key={index}
-                imgSrc={item.image}
-                alt={item.alt}
+                imgSrc={item.imageUrl}
+                alt={item.hint}
                 data-ai-hint={item.hint}
               >
                 <Card
@@ -40,8 +42,8 @@ export default function MediaGallery() {
                   data-ai-hint={item.hint}
                 >
                   <Image
-                    src={item.image}
-                    alt={item.alt}
+                    src={item.imageUrl}
+                    alt={item.hint}
                     fill
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
@@ -49,7 +51,7 @@ export default function MediaGallery() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent transition-opacity duration-300 group-hover:from-black/70">
                     <div className="absolute bottom-0 p-4">
                       <p className="text-white font-semibold text-sm drop-shadow-md">
-                        {item.alt}
+                        {item.hint}
                       </p>
                     </div>
                   </div>
