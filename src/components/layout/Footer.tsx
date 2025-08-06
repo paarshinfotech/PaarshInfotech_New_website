@@ -62,7 +62,7 @@ export function Footer() {
                 <a href="mailto:info@paarshinfotech.com" className="hover:text-primary transition-colors">info@paarshinfotech.com</a>
               </p>
               <p>
-                <a href="tel:+911234567890" className="hover:text-primary transition-colors">+91 12345 67890</a>
+                <a href="+919075201035" className="hover:text-primary transition-colors">+91 90752 01035</a>
               </p>
             </address>
           </div>

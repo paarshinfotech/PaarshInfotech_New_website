@@ -107,19 +107,41 @@ export function TeamMemberFormModal({
     );
   };
 
+  // Helper function to convert file to base64
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
   const onSubmit = async (values: MemberFormValues) => {
     setIsSubmitting(true);
     try {
-      const newAvatarUrl =
-        values.avatar && values.avatar.length > 0
-          ? "https://placehold.co/40x40.png"
-          : member?.avatar;
+      let newAvatarUrl = member?.avatar || "https://placehold.co/40x40.png";
+      
+      // Check if a new avatar file was selected
+      if (values.avatar && values.avatar.length > 0) {
+        const file = values.avatar[0];
+        try {
+          // Convert the selected file to base64
+          newAvatarUrl = await convertToBase64(file);
+        } catch (error) {
+          console.error("Error converting image to base64:", error);
+          // Fallback to placeholder if conversion fails
+          newAvatarUrl = "https://placehold.co/40x40.png";
+        }
+      }
+
       const dataToSave = {
         ...values,
         _id: member?._id,
-        avatar: newAvatarUrl || "https://placehold.co/40x40.png",
+        avatar: newAvatarUrl,
         published: values.published ?? member?.published ?? true,
       };
+      
       await onSave(dataToSave);
     } finally {
       setIsSubmitting(false);

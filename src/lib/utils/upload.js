@@ -3,15 +3,15 @@ import fs from "fs";
 
 // Define upload directories - can be switched between local and VPS
 const LOCAL_UPLOAD_DIR = path.join(process.cwd(), "public/uploads");
-const VPS_UPLOAD_DIR = "/root/PaarshEdu/uploads";
+const VPS_UPLOAD_DIR = "/root/Paarsh-Infotech/uploads";
 
 // Define base URLs
 const LOCAL_BASE_URL = "/uploads/";
-const VPS_BASE_URL = "https://paarshedu.com/PaarshEdu/uploads/";
+const VPS_BASE_URL = "https://paarshinfotech.com/Paarsh-Infotech/uploads/";
 
 // Set current configuration
-const UPLOAD_DIR = LOCAL_UPLOAD_DIR ; // Switch to VPS_UPLOAD_DIR for VPS storage
-const BASE_URL = LOCAL_BASE_URL; // Switch to VPS_BASE_URL for VPS storage
+const UPLOAD_DIR = VPS_UPLOAD_DIR ; // Switch to VPS_UPLOAD_DIR for VPS storage
+const BASE_URL = VPS_BASE_URL; // Switch to VPS_BASE_URL for VPS storage
 
 // Ensure the upload directory exists
 if (!fs.existsSync(UPLOAD_DIR)) {
