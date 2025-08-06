@@ -25,12 +25,14 @@ const NavLink = ({
   href, 
   label, 
   isActive,
+  isScrolled,
   onClick,
   isMobile = false
 }: { 
   href: string; 
   label: string; 
   isActive: boolean; 
+  isScrolled: boolean;
   onClick?: () => void;
   isMobile?: boolean;
 }) => (
@@ -44,18 +46,18 @@ const NavLink = ({
     <Link
       href={href}
       className={cn(
-        "relative text-base font-semibold transition-all duration-300",
-        isMobile ? "text-xl py-3 block" : "px-4 py-2",
+        "relative text-base font-semibold transition-colors duration-300",
+        isMobile ? "text-xl py-3 block text-foreground" : "px-4 py-2",
         isActive 
-          ? "text-blue-600" 
-          : "text-white/80 hover:text-white"
+          ? (isScrolled ? "text-primary" : "text-white")
+          : (isScrolled ? "text-muted-foreground" : "text-white/80 hover:text-white")
       )}
       onClick={onClick}
     >
       {label}
       {isActive && !isMobile && (
         <motion.div
-          className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"
+          className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
           layoutId="active-nav"
           initial={false}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -75,7 +77,7 @@ export function Header() {
       setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener("scroll", handleScroll);
-    handleScroll();
+    handleScroll(); // Check on initial render
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -84,7 +86,7 @@ export function Header() {
       className={cn(
         "sticky top-0 z-50 w-full border-b transition-all duration-300",
         isScrolled
-          ? "bg-white/90 backdrop-blur-md border-gray-200 shadow-lg" 
+          ? "bg-white/90 backdrop-blur-md border-gray-200 shadow-sm" 
           : "bg-transparent border-transparent"
       )}
       initial={{ y: -100 }}
@@ -92,7 +94,6 @@ export function Header() {
       transition={{ duration: 0.5 }}
     >
       <div className="container flex h-20 max-w-7xl items-center justify-between">
-        {/* Logo */}
         <motion.div
           whileHover={{ 
             scale: 1.08,
@@ -110,7 +111,6 @@ export function Header() {
           </Link>
         </motion.div>
 
-        {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-2">
           {navLinks.map((link, index) => (
             <motion.div
@@ -122,12 +122,12 @@ export function Header() {
               <NavLink
                 {...link}
                 isActive={pathname === link.href}
+                isScrolled={isScrolled}
               />
             </motion.div>
           ))}
         </nav>
-
-        {/* CTA Button */}
+        
         <div className="hidden lg:flex items-center">
           <motion.div
             whileHover={{ 
@@ -142,7 +142,7 @@ export function Header() {
               size="sm" 
               className={cn(
                 "rounded-md px-4 py-1 text-base font-bold shadow-lg hover:shadow-xl transition-all",
-                isScrolled ? "bg-gradient-to-r from-blue-900 to-blue-900 hover:from-blue-950 hover:to-blue-950 text-white" : "bg-white text-blue-900 hover:bg-gray-100"
+                isScrolled ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-white text-primary hover:bg-gray-100"
               )}
             >
               <Link href="/quote">
@@ -152,7 +152,6 @@ export function Header() {
           </motion.div>
         </div>
 
-        {/* Mobile Menu Button */}
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild className="lg:hidden">
             <motion.div
@@ -160,17 +159,13 @@ export function Header() {
               whileTap={{ scale: 0.9 }}
             >
               <Button variant="ghost" size="icon" className="h-10 w-10 rounded-full">
-                {isMobileMenuOpen ? (
-                  <LuX className={cn("h-6 w-6", isScrolled ? "text-gray-700" : "text-white")} />
-                ) : (
-                  <LuMenu className={cn("h-6 w-6", isScrolled ? "text-gray-700" : "text-white")} />
-                )}
+                <LuMenu className={cn("h-6 w-6", isScrolled ? "text-gray-700" : "text-white")} />
                 <span className="sr-only">Toggle menu</span>
               </Button>
             </motion.div>
           </SheetTrigger>
           
-          <SheetContent side="right" className="w-[300px] p-0 bg-white">
+          <SheetContent side="right" className="w-[300px] p-0 bg-background">
             <div className="flex flex-col h-full">
               <div className="p-6 border-b border-gray-200">
                 <Link
@@ -178,9 +173,11 @@ export function Header() {
                   className="flex items-center"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <span className="font-bold text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Paarsh Infotech
-                  </span>
+                   <img
+                    className="h-12 w-auto"
+                    src="/uploads/paarsh-infotech-6 (1).png"
+                    alt="Paarsh Infotech"
+                  />
                 </Link>
               </div>
               
@@ -198,6 +195,7 @@ export function Header() {
                         isActive={pathname === link.href}
                         onClick={() => setIsMobileMenuOpen(false)}
                         isMobile={true}
+                        isScrolled={true}
                       />
                     </motion.div>
                   ))}
@@ -213,7 +211,7 @@ export function Header() {
                   <Button 
                     asChild 
                     size="lg"
-                    className="w-full rounded-full py-6 text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-lg"
+                    className="w-full"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     <Link href="/quote">
