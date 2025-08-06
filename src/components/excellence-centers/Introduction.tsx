@@ -25,7 +25,7 @@ export default function Introduction() {
           </div>
           <div className="relative h-96 w-full rounded-lg overflow-hidden shadow-lg">
             <Image
-              src="https://placehold.co/600x400.png"
+              src="/uploads/1.1EXCELLENCE-CENTER.jpg"
               alt="Mentorship session at an Excellence Center"
               fill
               className="object-cover"
