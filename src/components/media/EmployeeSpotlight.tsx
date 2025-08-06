@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -62,7 +61,7 @@ export default function EmployeeSpotlight() {
             </div>
           </ImagePreviewModal>
           <div className="md:col-span-2 space-y-4 text-center md:text-left">
-            <blockquote className="text-xl italic text-foreground/80 border-l-4 border-accent pl-6 md:border-l-0 md:pl-0 md:border-t-4 md:pt-6">
+            <blockquote className="text-xl italic text-foreground/80 border-l-4 border-accent pl-6 md:border-l-0 md:pl-0 md:border-t-4 md:pt-6 break-words">
               "{quote}"
             </blockquote>
             <div>
