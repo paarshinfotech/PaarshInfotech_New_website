@@ -10,18 +10,24 @@ import BehindTheScenes from "@/components/media/BehindTheScenes";
 import EmployeeSpotlight from "@/components/media/EmployeeSpotlight";
 import EventRecapCards from "@/components/media/EventRecapCards";
 import SocialWall from "@/components/media/SocialWall";
-import MediaTestimonials from "@/components/media/MediaTestimonials";
-import CallToActionBox from "@/components/media/CallToActionBox";
-import { mediaCategories } from "@/lib/mediaData";
-import { useGetMediaItemsQuery } from "@/services/api";
 import SuccessStories from "@/components/careers/SuccessStories";
+import CallToActionBox from "@/components/media/CallToActionBox";
+import { useGetMediaItemsQuery } from "@/services/api";
 
 export default function MediaPage() {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState("all");
   const { data: mediaGalleryItems = [], isLoading } = useGetMediaItemsQuery('gallery');
 
+  const mediaCategories = useMemo(() => {
+  if (!mediaGalleryItems || mediaGalleryItems.length === 0) {
+    return ["all"];
+  }
+  const categories = new Set(mediaGalleryItems.map((item: any) => item.category));
+  return ["all", ...Array.from(categories)] as readonly string[];
+}, [mediaGalleryItems]);
+
   const filteredMedia = useMemo(() => {
-    if (activeCategory === "All") {
+    if (activeCategory === "all") {
       return mediaGalleryItems;
     }
     return mediaGalleryItems.filter((item: any) => item.category === activeCategory);
@@ -41,7 +47,6 @@ export default function MediaPage() {
       <EmployeeSpotlight />
       <EventRecapCards />
       <SocialWall />
-       {/* <MediaTestimonials /> */}
       <SuccessStories />
       <CallToActionBox />
     </>

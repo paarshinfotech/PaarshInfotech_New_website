@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -12,6 +13,7 @@ export default function EventCategoryTabs({
   activeCategory,
   setActiveCategory,
 }: EventCategoryTabsProps) {
+
   return (
     <section className="py-8 bg-secondary border-b">
       <div className="container max-w-7xl">
@@ -23,7 +25,7 @@ export default function EventCategoryTabs({
               onClick={() => setActiveCategory(category)}
               className="capitalize"
             >
-              {category.toLowerCase()}
+              {category.replace(/_/g, ' ')}
             </Button>
           ))}
         </div>
