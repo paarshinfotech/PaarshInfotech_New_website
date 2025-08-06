@@ -25,12 +25,14 @@ const NavLink = ({
   href, 
   label, 
   isActive,
+  isScrolled,
   onClick,
   isMobile = false
 }: { 
   href: string; 
   label: string; 
   isActive: boolean; 
+  isScrolled: boolean;
   onClick?: () => void;
   isMobile?: boolean;
 }) => (
@@ -120,6 +122,7 @@ export function Header() {
               <NavLink
                 {...link}
                 isActive={pathname === link.href}
+                isScrolled={isScrolled}
               />
             </motion.div>
           ))}
@@ -192,6 +195,7 @@ export function Header() {
                         isActive={pathname === link.href}
                         onClick={() => setIsMobileMenuOpen(false)}
                         isMobile={true}
+                        isScrolled={true}
                       />
                     </motion.div>
                   ))}
