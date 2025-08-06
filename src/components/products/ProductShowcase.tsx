@@ -211,7 +211,7 @@ export default function ProductShowcase() {
               
               <div className="flex-shrink-0 w-full md:w-1/3 h-48 rounded-lg overflow-hidden relative">
                 <Image
-                  src={activeProduct.heroImage}
+                  src={activeProduct.heroImageBase64}
                   alt={`${activeProduct.name} dashboard`}
                   fill
                   className="object-cover"
