@@ -60,7 +60,7 @@ interface Service {
   published: boolean;
   Icon: string | null; // Changed from IconType to string
   overview: string;
-  heroImage: string;
+  heroImageBase64: string;
   offerings: { title: string; description: string; Icon: string | null }[]; // Updated Icon type
   whyChooseUs: { title: string; description: string; Icon: string | null }[]; // Updated Icon type
   techStack: {
@@ -121,7 +121,7 @@ export default function ServiceSlugPage() {
     published: service.published ?? false,
     Icon: service.Icon || null,
     overview: service.overview || "No overview available",
-    heroImage: service.heroImage || "/default-image.jpg",
+    heroImageBase64: service.heroImageBase64 || "/default-image.jpg",
     offerings: Array.isArray(service.offerings)
       ? service.offerings.map(offering => ({
           ...offering,
@@ -190,7 +190,7 @@ export default function ServiceSlugPage() {
       <ServiceOverview
         title={transformedService.title}
         overview={transformedService.overview}
-        heroImage={transformedService.heroImage}
+        heroImage={transformedService.heroImageBase64}
       />
       <ServiceOfferings offerings={transformedService.offerings} />
       <WhyChooseUsService reasons={transformedService.whyChooseUs} />
