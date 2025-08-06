@@ -12,19 +12,22 @@ import EventRecapCards from "@/components/media/EventRecapCards";
 import SocialWall from "@/components/media/SocialWall";
 import SuccessStories from "@/components/careers/SuccessStories";
 import CallToActionBox from "@/components/media/CallToActionBox";
-import { useGetMediaItemsQuery } from "@/services/api";
+import { useGetMediaItemsQuery, useGetMediaHeroQuery } from "@/services/api";
 
 export default function MediaPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const { data: mediaGalleryItems = [], isLoading } = useGetMediaItemsQuery('gallery');
+  const { data: mediaHeroData } = useGetMediaHeroQuery(undefined);
+
+  const mediaHeroImage = mediaHeroData?.data;
 
   const mediaCategories = useMemo(() => {
-  if (!mediaGalleryItems || mediaGalleryItems.length === 0) {
-    return ["all"];
-  }
-  const categories = new Set(mediaGalleryItems.map((item: any) => item.category));
-  return ["all", ...Array.from(categories)] as readonly string[];
-}, [mediaGalleryItems]);
+    if (!mediaGalleryItems || mediaGalleryItems.length === 0) {
+      return ["all"];
+    }
+    const categories = new Set(mediaGalleryItems.map((item: any) => item.category));
+    return ["all", ...Array.from(categories)] as readonly string[];
+  }, [mediaGalleryItems]);
 
   const filteredMedia = useMemo(() => {
     if (activeCategory === "all") {
@@ -35,7 +38,7 @@ export default function MediaPage() {
 
   return (
     <>
-      <MediaHero />
+      <MediaHero heroImage={mediaHeroImage} />
       <EventCategoryTabs
         categories={mediaCategories}
         activeCategory={activeCategory}

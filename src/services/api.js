@@ -35,6 +35,7 @@ export const api = createApi({
     "CareerImage",
     "CareerTestimonial",
     "GalleryCategory",
+    "MediaHero",
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -875,6 +876,20 @@ export const api = createApi({
       query: (body) => ({ url: "/gallery-category", method: "DELETE", body }),
       invalidatesTags: ["GalleryCategory"],
     }),
+    
+    // ================================================== Media Hero Endpoints ================================================== //
+    getMediaHero: builder.query({
+      query: () => "/media-hero",
+      providesTags: ["MediaHero"],
+    }),
+    updateMediaHero: builder.mutation({
+      query: (imageData) => ({
+        url: "/media-hero",
+        method: "POST",
+        body: imageData,
+      }),
+      invalidatesTags: ["MediaHero"],
+    }),
   }),
 });
 
@@ -948,6 +963,10 @@ export const {
   useAddSiteImageMutation,
   useUpdateSiteImageMutation,
   useDeleteSiteImageMutation,
+  
+  // Media Hero
+  useGetMediaHeroQuery,
+  useUpdateMediaHeroMutation,
 
   // Journey Milestones
   useGetJourneyMilestonesQuery,
