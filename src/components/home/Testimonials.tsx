@@ -29,8 +29,8 @@ export default function Testimonials() {
 
   // Skeleton component for loading state
   const SkeletonCard = () => (
-    <div className="flex-shrink-0 w-[90%] md:w-1/2 lg:w-[30%] p-2 md:p-4">
-      <Card className="h-full bg-background shadow-md flex flex-col p-6 md:p-8">
+    <div className="flex-shrink-0 w-80 md:w-1/2 lg:w-[30%] p-2 md:p-4">
+      <Card className="h-full bg-background shadow-md flex flex-col p-4 md:p-8">
         <CardContent className="p-0 flex-grow">
           <div className="animate-pulse">
             <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
@@ -82,8 +82,8 @@ export default function Testimonials() {
               ? // Render 6 skeleton cards during loading
                 Array.from({ length: 6 }).map((_, index) => <SkeletonCard key={index} />)
               : extendedTestimonials.map((testimonial: Testimonial, index: number) => (
-                  <div key={`${testimonial._id}-${index}`} className="flex-shrink-0 w-[90%] md:w-1/2 lg:w-[30%] p-2 md:p-4">
-                    <Card className="h-full bg-background shadow-md flex flex-col p-6 md:p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
+                  <div key={`${testimonial._id}-${index}`} className="flex-shrink-0 w-80 md:w-1/2 lg:w-[30%] p-2 md:p-4">
+                    <Card className="h-full bg-background shadow-md flex flex-col p-4 md:p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
                       <CardContent className="p-0 flex-grow">
                         <p className="text-foreground/80 mb-6 italic text-sm md:text-base">"{testimonial.quote}"</p>
                       </CardContent>
@@ -111,4 +111,5 @@ export default function Testimonials() {
     </section>
   );
 }
+
 
