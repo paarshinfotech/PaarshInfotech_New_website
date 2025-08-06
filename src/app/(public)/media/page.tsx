@@ -12,14 +12,14 @@ import EventRecapCards from "@/components/media/EventRecapCards";
 import SocialWall from "@/components/media/SocialWall";
 import SuccessStories from "@/components/careers/SuccessStories";
 import CallToActionBox from "@/components/media/CallToActionBox";
-import { useGetMediaItemsQuery, useGetSiteImagesQuery } from "@/services/api";
+import { useGetMediaItemsQuery, useGetMediaHeroQuery } from "@/services/api";
 
 export default function MediaPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const { data: mediaGalleryItems = [], isLoading } = useGetMediaItemsQuery('gallery');
-  const { data: siteImages = [] } = useGetSiteImagesQuery(undefined);
+  const { data: mediaHeroData } = useGetMediaHeroQuery(undefined);
 
-  const mediaHeroImage = siteImages.find((img: any) => img.section === "media_hero_banner");
+  const mediaHeroImage = mediaHeroData?.data;
 
   const mediaCategories = useMemo(() => {
     if (!mediaGalleryItems || mediaGalleryItems.length === 0) {

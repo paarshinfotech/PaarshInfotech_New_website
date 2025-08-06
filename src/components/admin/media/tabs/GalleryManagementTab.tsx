@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { MediaUploadModal } from "@/components/admin/media/MediaUploadModal";
 import { ImagePreviewModal } from "@/components/common/ImagePreviewModal";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
-import { useGetMediaItemsQuery, useAddMediaItemMutation, useDeleteMediaItemMutation, useGetGalleryCategoriesQuery, useGetSiteImagesQuery, useUpdateSiteImageMutation } from "@/services/api";
+import { useGetMediaItemsQuery, useAddMediaItemMutation, useDeleteMediaItemMutation, useGetGalleryCategoriesQuery, useGetMediaHeroQuery, useUpdateMediaHeroMutation } from "@/services/api";
 import { ImageFormModal } from "../../site-images/ImageFormModal";
 import { useToast } from "@/hooks/use-toast";
 
@@ -27,13 +27,13 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
   const { toast } = useToast();
   const { data: galleryItems = [], isLoading: isLoadingItems } = useGetMediaItemsQuery("gallery");
   const { data: categoryData, isLoading: isLoadingCategories } = useGetGalleryCategoriesQuery(undefined);
-  const { data: siteImages = [] } = useGetSiteImagesQuery(undefined);
-
+  const { data: mediaHeroData } = useGetMediaHeroQuery(undefined);
+  
   const [addMediaItem] = useAddMediaItemMutation();
   const [deleteMediaItem] = useDeleteMediaItemMutation();
-  const [updateSiteImage] = useUpdateSiteImageMutation();
+  const [updateMediaHero] = useUpdateMediaHeroMutation();
 
-  const mediaHeroImage = siteImages.find((img: any) => img.section === 'media_hero_banner');
+  const mediaHeroImage = mediaHeroData?.data;
 
   const categories = categoryData?.data || [];
 
@@ -63,15 +63,15 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
   
   const handleHeroSave = async (data: any) => {
     try {
-        const payload = {
-            _id: mediaHeroImage._id,
-            ...data
-        };
-      await updateSiteImage(payload).unwrap();
-      toast({ title: "Image Updated", description: "The image has been successfully updated." });
+      await updateMediaHero({
+        alt: data.alt,
+        hint: data.hint,
+        imageUrl: data.imageUrl, // This is the base64 string
+      }).unwrap();
+      toast({ title: "Image Updated", description: "The hero image has been successfully updated." });
       setIsHeroModalOpen(false);
     } catch (error) {
-      toast({ title: "Error", description: "Failed to save image.", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to save hero image.", variant: "destructive" });
     }
   };
 
@@ -162,15 +162,13 @@ export function GalleryManagementTab({ items: propItems, setItems: setPropItems 
         categories={categories}
       />
       
-      {mediaHeroImage && (
-        <ImageFormModal
-          isOpen={isHeroModalOpen}
-          onOpenChange={setIsHeroModalOpen}
-          onSave={handleHeroSave}
-          image={mediaHeroImage}
-          page="media"
-        />
-      )}
+      <ImageFormModal
+        isOpen={isHeroModalOpen}
+        onOpenChange={setIsHeroModalOpen}
+        onSave={handleHeroSave}
+        image={mediaHeroImage}
+        page="media"
+      />
 
       <DeleteConfirmationDialog
         isOpen={isDeleteAlertOpen}
