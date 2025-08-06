@@ -33,7 +33,7 @@ const galleryItemSchema = new mongoose.Schema(
     category: {
       type: String,
       required: true,
-      // REMOVED ENUM to allow dynamic categories
+      enum: undefined, // Explicitly remove enum validation
     },
   },
   { timestamps: true }
