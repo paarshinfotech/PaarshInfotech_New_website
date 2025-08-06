@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -10,6 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { ImSpinner2 } from "react-icons/im";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import Image from "next/image";
 
 interface Category {
   _id: string;
@@ -19,7 +21,7 @@ interface Category {
 const formSchema = z.object({
   alt: z.string().min(3, "Alt text must be at least 3 characters."),
   category: z.string({ required_error: "Please select a category." }),
-  image: z.any().refine((files) => files?.length === 1, "An image is required."),
+  image: z.any().optional(),
 });
 
 type MediaFormValues = z.infer<typeof formSchema>;
@@ -27,18 +29,50 @@ type MediaFormValues = z.infer<typeof formSchema>;
 interface MediaUploadModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
-  onSave: (data: { alt: string; category: string; image?: string }) => void;
+  onSave: (data: { alt: string; category: string; image?: string, _id?: string }) => void;
   categories: Category[];
+  item: any | null;
 }
 
-export function MediaUploadModal({ isOpen, onOpenChange, onSave, categories }: MediaUploadModalProps) {
+export function MediaUploadModal({ isOpen, onOpenChange, onSave, categories, item }: MediaUploadModalProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
   const form = useForm<MediaFormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      alt: "",
-    },
+    defaultValues: { alt: "", category: undefined, image: null },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      if (item) {
+        form.reset({
+          alt: item.title,
+          category: item.category,
+        });
+        setImagePreview(item.imageUrl);
+      } else {
+        form.reset({
+          alt: "",
+          category: undefined,
+          image: null
+        });
+        setImagePreview(null);
+      }
+    }
+  }, [item, isOpen, form]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+      form.setValue("image", e.target.files);
+    }
+  };
 
   const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -50,12 +84,20 @@ export function MediaUploadModal({ isOpen, onOpenChange, onSave, categories }: M
   };
 
   const onSubmit = async (values: MediaFormValues) => {
+    if (!values.image && !item) {
+      form.setError("image", { message: "An image is required." });
+      return;
+    }
+    
     try {
       setIsSubmitting(true);
-      const file = values.image[0];
-      const base64Image = await convertToBase64(file);
+      let base64Image: string | undefined;
+      if (values.image && values.image.length > 0) {
+        base64Image = await convertToBase64(values.image[0]);
+      }
 
       await onSave({
+        _id: item?._id,
         alt: values.alt,
         category: values.category,
         image: base64Image,
@@ -76,12 +118,17 @@ export function MediaUploadModal({ isOpen, onOpenChange, onSave, categories }: M
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <DialogHeader>
-              <DialogTitle>Upload New Media</DialogTitle>
+              <DialogTitle>{item ? "Edit Media" : "Upload New Media"}</DialogTitle>
               <DialogDescription>
-                Add a new image to your website's media gallery.
+                {item ? "Update the details for this image." : "Add a new image to your website's media gallery."}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
+              {imagePreview && (
+                  <div className="relative h-40 w-full rounded-md overflow-hidden bg-muted">
+                      <Image src={imagePreview} alt="Preview" fill className="object-contain" />
+                  </div>
+              )}
               <FormField
                 control={form.control}
                 name="image"
@@ -92,7 +139,7 @@ export function MediaUploadModal({ isOpen, onOpenChange, onSave, categories }: M
                       <Input
                         type="file"
                         accept="image/*"
-                        onChange={(e) => field.onChange(e.target.files)}
+                        onChange={handleFileChange}
                       />
                     </FormControl>
                     <FormMessage />
@@ -123,7 +170,7 @@ export function MediaUploadModal({ isOpen, onOpenChange, onSave, categories }: M
                     <FormLabel>Category</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -152,10 +199,8 @@ export function MediaUploadModal({ isOpen, onOpenChange, onSave, categories }: M
                 Cancel
               </Button>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting && (
-                  <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />
-                )}
-                Upload
+                {isSubmitting && <ImSpinner2 className="mr-2 h-4 w-4 animate-spin" />}
+                {item ? "Save Changes" : "Upload"}
               </Button>
             </DialogFooter>
           </form>
