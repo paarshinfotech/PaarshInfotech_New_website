@@ -105,7 +105,7 @@ export async function POST(request) {
       });
       
       const imageUrls = await Promise.all(uploadPromises);
-      if (imageUrls.some(url => !url || !url.startsWith('/uploads/'))) {
+      if (imageUrls.some(url => !url )) {
         throw new Error("Failed to upload one or more gallery images or invalid image URL");
       }
       
@@ -173,7 +173,7 @@ export async function PUT(request) {
       }
       
       const imageUrl = await uploadBase64(updateData.imageBase64, `${type}-image`);
-      if (!imageUrl || !imageUrl.startsWith('/uploads/')) {
+      if (!imageUrl) {
         throw new Error("Failed to upload image or invalid image URL");
       }
       updateData.imageUrl = imageUrl;
