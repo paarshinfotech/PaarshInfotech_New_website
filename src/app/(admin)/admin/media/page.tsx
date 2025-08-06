@@ -10,6 +10,8 @@ import { SliderManagementTab } from "@/components/admin/media/tabs/SliderManagem
 import { BtsManagementTab } from "@/components/admin/media/tabs/BtsManagementTab";
 import { EventsManagementTab } from "@/components/admin/media/tabs/EventsManagementTab";
 import { SpotlightManagementTab } from "@/components/admin/media/tabs/SpotlightManagementTab";
+import Link from "next/link";
+import { GoPlusCircle } from "react-icons/go";
 
 export default function MediaManagementPage() {
   // State for each media type
@@ -47,12 +49,21 @@ export default function MediaManagementPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Media Management</h1>
-        <p className="text-muted-foreground">
-          Manage all content sections of your public Media page.
-        </p>
+      <div className="flex justify-between items-start">
+        <div>
+            <h1 className="text-3xl font-bold">Media Management</h1>
+            <p className="text-muted-foreground">
+            Manage all content sections of your public Media page.
+            </p>
+        </div>
+        <Button asChild>
+            <Link href="/admin/media/categories">
+                <GoPlusCircle className="mr-2 h-4 w-4" />
+                Manage Categories
+            </Link>
+        </Button>
       </div>
+
 
       <Tabs defaultValue="gallery">
         <TabsList className="grid w-full grid-cols-5">
