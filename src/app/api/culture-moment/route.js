@@ -39,9 +39,15 @@ export async function POST(request) {
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
+
+
+
     // Upload image to /uploads/culture/
     const imageUrl = await uploadBase64(imageBase64, `${CULTURE_DIR}-${Date.now()}`);
     if (!imageUrl) throw new Error("Failed to upload image");
+
+    console.log("Image URL:", imageUrl);
+
     const newMoment = new CultureMomentModel({
       imageUrl,
       alt,

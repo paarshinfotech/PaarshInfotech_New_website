@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'paarshedu.com',
+        hostname: 'paarshinfotech.com',
         port: '',
         pathname: '/**',
       },
