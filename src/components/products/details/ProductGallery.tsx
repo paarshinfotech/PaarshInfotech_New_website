@@ -54,8 +54,8 @@ export default function ProductGallery({ gallery }: ProductGalleryProps) {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          {/* <CarouselPrevious /> */}
+          {/* <CarouselNext /> */}
         </Carousel>
       </div>
     </section>
