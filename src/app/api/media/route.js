@@ -78,7 +78,7 @@ export async function POST(request) {
         throw new Error("Invalid image format. Only PNG or JPEG allowed.");
       }
       const imageUrl = await uploadBase64(mediaData.imageBase64, `${type}-image`);
-      if (!imageUrl || !imageUrl.startsWith('/uploads/')) {
+      if (!imageUrl) {
         throw new Error("Failed to upload image or invalid image URL");
       }
       mediaData.imageUrl = imageUrl;
