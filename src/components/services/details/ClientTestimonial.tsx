@@ -9,7 +9,7 @@ interface ClientTestimonialProps {
     quote: string;
     name: string;
     role: string;
-    avatar: string;
+    avatarBase64: string;
   };
 }
 
@@ -24,8 +24,8 @@ export default function ClientTestimonial({ testimonial }: ClientTestimonialProp
               "{testimonial.quote}"
             </blockquote>
             <div className="mt-8 flex items-center justify-center gap-4">
-              <ImagePreviewModal imgSrc={testimonial.avatar} alt={testimonial.name}>
-                <Image src={testimonial.avatar} alt={testimonial.name} width={56} height={56} className="rounded-full object-cover cursor-pointer" data-ai-hint="person" />
+              <ImagePreviewModal imgSrc={testimonial.avatarBase64} alt={testimonial.name}>
+                <Image src={testimonial.avatarBase64} alt={testimonial.name} width={56} height={56} className="rounded-full object-cover cursor-pointer" data-ai-hint="person" />
               </ImagePreviewModal>
               <div>
                 <p className="font-semibold text-primary text-lg">{testimonial.name}</p>
