@@ -1,3 +1,4 @@
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -83,7 +84,7 @@ export default function ProductsHero() {
             ) : isError ? (
               <div>Error loading products</div>
             ) : (
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {productsData?.data?.map((product : Product, index : number) => {
                   const Icon = productIcons[product.name] || LuLayers; // Fallback to LuLayers if no icon match
                   return (
