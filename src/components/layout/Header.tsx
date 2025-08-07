@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from "next/link";
@@ -96,7 +97,7 @@ export function Header() {
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="container flex h-20 max-w-7xl items-center justify-between">
+      <div className="container flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <motion.div
           whileHover={{
             scale: 1.08,
@@ -166,7 +167,7 @@ export function Header() {
               >
                 <LuMenu
                   className={cn(
-                    "h-10 w-10",
+                    "h-12 w-12",
                     isScrolled ? "text-gray-700" : "text-primary"
                   )}
                 />

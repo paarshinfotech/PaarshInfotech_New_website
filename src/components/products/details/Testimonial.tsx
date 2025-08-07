@@ -15,12 +15,12 @@ export default function Testimonial() {
               "This product has been a complete game-changer for our team. We're more efficient, collaborative, and data-driven than ever before. I can't imagine working without it."
             </blockquote>
             <div className="mt-8 flex items-center justify-center gap-4">
-              <ImagePreviewModal imgSrc="https://placehold.co/100x100.png" alt="Jane Doe">
-                <Image src="https://placehold.co/100x100.png" alt="Jane Doe" width={56} height={56} className="rounded-full object-cover cursor-pointer" data-ai-hint="person" />
+              <ImagePreviewModal imgSrc="https://placehold.co/100x100.png" alt="Kavita Patil">
+                <Image src="https://placehold.co/100x100.png" alt="Kavita Patil" width={56} height={56} className="rounded-full object-cover cursor-pointer" data-ai-hint="person" />
               </ImagePreviewModal>
               <div>
-                <p className="font-semibold text-primary text-lg">Jane Doe</p>
-                <p className="text-muted-foreground">COO, Innovate Inc.</p>
+                <p className="font-semibold text-primary text-lg">Kavita Patil</p>
+                <p className="text-muted-foreground">Manager , MazeBox Inc.</p>
               </div>
             </div>
           </CardContent>

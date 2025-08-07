@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -172,9 +173,20 @@ export default function ProductShowcase() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto"
+            className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-4 md:p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto"
           >
-            <div className="flex flex-col md:flex-row gap-6">
+            <div className="flex flex-col md:flex-row-reverse gap-6">
+              <div className="flex-shrink-0 w-full md:w-1/3 h-48 md:h-auto rounded-lg overflow-hidden relative">
+                <Image
+                  src={activeProduct.heroImageBase64}
+                  alt={`${activeProduct.name} dashboard`}
+                  fill
+                  className="object-cover"
+                  data-ai-hint="dashboard screen"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent"></div>
+              </div>
+
               <div className="flex-1">
                 <h3 className="text-xl font-bold text-foreground mb-1">{activeProduct.name}</h3>
                 <p className="text-sm font-medium text-primary mb-3">{activeProduct.tagline}</p>
@@ -207,17 +219,6 @@ export default function ProductShowcase() {
                     Learn More <LuArrowRight className="ml-1.5 w-3.5 h-3.5" />
                   </Link>
                 </Button>
-              </div>
-              
-              <div className="flex-shrink-0 w-full md:w-1/3 h-48 rounded-lg overflow-hidden relative">
-                <Image
-                  src={activeProduct.heroImageBase64}
-                  alt={`${activeProduct.name} dashboard`}
-                  fill
-                  className="object-cover"
-                  data-ai-hint="dashboard screen"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent"></div>
               </div>
             </div>
           </motion.div>

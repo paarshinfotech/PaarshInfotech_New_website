@@ -22,7 +22,7 @@ interface SiteImage {
 }
 
 const formSchema = z.object({
-  section: z.string().min(3, 'Section identifier is required (e.g., hero_banner).'),
+  section: z.string().optional(),
   alt: z.string().min(1, 'Alt text is required.'),
   hint: z.string().optional(),
   imageFile: z.any().optional(),
