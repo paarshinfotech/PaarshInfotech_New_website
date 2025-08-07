@@ -167,7 +167,7 @@ export function Header() {
               >
                 <LuMenu
                   className={cn(
-                    "h-12 w-12",
+                    "h-8 w-8",
                     isScrolled ? "text-gray-700" : "text-primary"
                   )}
                 />
