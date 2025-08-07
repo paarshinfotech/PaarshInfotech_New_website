@@ -72,6 +72,9 @@ export default function ProductRoadmap() {
             aria-hidden="true"
           />
 
+          <div className="hidden lg:block absolute top-12 left-0 w-3 h-3 bg-primary rounded-full -translate-x-1/2 -translate-y-1/2" aria-hidden="true"></div>
+          <div className="hidden lg:block absolute top-12 right-0 w-3 h-3 bg-primary rounded-full translate-x-1/2 -translate-y-1/2" aria-hidden="true"></div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-16">
             {roadmapItems.map((item, index) => (
               <div
