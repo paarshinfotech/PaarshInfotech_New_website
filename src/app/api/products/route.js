@@ -46,7 +46,7 @@ export async function POST(request) {
         if (item.srcBase64) {
           const imageUrl = await uploadBase64(
             item.srcBase64,
-            `gallery-${id}-${index}-${Date.now()}`
+            `gallery-${name}-${index}-${Date.now()}`
           );
           if (!imageUrl) {
             throw new Error(`Failed to upload gallery image ${index}`);
