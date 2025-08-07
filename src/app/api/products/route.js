@@ -11,7 +11,6 @@ export async function POST(request) {
     const data = await request.json();
     const {
       name,
-      id,
       tagline,
       description,
       heroImageBase64,
@@ -21,7 +20,6 @@ export async function POST(request) {
 
     if (
       !name ||
-      !id ||
       !tagline ||
       !description ||
       !heroImageBase64 ||
@@ -36,7 +34,7 @@ export async function POST(request) {
 
     const heroImageUrl = await uploadBase64(
       heroImageBase64,
-      `hero-${id}-${Date.now()}`
+      `hero-${name}-${Date.now()}`
     );
     if (!heroImageUrl) {
       throw new Error("Failed to upload hero image");
@@ -61,7 +59,6 @@ export async function POST(request) {
 
     const newProduct = new ProductModel({
       name,
-      id,
       tagline,
       description,
       heroImageBase64: heroImageUrl,
