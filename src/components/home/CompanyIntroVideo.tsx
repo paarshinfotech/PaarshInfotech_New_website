@@ -29,7 +29,7 @@ export default function CompanyIntroVideo() {
             onClick={() => setIsModalOpen(true)}
           >
             <Image
-              src="https://placehold.co/1280x720.png"
+              src="/images/home-page-video-thumbnail.jpg" // 
               alt="Company Introduction Video"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
