@@ -36,6 +36,7 @@ export const api = createApi({
     "CareerTestimonial",
     "GalleryCategory",
     "MediaHero",
+    "Chatbot",
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -890,6 +891,16 @@ export const api = createApi({
       }),
       invalidatesTags: ["MediaHero"],
     }),
+
+    // ================================================== Chatbot Endpoints ================================================== //
+    sendMessageToChatbot: builder.mutation({
+      query: (body) => ({
+        url: "/chatbot",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Chatbot"],
+    }),
   }),
 });
 
@@ -1049,4 +1060,7 @@ export const {
   useAddGalleryCategoryMutation,
   useUpdateGalleryCategoryMutation,
   useDeleteGalleryCategoryMutation,
+
+  // Chatbot
+  useSendMessageToChatbotMutation,
 } = api;

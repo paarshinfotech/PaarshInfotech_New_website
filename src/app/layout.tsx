@@ -7,11 +7,11 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 import { SiteSettingsProvider } from "@/hooks/useSiteSettings";
 import { StoreProvider } from "@/lib/StoreProvider";
+import Chatbot from "@/components/chatbot/Chatbot";
 
 // Metadata cannot be exported from a client component.
 // We can define it here, but it won't be applied through this client component.
-// For metadata, you would typically have a separate layout.tsx for the root.
-// However, for this project structure, we will keep it simple.
+// For this project structure, we will keep it simple.
 
 // export const metadata: Metadata = {
 //   title: 'Paarsh Infotech Hub',
@@ -51,6 +51,7 @@ export default function RootLayout({
           <SiteSettingsProvider>
             {children}
             <Toaster />
+            <Chatbot />
           </SiteSettingsProvider>
         </StoreProvider>
       </body>
