@@ -1,11 +1,12 @@
+
 export const knowledgeBase = `
 ## About Paarsh Infotech
 
 - **Company Name**: Paarsh Infotech Pvt. Ltd.
 - **Founded**: 2018
 - **Location**: Nashik, India (with offices in Pune, Sangli, Surat, Dharwad, Jalgaon)
-- **Mission**: To provide world-class IT solutions, build lasting client relationships based on trust, and nurture future talent through comprehensive internship programs.
-- **Vision**: To be a globally recognized Web Solution company at the forefront of the IT sector, celebrated for innovative solutions and client success.
+- **Mission**: To provide world-class IT solutions, build lasting client relationships based on trust, and nurture future talent through comprehensive internship programs. We are dedicated to delivering exceptional value and quality.
+- **Vision**: To be a globally recognized Web Solution company at the forefront of the IT sector, celebrated for innovative solutions and unwavering commitment to client success.
 
 ## Core Services
 
@@ -18,8 +19,8 @@ export const knowledgeBase = `
 
 ## Flagship Products
 
-- **GlowvitaSalon**: A solution for salon management.
-- **PaarshEdu Product**: An educational product.
+- **GlowvitaSalon**: A comprehensive solution for salon management.
+- **PaarshEdu Product**: An educational product for modern learning.
 - **Paarsh CRM**: A tool for customer relationship management.
 - **Paarsh HRMS**: A system for human resource management.
 - **Paarsh ERP**: A solution for enterprise resource planning.
@@ -27,19 +28,30 @@ export const knowledgeBase = `
 
 ## Careers & Internships
 
-- **Opportunities**: Offers full-time jobs and internships.
-- **Internship Program**: 3-6 month program where interns work on live client projects under expert mentorship. Aims to provide real-world experience.
-- **Culture**: Collaborative, innovative, and focused on growth and learning.
+- **Opportunities**: We offer full-time jobs and internships.
+- **Internship Program**: A 3-6 month program where interns work on live client projects under expert mentorship, providing real-world experience. We have a strong track record of hiring our top-performing interns.
+- **Culture**: Collaborative, innovative, and focused on growth, learning, and celebrating successes together. We are committed to team members' professional development.
+- **Hiring Process**: Typically consists of an initial screening, a technical assessment, and a final interview. Remote and hybrid work options are available for many roles.
 
 ## Contact Information
 
 - **Primary Email**: info@paarshinfotech.com
 - **Secondary Email**: paarshinfotech@gmail.com
-- **Phone**: +91 98609 88343
+- **Phone**: +91 90752 01035
 - **Headquarters Address**: Office No. 1, Bhakti Apartment, near Hotel Rasoi, Suchita Nagar, Mumbai Naka, Nashik, Maharashtra, India, 422009.
-- **Working Hours**: Mon-Fri 9:30 AM - 6:30 PM, Sat 10:00 AM - 4:00 PM. Closed on Sunday.
+- **Working Hours**: Mon-Fri 9:30 AM - 6:30 PM; Sat 10:00 AM - 4:00 PM; Closed on Sunday.
+
+## Office Locations
+- **Nashik (HQ)**: Office No. 1, Bhakti Apartment, near Hotel Rasoi, Suchita Nagar, Mumbai Naka, Nashik, Maharashtra, 422009.
+- **Pune**: Pune, Maharashtra, 411001.
+- **Sangli**: G1 Pragati Residency, Lane No. 4, Pragati Colony, Near Diamond Hotel, 100 Ft. Road, Sangli, Maharashtra, 416416.
+- **Surat**: Office No. 12, Exceluss Business Space, Bhimrad Canal Road, Althan, Surat, Gujarat, 395017.
+- **Dharwad**: Office No. 1, Shelke Complex, Near Harimandir Mankilla, Dharwad, Karnataka, 580001.
+- **Jalgaon**: Gurukul Colony, near MJ College, Beside JDCC Bank, Jalgaon, Maharashtra, 425001.
 
 ## How to Get a Quote
+- Users can get a customized quote by filling out the form on the "Get a Quote" or "Request a Demo" pages on our website. We offer free initial consultations.
 
-- Users can get a customized quote by filling out the form on the "Get a Quote" or "Request a Demo" page.
+## Technology Stack
+We use modern technologies including React, Next.js, Python, Django, Node.js, PostgreSQL, MongoDB, Docker, AWS, Google Cloud, and Firebase.
 `;

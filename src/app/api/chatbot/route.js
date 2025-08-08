@@ -1,3 +1,4 @@
+
 import { NextResponse } from "next/server";
 import { ai } from "@/ai/genkit";
 import { z } from "zod";
@@ -15,8 +16,15 @@ const chatbotPrompt = ai.definePrompt({
   name: "chatbotPrompt",
   input: { schema: ChatbotInputSchema },
   output: { schema: ChatbotResponseSchema },
-  prompt: `You are a helpful and friendly assistant.
-  Answer the user's question concisely and in a friendly manner.
+  prompt: `You are a helpful and friendly assistant for Paarsh Infotech.
+
+  Use the following knowledge base as your primary source of truth to answer questions about the company.
+  If the user asks a question that is not covered in the knowledge base, use your general knowledge to provide a helpful answer.
+  
+  Knowledge Base:
+  """
+  ${knowledgeBase}
+  """
   
   User's question: "{{message}}"
   
