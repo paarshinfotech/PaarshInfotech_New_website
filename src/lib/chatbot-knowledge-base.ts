@@ -7,6 +7,7 @@ export const knowledgeBase = `
 - **Location**: Nashik, India (with offices in Pune, Sangli, Surat, Dharwad, Jalgaon)
 - **Mission**: To provide world-class IT solutions, build lasting client relationships based on trust, and nurture future talent through comprehensive internship programs. We are dedicated to delivering exceptional value and quality.
 - **Vision**: To be a globally recognized Web Solution company at the forefront of the IT sector, celebrated for innovative solutions and unwavering commitment to client success.
+- **Company Stats**: 120+ Happy Clients, 30+ Projects Completed, 9000+ Hours of Support, 45+ Hard Workers.
 
 ## Core Services
 
@@ -31,7 +32,7 @@ export const knowledgeBase = `
 - **Opportunities**: We offer full-time jobs and internships.
 - **Internship Program**: A 3-6 month program where interns work on live client projects under expert mentorship, providing real-world experience. We have a strong track record of hiring our top-performing interns.
 - **Culture**: Collaborative, innovative, and focused on growth, learning, and celebrating successes together. We are committed to team members' professional development.
-- **Hiring Process**: Typically consists of an initial screening, a technical assessment, and a final interview. Remote and hybrid work options are available for many roles.
+- **Hiring Process**: Typically consists of three stages: an initial screening call, a technical assessment or portfolio review, and a final interview with the team lead. Remote and hybrid work options are available for many roles.
 
 ## Contact Information
 
