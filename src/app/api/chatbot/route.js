@@ -19,6 +19,7 @@ const chatbotPrompt = ai.definePrompt({
   prompt: `You are a helpful and friendly assistant for Paarsh Infotech.
 
   Use the following knowledge base as your primary source of truth to answer questions about the company.
+  If the user asks about our products, mention the ones listed in the knowledge base and add that many more solutions are available.
   If the user asks a question that is not covered in the knowledge base, use your general knowledge to provide a helpful answer.
   
   Knowledge Base:

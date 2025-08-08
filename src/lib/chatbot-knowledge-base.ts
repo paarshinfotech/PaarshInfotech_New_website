@@ -22,12 +22,9 @@ export const knowledgeBase = `
 
 ## Flagship Products
 
-- **GlowvitaSalon**: A comprehensive solution for salon management.
-- **PaarshEdu Product**: An educational product for modern learning.
-- **Paarsh CRM**: A tool for customer relationship management.
-- **Paarsh HRMS**: A system for human resource management.
-- **Paarsh ERP**: A solution for enterprise resource planning.
-- **Paarsh E-Learn**: An e-learning platform.
+- **PaarshEdu**: A comprehensive educational platform for modern learning.
+- **GlowvitaSalon**: An all-in-one solution for salon and spa management.
+- **Nursery Solutions**: A specialized management software for plant nurseries.
 
 ## Careers & Internships
 
