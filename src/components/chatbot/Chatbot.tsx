@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -11,6 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { LuMessageSquare, LuSend, LuX, LuLoader } from "react-icons/lu";
 import { useSendMessageToChatbotMutation } from "@/services/api";
 import { ChatBubble } from "./ChatBubble";
+import { motion, AnimatePresence } from "framer-motion";
 
 const formSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -74,45 +76,53 @@ export default function Chatbot() {
       </div>
 
       {/* Chat Box */}
-      {isOpen && (
-        <div className="fixed bottom-24 right-6 z-50">
-          <Card className="w-80 h-[450px] flex flex-col shadow-2xl">
-            <CardHeader className="p-4 border-b">
-              <h3 className="font-bold text-lg text-primary">Chat with us</h3>
-            </CardHeader>
-            <CardContent className="p-4 flex-1 overflow-hidden">
-              <ScrollArea className="h-full pr-4">
-                <div className="space-y-4">
-                  {messages.map((msg, index) => (
-                    <ChatBubble key={index} message={msg} />
-                  ))}
-                  {isLoading && (
-                    <div className="flex justify-start">
-                      <LuLoader className="h-5 w-5 animate-spin text-muted-foreground" />
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-            </CardContent>
-            <CardFooter className="p-4 border-t">
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="flex w-full gap-2"
-              >
-                <Input
-                  {...form.register("message")}
-                  placeholder="Ask a question..."
-                  autoComplete="off"
-                  disabled={isLoading}
-                />
-                <Button type="submit" size="icon" disabled={isLoading}>
-                  <LuSend className="h-5 w-5" />
-                </Button>
-              </form>
-            </CardFooter>
-          </Card>
-        </div>
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="fixed bottom-24 right-6 z-50"
+          >
+            <Card className="w-80 h-[450px] flex flex-col shadow-2xl">
+              <CardHeader className="p-4 border-b">
+                <h3 className="font-bold text-lg text-primary">Chat with us</h3>
+              </CardHeader>
+              <CardContent className="p-4 flex-1 overflow-hidden">
+                <ScrollArea className="h-full pr-4">
+                  <div className="space-y-4">
+                    {messages.map((msg, index) => (
+                      <ChatBubble key={index} message={msg} />
+                    ))}
+                    {isLoading && (
+                      <div className="flex justify-start">
+                        <LuLoader className="h-5 w-5 animate-spin text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
+                </ScrollArea>
+              </CardContent>
+              <CardFooter className="p-4 border-t">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="flex w-full gap-2"
+                >
+                  <Input
+                    {...form.register("message")}
+                    placeholder="Ask a question..."
+                    autoComplete="off"
+                    disabled={isLoading}
+                  />
+                  <Button type="submit" size="icon" disabled={isLoading}>
+                    <LuSend className="h-5 w-5" />
+                  </Button>
+                </form>
+              </CardFooter>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
