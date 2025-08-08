@@ -176,12 +176,9 @@ export function EventRecapFormModal({
       });
 
       const galleryImagesWithNull = await Promise.all(galleryImagesPromises);
-      const galleryImages: GalleryImage[] | undefined = galleryImagesWithNull
-        .filter((img) => img !== null)
-        .map(
-          (img) =>
-            img && { alt: img.alt, hint: img.hint, imageUrl: img.imageUrl }
-        );
+      // Fixed: Properly filter and map the gallery images
+      const galleryImages: GalleryImage[] = galleryImagesWithNull
+        .filter((img): img is NonNullable<typeof img> => img !== null);
 
       await onSave({
         title: values.title,

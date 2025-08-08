@@ -71,7 +71,7 @@ interface Service {
   };
   process: { title: string; description: string; Icon: string | null }[]; // Updated Icon type
   impact: { title: string; metric: string; description: string; Icon: string | null }[]; // Updated Icon type
-  testimonial: { quote: string; name: string; role: string; avatar: string };
+  testimonial: { quote: string; name: string; role: string; avatarBase64: string };
   gallery: { src: string; alt: string; dataAiHint: string }[];
   industries: string[];
 }
@@ -156,7 +156,7 @@ export default function ServiceSlugPage() {
       quote: "No testimonial available",
       name: "",
       role: "",
-      avatar: "",
+      avatarBase64: "",
     },
     gallery: Array.isArray(service.gallery)
       ? service.gallery

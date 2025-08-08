@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        <title>Paarsh Infotech Hub</title>
+        <title>Paarsh Infotech</title>
         <meta
           name="description"
           content="Best Software Development Company in Nashik"

@@ -5,8 +5,8 @@ export const contactInfo = [
   {
     Icon: LuPhone,
     title: "Phone",
-    value: "+91 98609 88343",
-    href: "tel:+919860988343",
+    value: "+91 90752 01035",
+    href: "tel:+9190752 01035",
   },
   {
     Icon: LuMail,
@@ -27,37 +27,37 @@ export const officeLocations = [
         city: "Nashik Office (HQ)",
         address: "Office No. 1, Bhakti Apartment, near Hotel Rasoi, Suchita Nagar, Mumbai Naka, Nashik, Maharashtra, India",
         pincode: "422009",
-        mapUrl: "https://goo.gl/maps/bK7bJ8eR7z9y9A8t9"
+        mapUrl: "https://maps.app.goo.gl/saW7u7iZpXAMsTsy7"
     },
     {
         city: "Pune Office",
         address: "Pune, Maharashtra, India",
         pincode: "411001",
-        mapUrl: "https://goo.gl/maps/example"
+        mapUrl: "#"
     },
     {
         city: "Sangli Office",
         address: "G1 Pragati Residency, Lane No. 4, Pragati Colony, Near Diamond Hotel, 100 Ft. Road, Sangli, Maharashtra, India",
         pincode: "416416",
-        mapUrl: "https://goo.gl/maps/example"
+        mapUrl: "https://maps.app.goo.gl/VTAAToc3KuBoDnfn8"
     },
     {
         city: "Surat Office",
         address: "Office No. 12, Exceluss Business Space, Bhimrad Canal Road, Althan, Surat, Gujarat, India",
         pincode: "395017",
-        mapUrl: "https://goo.gl/maps/example"
+        mapUrl: "https://maps.app.goo.gl/Fuyc2qENvXAssq1D6"
     },
     {
         city: "Dharwad Office",
         address: "Office No. 1, Shelke Complex, Near Harimandir Mankilla, Dharwad, Karnataka, India",
         pincode: "580001",
-        mapUrl: "https://goo.gl/maps/example"
+        mapUrl: "#"
     },
     {
         city: "Jalgaon Office",
         address: "Gurukul Colony, near MJ College, Beside JDCC Bank, Jalgaon, Maharashtra, India",
         pincode: "425001",
-        mapUrl: "https://goo.gl/maps/example"
+        mapUrl: "https://maps.app.goo.gl/7AMoF7TMVWj9u23C6"
     }
 ];
 
@@ -87,8 +87,8 @@ export const contactFAQs = [
 ];
 
 export const socialLinks: { name: string, Icon: IconType, href: string }[] = [
-    { name: "LinkedIn", Icon: LuLinkedin, href: "#" },
+    { name: "LinkedIn", Icon: LuLinkedin, href: "https://www.linkedin.com/company/paarsh-infotech-private-limited/" },
     { name: "Facebook", Icon: LuFacebook, href: "#" },
     { name: "Twitter", Icon: LuTwitter, href: "#" },
-    { name: "Instagram", Icon: LuInstagram, href: "#" },
+    { name: "Instagram", Icon: LuInstagram, href: "https://www.instagram.com/paarsh_infotech?igsh=MWw3cmc2OG1oc3hwZw==" },
 ];

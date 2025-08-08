@@ -150,9 +150,9 @@
   }
   
   .animate-marquee-right {
-    animation: marquee-right 25s linear infinite;
+    animation: marquee-right 12s linear infinite;
   }
   
   .animate-marquee-left {
-    animation: marquee-left 25s linear infinite;
+    animation: marquee-left 12s linear infinite;
   }

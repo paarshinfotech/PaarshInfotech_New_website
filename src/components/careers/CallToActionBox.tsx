@@ -10,16 +10,22 @@ export default function CallToActionBox() {
           Ready to Start Your Journey?
         </h2>
         <p className="mt-6 text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto">
-          We are always looking for passionate and talented individuals to join our team. Explore our openings and take the next step in your career.
+          We are always looking for passionate and talented individuals to join
+          our team. Explore our openings and take the next step in your career.
         </p>
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="mt-8 flex flex-col md:flex-row lg:flex-row  justify-center gap-4">
           <Button asChild size="lg" variant="secondary">
             <Link href="#openings">
               View Openings
               <LuArrowRight className="ml-2" />
             </Link>
           </Button>
-           <Button asChild size="lg" variant="outline" className="bg-primary hover:bg-primary-foreground/10 text-primary-foreground border-primary-foreground/50">
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="bg-primary hover:bg-primary-foreground/10 text-primary-foreground border-primary-foreground/50"
+          >
             <Link href="/contact">Contact HR</Link>
           </Button>
         </div>

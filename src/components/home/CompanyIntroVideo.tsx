@@ -11,7 +11,7 @@ export default function CompanyIntroVideo() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // In a real app, this would come from a CMS or props
-  const videoSrc = "https://www.w3schools.com/html/mov_bbb.mp4"; // Placeholder video
+  const videoSrc = "/uploads/Innovoatorsvideo.mp4"; // Placeholder video
 
   return (
     <>
@@ -29,7 +29,7 @@ export default function CompanyIntroVideo() {
             onClick={() => setIsModalOpen(true)}
           >
             <Image
-              src="https://placehold.co/1280x720.png"
+              src="/images/home-page-video-thumbnail.jpg" // 
               alt="Company Introduction Video"
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-105"
