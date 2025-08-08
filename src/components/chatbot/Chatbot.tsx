@@ -67,7 +67,7 @@ export default function Chatbot() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="icon"
-          className="rounded-full h-16 w-16 shadow-lg"
+          className="rounded-full h-12 w-12 shadow-lg"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <LuX className="h-8 w-8" /> : <LuMessageSquare className="h-8 w-8" />}
@@ -113,6 +113,7 @@ export default function Chatbot() {
                     placeholder="Ask a question..."
                     autoComplete="off"
                     disabled={isLoading}
+                    className="flex-1"
                   />
                   <Button type="submit" size="icon" disabled={isLoading}>
                     <LuSend className="h-5 w-5" />
