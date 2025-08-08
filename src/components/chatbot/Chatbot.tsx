@@ -67,7 +67,7 @@ export default function Chatbot() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="icon"
-          className="rounded-full h-14 w-14 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
+          className="rounded-full h-12 w-12 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? (
@@ -89,7 +89,7 @@ export default function Chatbot() {
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="fixed bottom-24 right-6 z-50"
           >
-            <Card className="w-80 h-[450px] flex flex-col shadow-2xl rounded-xl overflow-hidden">
+            <Card className="w-96 h-[450px] flex flex-col shadow-2xl rounded-xl overflow-hidden">
               <CardHeader className="p-4 border-b bg-primary">
                 <h3 className="font-bold text-lg text-primary-foreground">Chat with us</h3>
               </CardHeader>
@@ -119,7 +119,7 @@ export default function Chatbot() {
                     disabled={isLoading}
                     className="flex-1 rounded-full"
                   />
-                  <Button type="submit" size="icon" disabled={isLoading} className="rounded-full">
+                  <Button type="submit" size="icon" disabled={isLoading} className="rounded-full ">
                     <LuSend className="h-5 w-5" />
                   </Button>
                 </form>
