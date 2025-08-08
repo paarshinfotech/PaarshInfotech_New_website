@@ -1,3 +1,4 @@
+
 export const knowledgeBase = `
 About Paarsh Infotech
 
@@ -72,11 +73,8 @@ Comprehensive testing services to ensure software reliability and performance.
 Flagship Products
 
 GlowvitaSalon: A complete salon management solution for bookings, inventory, and customer management.
-PaarshEdu Product: An educational platform designed for modern learning environments.
-Paarsh CRM: A customer relationship management tool to streamline client interactions.
-Paarsh HRMS: A human resource management system for workforce management.
-Paarsh ERP: An enterprise resource planning solution for business process optimization.
-Paarsh E-Learn: An e-learning platform launched in 2023, offering web development and IT training courses.
+PaarshEdu: An educational platform designed for modern learning environments.
+Nursery Solutions: A comprehensive management solution for plant nurseries.
 
 Internship Program
 
@@ -286,4 +284,5 @@ Security Concerns:
 Recent reports suggest potential malware issues on the website, which may require immediate attention to ensure user safety.
 
 
-Copyright: ©2025 Paarsh Infotech Pvt Ltd, indicating proactive updates to the website’s footer.`;
+Copyright: ©2025 Paarsh Infotech Pvt Ltd, indicating proactive updates to the website’s footer.
+`;
