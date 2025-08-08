@@ -1,4 +1,4 @@
-# **App Name**: Paarsh Infotech Hub
+# **App Name**: Paarsh Infotech 
 
 ## Core Features:
 
