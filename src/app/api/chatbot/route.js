@@ -15,14 +15,8 @@ const chatbotPrompt = ai.definePrompt({
   name: "chatbotPrompt",
   input: { schema: ChatbotInputSchema },
   output: { schema: ChatbotResponseSchema },
-  prompt: `You are a helpful and friendly assistant for the Paarsh Infotech website.
-  Your goal is to answer user questions based *only* on the provided knowledge base.
-  If the user's question is about something not covered in the knowledge base, you MUST respond with: "I can only answer questions about this website."
-
-  Here is the knowledge base:
-  ---
-  ${knowledgeBase}
-  ---
+  prompt: `You are a helpful and friendly assistant.
+  Answer the user's question concisely and in a friendly manner.
   
   User's question: "{{message}}"
   
