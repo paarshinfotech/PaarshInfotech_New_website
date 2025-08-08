@@ -32,7 +32,7 @@ export const knowledgeBase = `
 - **Opportunities**: We offer full-time jobs and internships.
 - **Internship Program**: A 3-6 month program where interns work on live client projects under expert mentorship, providing real-world experience. We have a strong track record of hiring our top-performing interns.
 - **Culture**: Collaborative, innovative, and focused on growth, learning, and celebrating successes together. We are committed to team members' professional development.
-- **Hiring Process**: Typically consists of three stages: an initial screening call, a technical assessment or portfolio review, and a final interview with the team lead. Remote and hybrid work options are available for many roles.
+- **Hiring Process**: Typically consists of three stages: an initial screening call, a technical assessment or portfolio review, and a final interview with the team lead. Remote and hybrid work options are not available for many roles.
 
 ## Contact Information
 
