@@ -13,6 +13,12 @@ import { LuMessageSquare, LuSend, LuX, LuLoader } from "react-icons/lu";
 import { useSendMessageToChatbotMutation } from "@/services/api";
 import { ChatBubble } from "./ChatBubble";
 import { motion, AnimatePresence } from "framer-motion";
+import dynamic from 'next/dynamic';
+
+const ChatbotIcon = dynamic(() => import('@/components/three/ChatbotIcon'), {
+  ssr: false,
+  loading: () => <div className="h-8 w-8" />,
+});
 
 const formSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -67,10 +73,14 @@ export default function Chatbot() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="icon"
-          className="rounded-full h-12 w-12 shadow-lg"
+          className="rounded-full h-16 w-16 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? <LuX className="h-8 w-8" /> : <LuMessageSquare className="h-8 w-8" />}
+          {isOpen ? (
+            <LuX className="h-8 w-8 text-white" />
+          ) : (
+            <ChatbotIcon />
+          )}
           <span className="sr-only">Toggle Chat</span>
         </Button>
       </div>
@@ -85,11 +95,11 @@ export default function Chatbot() {
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="fixed bottom-24 right-6 z-50"
           >
-            <Card className="w-96 h-[450px] flex flex-col shadow-2xl">
-              <CardHeader className="p-4 border-b">
-                <h3 className="font-bold text-lg text-primary">Chat with us</h3>
+            <Card className="w-96 h-[450px] flex flex-col shadow-2xl rounded-xl overflow-hidden">
+              <CardHeader className="p-4 border-b bg-gradient-to-br from-primary to-primary/80">
+                <h3 className="font-bold text-lg text-primary-foreground">Chat with us</h3>
               </CardHeader>
-              <CardContent className="p-4 flex-1 overflow-hidden">
+              <CardContent className="p-4 flex-1 overflow-hidden bg-secondary/30">
                 <ScrollArea className="h-full pr-4">
                   <div className="space-y-4">
                     {messages.map((msg, index) => (
@@ -103,7 +113,7 @@ export default function Chatbot() {
                   </div>
                 </ScrollArea>
               </CardContent>
-              <CardFooter className="p-4 border-t">
+              <CardFooter className="p-4 border-t bg-background">
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="flex w-full gap-2"
@@ -113,9 +123,9 @@ export default function Chatbot() {
                     placeholder="Ask a question..."
                     autoComplete="off"
                     disabled={isLoading}
-                    className="flex-1"
+                    className="flex-1 rounded-full"
                   />
-                  <Button type="submit" size="icon" disabled={isLoading}>
+                  <Button type="submit" size="icon" disabled={isLoading} className="rounded-full">
                     <LuSend className="h-5 w-5" />
                   </Button>
                 </form>
