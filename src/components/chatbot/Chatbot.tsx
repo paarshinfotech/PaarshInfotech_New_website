@@ -13,12 +13,6 @@ import { LuMessageSquare, LuSend, LuX, LuLoader } from "react-icons/lu";
 import { useSendMessageToChatbotMutation } from "@/services/api";
 import { ChatBubble } from "./ChatBubble";
 import { motion, AnimatePresence } from "framer-motion";
-import dynamic from 'next/dynamic';
-
-const ChatbotIcon = dynamic(() => import('@/components/three/ChatbotIcon'), {
-  ssr: false,
-  loading: () => <div className="h-8 w-8" />,
-});
 
 const formSchema = z.object({
   message: z.string().min(1, "Message cannot be empty"),
@@ -73,13 +67,13 @@ export default function Chatbot() {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="icon"
-          className="rounded-full h-16 w-16 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
+          className="rounded-full h-14 w-14 shadow-lg flex items-center justify-center bg-primary hover:bg-primary/90"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? (
-            <LuX className="h-8 w-8 text-white" />
+            <LuX className="h-7 w-7 text-white" />
           ) : (
-            <ChatbotIcon />
+            <LuMessageSquare className="h-7 w-7 text-white" />
           )}
           <span className="sr-only">Toggle Chat</span>
         </Button>
@@ -95,8 +89,8 @@ export default function Chatbot() {
             transition={{ duration: 0.3, ease: "easeOut" }}
             className="fixed bottom-24 right-6 z-50"
           >
-            <Card className="w-96 h-[450px] flex flex-col shadow-2xl rounded-xl overflow-hidden">
-              <CardHeader className="p-4 border-b bg-gradient-to-br from-primary to-primary/80">
+            <Card className="w-80 h-[450px] flex flex-col shadow-2xl rounded-xl overflow-hidden">
+              <CardHeader className="p-4 border-b bg-primary">
                 <h3 className="font-bold text-lg text-primary-foreground">Chat with us</h3>
               </CardHeader>
               <CardContent className="p-4 flex-1 overflow-hidden bg-secondary/30">
