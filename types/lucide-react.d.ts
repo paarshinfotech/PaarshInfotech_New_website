@@ -8,5 +8,15 @@ declare module 'lucide-react' {
   export const Eye: React.FC<React.SVGProps<SVGSVGElement>>;
   export const EyeOff: React.FC<React.SVGProps<SVGSVGElement>>;
   export const ChevronDown: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const Filter: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const X: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const ChevronLeft: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const ChevronRight: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const ChevronsLeft: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const ChevronsRight: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const Download: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const RefreshCw: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const MoreVertical: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const Search: React.FC<React.SVGProps<SVGSVGElement>>;
   // Add other icon exports as needed
 }

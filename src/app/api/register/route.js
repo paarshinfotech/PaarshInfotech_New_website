@@ -11,7 +11,68 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get('limit') || '10');
     const skip = (page - 1) * limit;
     
-    const registrations = await Registration.find({ isActive: true })
+    // Build filter query
+    const filter = { isActive: true };
+    
+    // Search query (name, email, registration number)
+    // Note: We'll filter by college name client-side since it's a populated field
+    const search = searchParams.get('search');
+    if (search) {
+      filter.$or = [
+        { fullName: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+        { contactNumber: { $regex: search, $options: 'i' } },
+        { registrationNumber: { $regex: search, $options: 'i' } },
+      ];
+    }
+    
+    // Filter by college
+    const college = searchParams.get('college');
+    if (college) {
+      filter.college = college;
+    }
+    
+    // Filter by internship type
+    const internshipType = searchParams.get('internshipType');
+    if (internshipType) {
+      filter.internshipType = internshipType;
+    }
+    
+    // Filter by attendance mode
+    const attendanceMode = searchParams.get('attendanceMode');
+    if (attendanceMode) {
+      filter.attendanceMode = attendanceMode;
+    }
+    
+    // Filter by duration
+    const duration = searchParams.get('duration');
+    if (duration) {
+      filter.internshipDuration = duration;
+    }
+    
+    // Filter by hasLaptop
+    const hasLaptop = searchParams.get('hasLaptop');
+    if (hasLaptop) {
+      filter.hasLaptop = hasLaptop === 'true';
+    }
+    
+    // Filter by joining date range
+    const joiningDateFrom = searchParams.get('joiningDateFrom');
+    const joiningDateTo = searchParams.get('joiningDateTo');
+    if (joiningDateFrom || joiningDateTo) {
+      filter.joiningDate = {};
+      if (joiningDateFrom) {
+        filter.joiningDate.$gte = new Date(joiningDateFrom);
+      }
+      if (joiningDateTo) {
+        // Set to end of day for the "to" date
+        const endDate = new Date(joiningDateTo);
+        endDate.setHours(23, 59, 59, 999);
+        filter.joiningDate.$lte = endDate;
+      }
+    }
+    
+    let registrations = await Registration.find(filter)
       .populate('college')
       .populate('internshipType')
       .populate('attendanceMode')
@@ -20,7 +81,19 @@ export async function GET(request) {
       .skip(skip)
       .limit(limit);
     
-    const total = await Registration.countDocuments({ isActive: true });
+    // If search query exists, also filter by college name after population
+    if (search && !college) {
+      const searchLower = search.toLowerCase();
+      registrations = registrations.filter(reg => 
+        reg.fullName.toLowerCase().includes(searchLower) ||
+        reg.email.toLowerCase().includes(searchLower) ||
+        reg.contactNumber.includes(searchLower) ||
+        reg.registrationNumber.toLowerCase().includes(searchLower) ||
+        (reg.college && reg.college.name && reg.college.name.toLowerCase().includes(searchLower))
+      );
+    }
+    
+    const total = await Registration.countDocuments(filter);
     
     return NextResponse.json({ 
       success: true, 

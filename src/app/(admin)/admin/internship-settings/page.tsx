@@ -27,9 +27,35 @@ import {
   TabsList,
   TabsTrigger,
 } from '@/components/ui/tabs';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Plus, Pencil, Trash2 } from 'lucide-react';
+import { Loader2, Plus, Pencil, Trash2, MoreVertical, Eye, Download, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { format } from 'date-fns';
 
 interface College {
   _id: string;
@@ -68,6 +94,19 @@ export default function InternshipSettingsPage() {
   const [durations, setDurations] = useState<Duration[]>([]);
   const [modes, setModes] = useState<Mode[]>([]);
   
+  // Search states for each tab
+  const [collegeSearch, setCollegeSearch] = useState('');
+  const [typeSearch, setTypeSearch] = useState('');
+  const [durationSearch, setDurationSearch] = useState('');
+  const [modeSearch, setModeSearch] = useState('');
+  
+  // Pagination states
+  const [collegePage, setCollegePage] = useState(1);
+  const [typePage, setTypePage] = useState(1);
+  const [durationPage, setDurationPage] = useState(1);
+  const [modePage, setModePage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  
   const [termsContent, setTermsContent] = useState('');
   const [refundContent, setRefundContent] = useState('');
   const [isSavingPolicy, setIsSavingPolicy] = useState(false);
@@ -75,6 +114,9 @@ export default function InternshipSettingsPage() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogType, setDialogType] = useState<'college' | 'type' | 'duration' | 'mode'>('college');
   const [editingItem, setEditingItem] = useState<any>(null);
+  
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{ type: string; id: string; name: string } | null>(null);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -175,6 +217,11 @@ export default function InternshipSettingsPage() {
 
   // Handle paste event for bulk adding
   const handlePaste = async (e: React.ClipboardEvent<HTMLInputElement>) => {
+    // Disable bulk paste when editing an existing item
+    if (editingItem) {
+      return; // Allow normal paste behavior for editing
+    }
+    
     const pastedText = e.clipboardData.getData('text');
     const lines = pastedText.split('\n').filter(line => line.trim() !== '');
     
@@ -313,8 +360,13 @@ export default function InternshipSettingsPage() {
     }
   };
 
-  const handleDelete = async (type: 'college' | 'type' | 'duration' | 'mode', id: string) => {
-    if (!confirm('Are you sure you want to delete this item?')) return;
+  const handleDeleteClick = (type: string, id: string, name: string) => {
+    setItemToDelete({ type, id, name });
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!itemToDelete) return;
 
     try {
       const endpoint = {
@@ -322,9 +374,9 @@ export default function InternshipSettingsPage() {
         type: '/api/internship-types',
         duration: '/api/durations',
         mode: '/api/modes',
-      }[type];
+      }[itemToDelete.type as 'college' | 'type' | 'duration' | 'mode'];
 
-      const response = await fetch(`${endpoint}?id=${id}`, {
+      const response = await fetch(`${endpoint}?id=${itemToDelete.id}`, {
         method: 'DELETE',
       });
 
@@ -345,7 +397,95 @@ export default function InternshipSettingsPage() {
         description: error.message || 'Failed to delete',
         variant: 'destructive',
       });
+    } finally {
+      setDeleteDialogOpen(false);
+      setItemToDelete(null);
     }
+  };
+
+  // Filter and paginate data
+  const filterAndPaginate = (items: any[], searchTerm: string, page: number) => {
+    const filtered = items.filter(item =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.location && item.location.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+    
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginated = filtered.slice(startIndex, endIndex);
+    
+    return {
+      items: paginated,
+      total: filtered.length,
+      pages: Math.ceil(filtered.length / itemsPerPage),
+      allFiltered: filtered,
+    };
+  };
+
+  // Export to CSV
+  const exportToCSV = (type: 'college' | 'type' | 'duration' | 'mode') => {
+    const data = {
+      college: colleges,
+      type: internshipTypes,
+      duration: durations,
+      mode: modes,
+    }[type];
+
+    if (data.length === 0) {
+      toast({
+        title: 'No Data',
+        description: 'There are no items to export',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    let headers: string[] = [];
+    let rows: string[][] = [];
+
+    if (type === 'college') {
+      headers = ['Name', 'Location', 'Active'];
+      rows = data.map((item: any) => [
+        item.name,
+        item.location || '',
+        item.isActive ? 'Yes' : 'No',
+      ]);
+    } else if (type === 'type' || type === 'mode') {
+      headers = ['Name', 'Description', 'Active'];
+      rows = data.map((item: any) => [
+        item.name,
+        item.description || '',
+        item.isActive ? 'Yes' : 'No',
+      ]);
+    } else if (type === 'duration') {
+      headers = ['Name', 'Duration (Months)', 'Active'];
+      rows = data.map((item: any) => [
+        item.name,
+        item.durationInMonths?.toString() || '',
+        item.isActive ? 'Yes' : 'No',
+      ]);
+    }
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${type}_${format(new Date(), 'yyyy-MM-dd_HHmmss')}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    toast({
+      title: 'Export Successful',
+      description: `Exported ${data.length} items to CSV`,
+    });
   };
 
   const savePolicy = async (type: 'terms' | 'refund') => {
@@ -377,76 +517,142 @@ export default function InternshipSettingsPage() {
         description: error.message || 'Failed to save',
         variant: 'destructive',
       });
+    } finally {
+      setIsSavingPolicy(false);
     }
   };
 
   const renderTable = (
     items: any[],
     type: 'college' | 'type' | 'duration' | 'mode',
-    columns: string[]
-  ) => (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">
-          {type === 'college' && 'Colleges'}
-          {type === 'type' && 'Internship Types'}
-          {type === 'duration' && 'Durations'}
-          {type === 'mode' && 'Attendance Modes'}
-        </h3>
-        <Button onClick={() => openDialog(type)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Add New
-        </Button>
-      </div>
-      
-      <Table>
-        <TableHeader>
-          <TableRow>
-            {columns.map((col) => (
-              <TableHead key={col}>{col}</TableHead>
-            ))}
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {items.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={columns.length + 1} className="text-center text-muted-foreground">
-                No items found
-              </TableCell>
-            </TableRow>
-          ) : (
-            items.map((item) => (
-              <TableRow key={item._id}>
-                <TableCell>{item.name}</TableCell>
-                {type === 'college' && <TableCell>{item.location || '-'}</TableCell>}
-                {(type === 'type' || type === 'mode') && <TableCell>{item.description || '-'}</TableCell>}
-                {type === 'duration' && <TableCell>{item.durationInMonths} months</TableCell>}
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openDialog(type, item)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDelete(type, item._id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </TableCell>
+    columns: string[],
+    searchTerm: string,
+    setSearchTerm: (value: string) => void,
+    currentPage: number,
+    setCurrentPage: (page: number) => void
+  ) => {
+    const { items: paginatedItems, total, pages } = filterAndPaginate(items, searchTerm, currentPage);
+    
+    return (
+      <div className="space-y-4">
+        {/* Header with Search and Actions */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex-1 w-full sm:w-auto">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder={`Search ${type === 'college' ? 'colleges' : type === 'type' ? 'internship types' : type === 'duration' ? 'durations' : 'attendance modes'}...`}
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="pl-10 max-w-sm"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => exportToCSV(type)}>
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+            <Button onClick={() => openDialog(type)} size="sm">
+              <Plus className="h-4 w-4 mr-2" />
+              Add New
+            </Button>
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {columns.map((col) => (
+                  <TableHead key={col}>{col}</TableHead>
+                ))}
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  );
+            </TableHeader>
+            <TableBody>
+              {paginatedItems.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columns.length + 1} className="text-center text-muted-foreground py-8">
+                    {searchTerm ? 'No matching items found' : 'No items found'}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                paginatedItems.map((item) => (
+                  <TableRow key={item._id}>
+                    <TableCell>{item.name}</TableCell>
+                    {type === 'college' && <TableCell>{item.location || '-'}</TableCell>}
+                    {(type === 'type' || type === 'mode') && <TableCell>{item.description || '-'}</TableCell>}
+                    {type === 'duration' && <TableCell>{item.durationInMonths} months</TableCell>}
+                    <TableCell className="text-right">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <MoreVertical className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => openDialog(type, item)}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            onClick={() => handleDeleteClick(type, item._id, item.name)}
+                            className="text-red-600 focus:text-red-600"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        {/* Pagination */}
+        {pages > 1 && (
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-sm text-muted-foreground">
+              Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, total)} of {total} items
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Previous
+              </Button>
+              <div className="text-sm">
+                Page {currentPage} of {pages}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === pages}
+              >
+                Next
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -470,19 +676,19 @@ export default function InternshipSettingsPage() {
               </TabsList>
               
               <TabsContent value="colleges">
-                {renderTable(colleges, 'college', ['Name', 'Location'])}
+                {renderTable(colleges, 'college', ['Name', 'Location'], collegeSearch, setCollegeSearch, collegePage, setCollegePage)}
               </TabsContent>
               
               <TabsContent value="types">
-                {renderTable(internshipTypes, 'type', ['Name', 'Description'])}
+                {renderTable(internshipTypes, 'type', ['Name', 'Description'], typeSearch, setTypeSearch, typePage, setTypePage)}
               </TabsContent>
               
               <TabsContent value="durations">
-                {renderTable(durations, 'duration', ['Name', 'Duration'])}
+                {renderTable(durations, 'duration', ['Name', 'Duration'], durationSearch, setDurationSearch, durationPage, setDurationPage)}
               </TabsContent>
               
               <TabsContent value="modes">
-                {renderTable(modes, 'mode', ['Name', 'Description'])}
+                {renderTable(modes, 'mode', ['Name', 'Description'], modeSearch, setModeSearch, modePage, setModePage)}
               </TabsContent>
               
               <TabsContent value="terms">
@@ -564,7 +770,11 @@ export default function InternshipSettingsPage() {
       </div>
 
       {/* Dialog for Add/Edit */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={(open) => {
+        if (!open) {
+          closeDialog();
+        }
+      }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
@@ -589,8 +799,7 @@ export default function InternshipSettingsPage() {
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   onPaste={handlePaste}
-                  placeholder="Enter name (or paste multiple names, one per line)"
-                  disabled={editingItem !== null} // Disable paste for editing
+                  placeholder={editingItem ? "Enter name" : "Enter name (or paste multiple names, one per line)"}
                 />
                 {!editingItem && (
                   <p className="text-xs text-muted-foreground mt-3">
@@ -657,6 +866,27 @@ export default function InternshipSettingsPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will permanently delete <strong>{itemToDelete?.name}</strong> from the database.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
