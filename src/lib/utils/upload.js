@@ -30,8 +30,8 @@ export async function uploadFile(buffer, fileName, mimeType) {
         // Get file extension from MIME type
         const extension = mimeType.split("/")[1] || 'jpg';
         
-        // Generate a unique file name
-        const fullFileName = `${Date.now()}-${fileName}.${extension}`;
+        // Generate a unique file name (fileName already contains timestamp)
+        const fullFileName = `${fileName}.${extension}`;
         const filePath = path.join(UPLOAD_DIR, fullFileName);
         
         // Save the file

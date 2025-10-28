@@ -86,6 +86,11 @@ const excellenceCenterLinks = [
   { href: "/admin/excellence-center/feedbacks", label: "Feedbacks" },
 ];
 
+const internshipLinks = [
+  { href: "/admin/registrations", label: "Registrations" },
+  { href: "/admin/internship-settings", label: "Settings" },
+];
+
 const settingsLink = {
   href: "/admin/settings",
   label: "Settings",
@@ -99,6 +104,7 @@ export function AdminSidebar() {
   const isTeamSectionOpen = pathname.startsWith("/admin/team");
   const isCareerSectionOpen = pathname.startsWith("/admin/careers");
   const isExcellenceCenterSectionOpen = pathname.startsWith("/admin/excellence-center");
+  const isInternshipSectionOpen = pathname.startsWith("/admin/registrations") || pathname.startsWith("/admin/internship-settings");
 
   const handleLogout = () => {
     setIsLoggingOut(true);
@@ -186,6 +192,22 @@ export function AdminSidebar() {
             </CollapsibleTrigger>
             <CollapsibleContent className="space-y-1 pt-1">
               {excellenceCenterLinks.map((link) => (
+                <NavLink key={link.href} {...link} isSubItem />
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+
+          <Collapsible defaultOpen={isInternshipSectionOpen}>
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between">
+                <span className="flex items-center gap-2">
+                  <LuFileText className="h-4 w-4" /> Internship
+                </span>
+                <LuChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="space-y-1 pt-1">
+              {internshipLinks.map((link) => (
                 <NavLink key={link.href} {...link} isSubItem />
               ))}
             </CollapsibleContent>

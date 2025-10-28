@@ -1,5 +1,12 @@
 declare module 'lucide-react' {
   import * as React from 'react';
   export const Loader2: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const Check: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const Plus: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const Pencil: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const Trash2: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const Eye: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const EyeOff: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const ChevronDown: React.FC<React.SVGProps<SVGSVGElement>>;
   // Add other icon exports as needed
 }

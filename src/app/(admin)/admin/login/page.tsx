@@ -16,12 +16,14 @@ import { LuLoader } from "react-icons/lu";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { Eye, EyeOff } from "lucide-react";
 
 
 export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
   const { login } = useAuth();
@@ -37,7 +39,10 @@ export default function AdminLoginPage() {
           title: "Login Successful",
           description: "Redirecting to the dashboard...",
         });
-        router.push("/admin/dashboard");
+        // Use setTimeout to allow toast to show before redirect
+        setTimeout(() => {
+          router.replace("/admin/dashboard");
+        }, 500);
       } else {
         toast({
           variant: "destructive",
@@ -65,7 +70,7 @@ export default function AdminLoginPage() {
               <Input
                 id="username"
                 type="text"
-                placeholder="admin"
+                placeholder="paarshinfotech.com"
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -73,14 +78,28 @@ export default function AdminLoginPage() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="********"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="********"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
+                </button>
+              </div>
             </div>
           </CardContent>
           <CardFooter>

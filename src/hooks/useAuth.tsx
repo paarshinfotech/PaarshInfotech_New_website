@@ -46,6 +46,8 @@ export function useAuth() {
     };
   }, [checkAuth]);
 
+  // username: 'paarshinfotech.com', password: 'PaarshInfotech#5891'
+
   const login = (username?: string, password?: string): boolean => {
     if (username === 'paarshinfotech.com' && password === 'PaarshInfotech#5891') {
       const expirationTime = new Date().getTime() + 5 * 24 * 60 * 60 * 1000; // 5 days
