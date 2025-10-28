@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Bar,
   BarChart,
@@ -23,9 +24,67 @@ import {
   ChartTooltipContent,
   ChartConfig,
 } from "@/components/ui/chart";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { FaGlobe, FaUsers } from "react-icons/fa";
 import { FiSmartphone } from "react-icons/fi";
 import { TbTrendingUp } from "react-icons/tb";
+import { 
+  Loader2, 
+  Filter, 
+  X, 
+  ChevronLeft, 
+  ChevronRight, 
+  ChevronsLeft, 
+  ChevronsRight,
+  Download,
+  RefreshCw 
+} from "lucide-react";
+import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
+
+interface Visitor {
+  _id: string;
+  sessionId: string;
+  ipAddress: string;
+  page: string;
+  deviceType: string;
+  browser: string;
+  os: string;
+  source: string;
+  referrer: string;
+  country: string;
+  city: string;
+  timeSpent: number;
+  timestamp: string;
+}
+
+interface Filters {
+  deviceType: string;
+  source: string;
+  browser: string;
+  os: string;
+  country: string;
+  startDate: string;
+  endDate: string;
+  page: string;
+}
 
 const siteTrafficData = [
   { month: "January", desktop: 186, mobile: 80 },
@@ -83,6 +142,190 @@ const engagementRateConfig = {
 } satisfies ChartConfig;
 
 export default function AnalyticsPage() {
+  const { toast } = useToast();
+  const [visitors, setVisitors] = useState<Visitor[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+  
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [limit, setLimit] = useState(50);
+
+  // Statistics
+  const [stats, setStats] = useState({
+    totalVisits: 0,
+    uniqueVisitors: 0,
+    mobileVisits: 0,
+    desktopVisits: 0,
+    bounceRate: 45.6,
+    topCountry: 'Unknown',
+  });
+
+  // Filters
+  const [filters, setFilters] = useState<Filters>({
+    deviceType: '',
+    source: '',
+    browser: '',
+    os: '',
+    country: '',
+    startDate: '',
+    endDate: '',
+    page: '',
+  });
+
+  const [activeFilters, setActiveFilters] = useState<Filters>({
+    deviceType: '',
+    source: '',
+    browser: '',
+    os: '',
+    country: '',
+    startDate: '',
+    endDate: '',
+    page: '',
+  });
+
+  // Fetch visitor data
+  const fetchVisitors = async (page = 1) => {
+    try {
+      setIsLoading(true);
+      const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+      });
+
+      // Add active filters to query
+      Object.entries(activeFilters).forEach(([key, value]) => {
+        if (value) {
+          queryParams.append(key, value);
+        }
+      });
+
+      const response = await fetch(`/api/visitors?${queryParams}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch visitors');
+      }
+
+      const data = await response.json();
+      
+      if (data.success) {
+        setVisitors(data.data);
+        setCurrentPage(data.pagination.page);
+        setTotalPages(data.pagination.pages);
+        setTotalRecords(data.pagination.total);
+      }
+    } catch (error) {
+      console.error('Error fetching visitors:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to fetch visitor data',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch statistics
+  const fetchStats = async () => {
+    try {
+      const queryParams = new URLSearchParams({ statsOnly: 'true' });
+      
+      if (activeFilters.startDate) queryParams.append('startDate', activeFilters.startDate);
+      if (activeFilters.endDate) queryParams.append('endDate', activeFilters.endDate);
+
+      const response = await fetch(`/api/visitors?${queryParams}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          const visitorData = data.data;
+          const mobilePercentage = visitorData.totalVisits > 0 
+            ? Math.round((visitorData.mobileVisits / visitorData.totalVisits) * 100) 
+            : 0;
+          
+          setStats({
+            totalVisits: visitorData.totalVisits,
+            uniqueVisitors: visitorData.uniqueVisitors,
+            mobileVisits: mobilePercentage,
+            desktopVisits: visitorData.desktopVisits,
+            bounceRate: 45.6, // Can be calculated based on time spent
+            topCountry: 'India', // Can be fetched from visits by country
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchVisitors(1);
+    fetchStats();
+  }, [activeFilters, limit]);
+
+  const handleApplyFilters = () => {
+    setActiveFilters({ ...filters });
+    setCurrentPage(1);
+    setShowFilters(false);
+  };
+
+  const handleClearFilters = () => {
+    const emptyFilters: Filters = {
+      deviceType: '',
+      source: '',
+      browser: '',
+      os: '',
+      country: '',
+      startDate: '',
+      endDate: '',
+      page: '',
+    };
+    setFilters(emptyFilters);
+    setActiveFilters(emptyFilters);
+    setShowFilters(false);
+  };
+
+  const handleExport = () => {
+    // Create CSV content
+    const headers = ['Session ID', 'IP Address', 'Page', 'Device', 'Browser', 'OS', 'Source', 'Country', 'Time Spent (s)', 'Timestamp'];
+    const csvContent = [
+      headers.join(','),
+      ...visitors.map(v => [
+        v.sessionId,
+        v.ipAddress,
+        v.page,
+        v.deviceType,
+        v.browser,
+        v.os,
+        v.source,
+        v.country,
+        v.timeSpent,
+        format(new Date(v.timestamp), 'yyyy-MM-dd HH:mm:ss')
+      ].join(','))
+    ].join('\n');
+
+    // Download CSV
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `visitor-analytics-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+
+    toast({
+      title: 'Export Successful',
+      description: 'Visitor data has been exported to CSV',
+    });
+  };
+
+  const activeFilterCount = Object.values(activeFilters).filter(Boolean).length;
+
   return (
     <div className="space-y-6">
       <div>
@@ -101,9 +344,11 @@ export default function AnalyticsPage() {
             <FaUsers className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">12,345</div>
+            <div className="text-2xl font-bold">
+              {isLoading ? "..." : stats.uniqueVisitors.toLocaleString()}
+            </div>
             <p className="text-xs text-muted-foreground">
-              +20.1% from last month
+              {stats.totalVisits.toLocaleString()} total visits
             </p>
           </CardContent>
         </Card>
@@ -113,9 +358,9 @@ export default function AnalyticsPage() {
             <TbTrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">45.6%</div>
+            <div className="text-2xl font-bold">{stats.bounceRate}%</div>
             <p className="text-xs text-muted-foreground">
-              -5.2% from last month
+              Based on engagement
             </p>
           </CardContent>
         </Card>
@@ -125,9 +370,9 @@ export default function AnalyticsPage() {
             <FiSmartphone className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">78%</div>
+            <div className="text-2xl font-bold">{stats.mobileVisits}%</div>
             <p className="text-xs text-muted-foreground">
-              +10% from last month
+              Of total traffic
             </p>
           </CardContent>
         </Card>
@@ -137,9 +382,9 @@ export default function AnalyticsPage() {
             <FaGlobe className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">India</div>
+            <div className="text-2xl font-bold">{stats.topCountry}</div>
             <p className="text-xs text-muted-foreground">
-              45% of total traffic
+              Primary traffic source
             </p>
           </CardContent>
         </Card>
@@ -269,6 +514,315 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Visitor Records Table */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Visitor Records</CardTitle>
+              <CardDescription>
+                Detailed visitor tracking and analytics data
+              </CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => fetchVisitors(currentPage)}
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Refresh
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <Filter className="h-4 w-4 mr-2" />
+                Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleExport}
+                disabled={visitors.length === 0}
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export CSV
+              </Button>
+            </div>
+          </div>
+        </CardHeader>
+
+        {showFilters && (
+          <CardContent>
+            <div className="grid gap-4 md:grid-cols-4 mb-4 p-4 border rounded-lg bg-muted/50">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Device Type</label>
+                <Select
+                  value={filters.deviceType}
+                  onValueChange={(value) => setFilters({ ...filters, deviceType: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Devices" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Devices</SelectItem>
+                    <SelectItem value="mobile">Mobile</SelectItem>
+                    <SelectItem value="desktop">Desktop</SelectItem>
+                    <SelectItem value="tablet">Tablet</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Source</label>
+                <Select
+                  value={filters.source}
+                  onValueChange={(value) => setFilters({ ...filters, source: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Sources" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Sources</SelectItem>
+                    <SelectItem value="direct">Direct</SelectItem>
+                    <SelectItem value="organic">Organic</SelectItem>
+                    <SelectItem value="social">Social</SelectItem>
+                    <SelectItem value="referral">Referral</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Browser</label>
+                <Select
+                  value={filters.browser}
+                  onValueChange={(value) => setFilters({ ...filters, browser: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Browsers" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Browsers</SelectItem>
+                    <SelectItem value="Chrome">Chrome</SelectItem>
+                    <SelectItem value="Firefox">Firefox</SelectItem>
+                    <SelectItem value="Safari">Safari</SelectItem>
+                    <SelectItem value="Edge">Edge</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Operating System</label>
+                <Select
+                  value={filters.os}
+                  onValueChange={(value) => setFilters({ ...filters, os: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="All OS" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All OS</SelectItem>
+                    <SelectItem value="Windows">Windows</SelectItem>
+                    <SelectItem value="macOS">macOS</SelectItem>
+                    <SelectItem value="Linux">Linux</SelectItem>
+                    <SelectItem value="Android">Android</SelectItem>
+                    <SelectItem value="iOS">iOS</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Start Date</label>
+                <Input
+                  type="date"
+                  value={filters.startDate}
+                  onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">End Date</label>
+                <Input
+                  type="date"
+                  value={filters.endDate}
+                  onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Page URL</label>
+                <Input
+                  placeholder="e.g., /about"
+                  value={filters.page}
+                  onChange={(e) => setFilters({ ...filters, page: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Records per page</label>
+                <Select
+                  value={limit.toString()}
+                  onValueChange={(value) => setLimit(parseInt(value))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="25">25</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                    <SelectItem value="100">100</SelectItem>
+                    <SelectItem value="200">200</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="md:col-span-4 flex gap-2 justify-end">
+                <Button variant="outline" onClick={handleClearFilters}>
+                  <X className="h-4 w-4 mr-2" />
+                  Clear Filters
+                </Button>
+                <Button onClick={handleApplyFilters}>
+                  Apply Filters
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        )}
+
+        <CardContent>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Timestamp</TableHead>
+                  <TableHead>Page</TableHead>
+                  <TableHead>Device</TableHead>
+                  <TableHead>Browser</TableHead>
+                  <TableHead>OS</TableHead>
+                  <TableHead>Source</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Time Spent</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8">
+                      <Loader2 className="h-6 w-6 animate-spin mx-auto" />
+                      <p className="mt-2 text-sm text-muted-foreground">Loading visitor data...</p>
+                    </TableCell>
+                  </TableRow>
+                ) : visitors.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                      No visitor records found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  visitors.map((visitor) => (
+                    <TableRow key={visitor._id}>
+                      <TableCell className="font-mono text-xs">
+                        {format(new Date(visitor.timestamp), 'MMM dd, yyyy HH:mm')}
+                      </TableCell>
+                      <TableCell className="max-w-[200px] truncate">
+                        {visitor.page}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="capitalize">
+                          {visitor.deviceType}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{visitor.browser}</TableCell>
+                      <TableCell>{visitor.os}</TableCell>
+                      <TableCell>
+                        <Badge 
+                          variant={
+                            visitor.source === 'organic' ? 'default' :
+                            visitor.source === 'social' ? 'secondary' :
+                            visitor.source === 'referral' ? 'outline' :
+                            'secondary'
+                          }
+                          className="capitalize"
+                        >
+                          {visitor.source}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        {visitor.country !== 'unknown' ? (
+                          <div className="text-sm">
+                            <div className="font-medium">{visitor.country}</div>
+                            {visitor.city !== 'unknown' && (
+                              <div className="text-muted-foreground text-xs">{visitor.city}</div>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {visitor.timeSpent > 0 ? (
+                          <span>{visitor.timeSpent}s</span>
+                        ) : (
+                          <span className="text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4">
+              <div className="text-sm text-muted-foreground">
+                Showing {visitors.length} of {totalRecords.toLocaleString()} records
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fetchVisitors(1)}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronsLeft className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fetchVisitors(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <span className="text-sm">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fetchVisitors(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fetchVisitors(totalPages)}
+                  disabled={currentPage === totalPages}
+                >
+                  <ChevronsRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { SiteSettingsProvider } from "@/hooks/useSiteSettings";
 import { StoreProvider } from "@/lib/StoreProvider";
 import Chatbot from "@/components/chatbot/Chatbot";
+import { VisitorTracker } from "@/components/common/VisitorTracker";
 
 // Metadata cannot be exported from a client component.
 // We can define it here, but it won't be applied through this client component.
@@ -49,6 +50,7 @@ export default function RootLayout({
       >
         <StoreProvider>
           <SiteSettingsProvider>
+            <VisitorTracker />
             {children}
             <Toaster />
             <Chatbot />
