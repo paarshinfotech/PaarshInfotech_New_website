@@ -901,6 +901,14 @@ export const api = createApi({
       }),
       invalidatesTags: ["Chatbot"],
     }),
+
+    // Visitor Analytics Endpoints can be added here
+
+    getVisitorAnalytics: builder.query({
+      query: () => "/visitors",
+      providesTags: ["VisitorAnalytics"],
+    }),
+
   }),
 });
 
@@ -1063,4 +1071,8 @@ export const {
 
   // Chatbot
   useSendMessageToChatbotMutation,
+
+  // Visitor Analytics
+  useGetVisitorAnalyticsQuery,
+
 } = api;

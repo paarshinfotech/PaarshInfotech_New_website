@@ -58,6 +58,7 @@ import {
 } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { useGetVisitorAnalyticsQuery } from "@/services/api";
 
 interface Visitor {
   _id: string;
@@ -152,6 +153,9 @@ export default function AnalyticsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
   const [limit, setLimit] = useState(50);
+
+  const {data : VisitorAnalyticsData, isLoading : isVisitorAnalyticsLoading} = useGetVisitorAnalyticsQuery(undefined); 
+  console.log("VisitorAnalyticsData:", VisitorAnalyticsData);
 
   // Statistics
   const [stats, setStats] = useState({
@@ -261,10 +265,40 @@ export default function AnalyticsPage() {
     }
   };
 
+  // useEffect(() => {
+  //   fetchVisitors(1);
+  //   fetchStats();
+  // }, [activeFilters, limit]);
+
+     // Use VisitorAnalyticsData for visitors table and pagination
   useEffect(() => {
-    fetchVisitors(1);
-    fetchStats();
-  }, [activeFilters, limit]);
+    if (VisitorAnalyticsData && VisitorAnalyticsData.success) {
+      setTotalRecords(VisitorAnalyticsData.data.length);
+      setTotalPages(Math.max(1, Math.ceil(VisitorAnalyticsData.data.length / limit)));
+      setVisitors(VisitorAnalyticsData.data);
+      setIsLoading(false);
+    } else {
+      setVisitors([]);
+      setTotalRecords(0);
+      setTotalPages(1);
+      setIsLoading(false);
+    }
+  }, [VisitorAnalyticsData, limit]);
+
+  // Get paginated visitors for current page
+  const paginatedVisitors = visitors.slice((currentPage - 1) * limit, currentPage * limit);
+
+  // Navigation handlers
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  // When limit changes, reset to first page
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [limit]);
 
   const handleApplyFilters = () => {
     setActiveFilters({ ...filters });
