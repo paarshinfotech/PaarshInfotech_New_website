@@ -35,6 +35,7 @@ export function Footer() {
               <li><Link href="/media" className="hover:text-primary transition-colors">Media</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
                <li><Link href="/excellence-centers" className="hover:text-primary transition-colors">Excellence Centers</Link></li>
+               <li><Link href="/register" className="hover:text-primary transition-colors">Internship Registration</Link></li>
             </ul>
           </div>
           
