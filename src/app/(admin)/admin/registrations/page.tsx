@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Filter, X, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Download, RefreshCw, MoreVertical, Trash2, Eye } from 'lucide-react';
+import { Loader2, Filter, X, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Download, RefreshCw, MoreVertical, Trash2, Eye, Send, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { format } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
@@ -67,6 +67,8 @@ interface Registration {
   paymentScreenshotUrl: string;
   registrationNumber: string;
   createdAt: string;
+  offerLetterSent?: boolean;
+  completionLetterSent?: boolean;
 }
 
 interface College {
@@ -135,6 +137,27 @@ export default function RegistrationsPage() {
     total: 0,
     pages: 0,
   });
+
+  // Cleanup effect to ensure no lingering overlays
+  useEffect(() => {
+    return () => {
+      // Cleanup any potential stuck overlays when component unmounts
+      document.body.style.pointerEvents = '';
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  // Monitor dialog state and ensure proper cleanup
+  useEffect(() => {
+    if (!dialogOpen) {
+      // Ensure body is not blocked when dialog is closed
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [dialogOpen]);
 
   useEffect(() => {
     fetchFilterOptions();
@@ -268,6 +291,16 @@ export default function RegistrationsPage() {
     setDialogOpen(true);
   };
 
+  const handleCloseDialog = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) {
+      // Clear selection after dialog closes
+      setTimeout(() => {
+        setSelectedRegistration(null);
+      }, 150);
+    }
+  };
+
   const handleDeleteClick = (id: string) => {
     setRegistrationToDelete(id);
     setDeleteDialogOpen(true);
@@ -301,6 +334,70 @@ export default function RegistrationsPage() {
     } finally {
       setDeleteDialogOpen(false);
       setRegistrationToDelete(null);
+    }
+  };
+
+  const toggleOfferLetter = async (id: string, currentStatus: boolean) => {
+    try {
+      const response = await fetch(`/api/register/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          offerLetterSent: !currentStatus,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: 'Success',
+          description: `Offer letter marked as ${!currentStatus ? 'sent' : 'not sent'}`,
+        });
+        fetchRegistrations();
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update offer letter status',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const toggleCompletionLetter = async (id: string, currentStatus: boolean) => {
+    try {
+      const response = await fetch(`/api/register/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          completionLetterSent: !currentStatus,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: 'Success',
+          description: `Completion letter marked as ${!currentStatus ? 'sent' : 'not sent'}`,
+        });
+        fetchRegistrations();
+      } else {
+        throw new Error(data.error);
+      }
+    } catch (error: any) {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to update completion letter status',
+        variant: 'destructive',
+      });
     }
   };
 
@@ -645,6 +742,7 @@ export default function RegistrationsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Reg. Number</TableHead>
+                    <TableHead className="w-[80px] text-center">Status</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead className="w-[180px]">Email</TableHead>
                     <TableHead>Contact</TableHead>
@@ -657,13 +755,13 @@ export default function RegistrationsPage() {
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center py-8">
+                      <TableCell colSpan={9} className="text-center py-8">
                         <Loader2 className="h-6 w-6 animate-spin mx-auto" />
                       </TableCell>
                     </TableRow>
                   ) : registrations.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={8} className="text-center text-muted-foreground py-8">
+                      <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
                         No registrations found
                       </TableCell>
                     </TableRow>
@@ -672,6 +770,29 @@ export default function RegistrationsPage() {
                       <TableRow key={registration._id}>
                         <TableCell className="font-medium">
                           {registration.registrationNumber}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-center gap-1">
+                            {registration.offerLetterSent && (
+                              <div 
+                                className="flex items-center justify-center h-8 w-8"
+                                title="Offer letter sent"
+                              >
+                                <Send className="h-5 w-5 text-blue-600" />
+                              </div>
+                            )}
+                            {registration.completionLetterSent && (
+                              <div 
+                                className="flex items-center justify-center h-8 w-8"
+                                title="Completion letter sent"
+                              >
+                                <CheckCircle2 className="h-5 w-5 text-blue-600" />
+                              </div>
+                            )}
+                            {!registration.offerLetterSent && !registration.completionLetterSent && (
+                              <span className="text-xs text-muted-foreground">-</span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell>{registration.fullName}</TableCell>
                         <TableCell>
@@ -703,6 +824,25 @@ export default function RegistrationsPage() {
                                 <Eye className="mr-2 h-4 w-4" />
                                 View Details
                               </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuLabel className="text-xs text-muted-foreground">
+                                Letter Status
+                              </DropdownMenuLabel>
+                              <DropdownMenuItem 
+                                onClick={() => toggleOfferLetter(registration._id, registration.offerLetterSent || false)}
+                                className={registration.offerLetterSent ? 'text-blue-600' : ''}
+                              >
+                                <Send className="mr-2 h-4 w-4" />
+                                {registration.offerLetterSent ? 'Unmark Offer Letter' : 'Mark Offer Letter Sent'}
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => toggleCompletionLetter(registration._id, registration.completionLetterSent || false)}
+                                className={registration.completionLetterSent ? 'text-blue-600' : ''}
+                              >
+                                <CheckCircle2 className="mr-2 h-4 w-4" />
+                                {registration.completionLetterSent ? 'Unmark Completion Letter' : 'Mark Completion Letter Sent'}
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
                               <DropdownMenuItem 
                                 onClick={() => handleDeleteClick(registration._id)}
                                 className="text-red-600 focus:text-red-600"
@@ -822,82 +962,82 @@ export default function RegistrationsPage() {
       </div>
 
       {/* Details Dialog */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto scrollbar-hide">
-          <DialogHeader>
-            <DialogTitle>Registration Details</DialogTitle>
-            <DialogDescription>
+      <Dialog open={dialogOpen} onOpenChange={handleCloseDialog}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-y-auto p-4 sm:p-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <DialogHeader className="space-y-1">
+            <DialogTitle className="text-base sm:text-lg">Registration Details</DialogTitle>
+            <DialogDescription className="text-xs sm:text-sm">
               Complete information about the registration
             </DialogDescription>
           </DialogHeader>
           
           {selectedRegistration && (
-            <div className="space-y-6">
+            <div className="space-y-4">
               {/* Registration Info */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <h4 className="font-semibold text-sm text-muted-foreground">Registration Number</h4>
-                  <p className="text-lg font-medium">{selectedRegistration.registrationNumber}</p>
+                  <h4 className="font-semibold text-xs text-muted-foreground mb-1">Registration Number</h4>
+                  <p className="text-sm sm:text-base font-medium">{selectedRegistration.registrationNumber}</p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-sm text-muted-foreground">Registration Date</h4>
-                  <p>{format(new Date(selectedRegistration.createdAt), 'MMM dd, yyyy HH:mm')}</p>
+                  <h4 className="font-semibold text-xs text-muted-foreground mb-1">Registration Date</h4>
+                  <p className="text-sm">{format(new Date(selectedRegistration.createdAt), 'MMM dd, yyyy HH:mm')}</p>
                 </div>
               </div>
 
               {/* Personal Information */}
               <div>
-                <h3 className="text-lg font-semibold mb-3">Personal Information</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <h3 className="text-sm sm:text-base font-semibold mb-2 pb-1.5 border-b">Personal Information</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">Full Name</h4>
-                    <p>{selectedRegistration.fullName}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">Full Name</h4>
+                    <p className="text-sm">{selectedRegistration.fullName}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">Email</h4>
-                    <p>{selectedRegistration.email}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">Email</h4>
+                    <p className="text-sm break-all">{selectedRegistration.email}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">Contact Number</h4>
-                    <p>{selectedRegistration.contactNumber}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">Contact Number</h4>
+                    <p className="text-sm">{selectedRegistration.contactNumber}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">Address</h4>
-                    <p>{selectedRegistration.address}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">Address</h4>
+                    <p className="text-sm">{selectedRegistration.address}</p>
                   </div>
                 </div>
               </div>
 
               {/* Academic & Internship Details */}
               <div>
-                <h3 className="text-lg font-semibold mb-3">Academic & Internship Details</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <h3 className="text-sm sm:text-base font-semibold mb-2 pb-1.5 border-b">Academic & Internship Details</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">College</h4>
-                    <p>{selectedRegistration.college.name}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">College</h4>
+                    <p className="text-sm">{selectedRegistration.college.name}</p>
                     {selectedRegistration.college.location && (
-                      <p className="text-sm text-muted-foreground">{selectedRegistration.college.location}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5">{selectedRegistration.college.location}</p>
                     )}
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">Internship Type</h4>
-                    <p>{selectedRegistration.internshipType.name}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">Internship Type</h4>
+                    <p className="text-sm">{selectedRegistration.internshipType.name}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">Attendance Mode</h4>
-                    <p>{selectedRegistration.attendanceMode.name}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">Attendance Mode</h4>
+                    <p className="text-sm">{selectedRegistration.attendanceMode.name}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">Duration</h4>
-                    <p>{selectedRegistration.internshipDuration.name}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">Duration</h4>
+                    <p className="text-sm">{selectedRegistration.internshipDuration.name}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">Joining Date</h4>
-                    <p>{format(new Date(selectedRegistration.joiningDate), 'MMM dd, yyyy')}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">Joining Date</h4>
+                    <p className="text-sm">{format(new Date(selectedRegistration.joiningDate), 'MMM dd, yyyy')}</p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground">Has Laptop</h4>
-                    <p>{selectedRegistration.hasLaptop ? 'Yes' : 'No'}</p>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-1">Has Laptop</h4>
+                    <p className="text-sm">{selectedRegistration.hasLaptop ? 'Yes' : 'No'}</p>
                   </div>
                 </div>
               </div>
@@ -905,18 +1045,18 @@ export default function RegistrationsPage() {
               {/* Additional Information */}
               {(selectedRegistration.referralName || selectedRegistration.internshipNote) && (
                 <div>
-                  <h3 className="text-lg font-semibold mb-3">Additional Information</h3>
+                  <h3 className="text-sm sm:text-base font-semibold mb-2 pb-1.5 border-b">Additional Information</h3>
                   <div className="space-y-2">
                     {selectedRegistration.referralName && (
                       <div>
-                        <h4 className="font-semibold text-sm text-muted-foreground">Referral Name</h4>
-                        <p>{selectedRegistration.referralName}</p>
+                        <h4 className="font-semibold text-xs text-muted-foreground mb-1">Referral Name</h4>
+                        <p className="text-sm">{selectedRegistration.referralName}</p>
                       </div>
                     )}
                     {selectedRegistration.internshipNote && (
                       <div>
-                        <h4 className="font-semibold text-sm text-muted-foreground">Internship Note</h4>
-                        <p>{selectedRegistration.internshipNote}</p>
+                        <h4 className="font-semibold text-xs text-muted-foreground mb-1">Internship Note</h4>
+                        <p className="text-sm">{selectedRegistration.internshipNote}</p>
                       </div>
                     )}
                   </div>
@@ -925,23 +1065,25 @@ export default function RegistrationsPage() {
 
               {/* Documents */}
               <div>
-                <h3 className="text-lg font-semibold mb-3">Documents</h3>
-                <div className="grid grid-cols-2 gap-4">
+                <h3 className="text-sm sm:text-base font-semibold mb-2 pb-1.5 border-b">Documents</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground mb-2">Resume</h4>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-2">Resume</h4>
                     <Button
                       variant="outline"
                       size="sm"
+                      className="text-xs h-8 w-full sm:w-auto"
                       onClick={() => window.open(selectedRegistration.resumeUrl, '_blank')}
                     >
                       View Resume
                     </Button>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm text-muted-foreground mb-2">Payment Screenshot</h4>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-2">Payment Screenshot</h4>
                     <Button
                       variant="outline"
                       size="sm"
+                      className="text-xs h-8 w-full sm:w-auto"
                       onClick={() => window.open(selectedRegistration.paymentScreenshotUrl, '_blank')}
                     >
                       View Payment

@@ -18,5 +18,7 @@ declare module 'lucide-react' {
   export const RefreshCw: React.FC<React.SVGProps<SVGSVGElement>>;
   export const MoreVertical: React.FC<React.SVGProps<SVGSVGElement>>;
   export const Search: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const Send: React.FC<React.SVGProps<SVGSVGElement>>;
+  export const CheckCircle2: React.FC<React.SVGProps<SVGSVGElement>>;
   // Add other icon exports as needed
 }

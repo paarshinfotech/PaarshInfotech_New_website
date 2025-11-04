@@ -75,6 +75,14 @@ const registrationSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    offerLetterSent: {
+      type: Boolean,
+      default: false,
+    },
+    completionLetterSent: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
