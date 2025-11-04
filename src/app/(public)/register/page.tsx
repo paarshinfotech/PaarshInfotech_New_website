@@ -690,13 +690,10 @@ export default function RegisterPage() {
 
               {/* Terms and Conditions */}
               <div className="space-y-4 pt-4 border-t">
-                <h3 className="text-xl font-semibold">
-                  Terms & Conditions & Refund Policy
-                </h3>
                 <div>
                   <button
                     type="button"
-                    className="text-blue-700 text-sm font-medium flex items-center gap-1"
+                    className="text-blue-700 text-xs font-medium flex items-center gap-1"
                     onClick={() => setShowPolicies((prev) => !prev)}
                     aria-expanded={showPolicies}
                   >
