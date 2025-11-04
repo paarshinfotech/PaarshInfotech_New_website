@@ -446,11 +446,11 @@ export default function RegistrationsPage() {
         reg.email,
         reg.contactNumber,
         reg.address,
-        reg.college.name,
-        reg.college.location || '',
-        reg.internshipType.name,
-        reg.attendanceMode.name,
-        reg.internshipDuration.name,
+        reg.college?.name || 'N/A',
+        reg.college?.location || '',
+        reg.internshipType?.name || 'N/A',
+        reg.attendanceMode?.name || 'N/A',
+        reg.internshipDuration?.name || 'N/A',
         format(joiningDate, 'dd-MMM-yyyy'),
         reg.hasLaptop ? 'Yes' : 'No',
         reg.referralName || '',
@@ -506,7 +506,7 @@ export default function RegistrationsPage() {
             <Card>
               <CardContent className="pt-6">
                 <div className="text-2xl font-bold">
-                  {new Set(registrations.map(r => r.college._id)).size}
+                  {new Set(registrations.filter(r => r.college).map(r => r.college._id)).size}
                 </div>
                 <p className="text-xs text-muted-foreground">Unique Colleges</p>
               </CardContent>
@@ -514,7 +514,7 @@ export default function RegistrationsPage() {
             <Card>
               <CardContent className="pt-6">
                 <div className="text-2xl font-bold">
-                  {new Set(registrations.map(r => r.internshipType._id)).size}
+                  {new Set(registrations.filter(r => r.internshipType).map(r => r.internshipType._id)).size}
                 </div>
                 <p className="text-xs text-muted-foreground">Internship Types</p>
               </CardContent>
@@ -802,11 +802,11 @@ export default function RegistrationsPage() {
                         </TableCell>
                         <TableCell>{registration.contactNumber}</TableCell>
                         <TableCell>
-                          <div className="max-w-[200px] truncate" title={registration.college.name}>
-                            {registration.college.name}
+                          <div className="max-w-[200px] truncate" title={registration.college?.name || 'N/A'}>
+                            {registration.college?.name || 'N/A'}
                           </div>
                         </TableCell>
-                        <TableCell>{registration.internshipType.name}</TableCell>
+                        <TableCell>{registration.internshipType?.name || 'N/A'}</TableCell>
                         <TableCell>
                           {format(new Date(registration.joiningDate), 'MMM dd, yyyy')}
                         </TableCell>
@@ -1014,22 +1014,22 @@ export default function RegistrationsPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <h4 className="font-semibold text-xs text-muted-foreground mb-1">College</h4>
-                    <p className="text-sm">{selectedRegistration.college.name}</p>
-                    {selectedRegistration.college.location && (
+                    <p className="text-sm">{selectedRegistration.college?.name || 'N/A'}</p>
+                    {selectedRegistration.college?.location && (
                       <p className="text-xs text-muted-foreground mt-0.5">{selectedRegistration.college.location}</p>
                     )}
                   </div>
                   <div>
                     <h4 className="font-semibold text-xs text-muted-foreground mb-1">Internship Type</h4>
-                    <p className="text-sm">{selectedRegistration.internshipType.name}</p>
+                    <p className="text-sm">{selectedRegistration.internshipType?.name || 'N/A'}</p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-xs text-muted-foreground mb-1">Attendance Mode</h4>
-                    <p className="text-sm">{selectedRegistration.attendanceMode.name}</p>
+                    <p className="text-sm">{selectedRegistration.attendanceMode?.name || 'N/A'}</p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-xs text-muted-foreground mb-1">Duration</h4>
-                    <p className="text-sm">{selectedRegistration.internshipDuration.name}</p>
+                    <p className="text-sm">{selectedRegistration.internshipDuration?.name || 'N/A'}</p>
                   </div>
                   <div>
                     <h4 className="font-semibold text-xs text-muted-foreground mb-1">Joining Date</h4>
