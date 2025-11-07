@@ -146,7 +146,28 @@ export async function POST(request) {
       );
     }
     
-    const registration = await Registration.create(body);
+    // Create registration with retry logic for duplicate registration numbers
+    let registration;
+    let retries = 3;
+    
+    while (retries > 0) {
+      try {
+        registration = await Registration.create(body);
+        break; // Success, exit loop
+      } catch (error) {
+        // Check if it's a duplicate key error for registrationNumber
+        if (error.code === 11000 && error.keyPattern?.registrationNumber) {
+          retries--;
+          if (retries === 0) {
+            throw error; // Throw after all retries exhausted
+          }
+          // Wait a bit before retrying (with increasing delay)
+          await new Promise(resolve => setTimeout(resolve, 100 * (4 - retries)));
+        } else {
+          throw error; // Throw if it's a different error
+        }
+      }
+    }
     
     // Populate references for response
     await registration.populate([

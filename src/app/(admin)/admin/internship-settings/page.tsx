@@ -139,6 +139,27 @@ export default function InternshipSettingsPage() {
       .trim();
   };
 
+  // Cleanup effect to ensure no lingering overlays
+  useEffect(() => {
+    return () => {
+      // Cleanup any potential stuck overlays when component unmounts
+      document.body.style.pointerEvents = '';
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  // Monitor dialog states and ensure proper cleanup
+  useEffect(() => {
+    if (!dialogOpen && !deleteDialogOpen) {
+      // Ensure body is not blocked when dialogs are closed
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [dialogOpen, deleteDialogOpen]);
+
   useEffect(() => {
     fetchAllData();
   }, []);
@@ -213,6 +234,31 @@ export default function InternshipSettingsPage() {
       description: '',
       durationInMonths: '',
     });
+    // Ensure cleanup after dialog closes
+    setTimeout(() => {
+      document.body.style.pointerEvents = '';
+      document.body.style.overflow = '';
+    }, 150);
+  };
+
+  const handleDialogOpenChange = (open: boolean) => {
+    if (!open) {
+      closeDialog();
+    } else {
+      setDialogOpen(open);
+    }
+  };
+
+  const handleDeleteDialogOpenChange = (open: boolean) => {
+    setDeleteDialogOpen(open);
+    if (!open) {
+      setItemToDelete(null);
+      // Ensure cleanup after dialog closes
+      setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 150);
+    }
   };
 
   // Handle paste event for bulk adding
@@ -770,12 +816,8 @@ export default function InternshipSettingsPage() {
       </div>
 
       {/* Dialog for Add/Edit */}
-      <Dialog open={dialogOpen} onOpenChange={(open) => {
-        if (!open) {
-          closeDialog();
-        }
-      }}>
-        <DialogContent>
+      <Dialog open={dialogOpen} onOpenChange={handleDialogOpenChange}>
+        <DialogContent className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <DialogHeader>
             <DialogTitle>
               {editingItem ? 'Edit' : 'Add New'}{' '}
@@ -868,8 +910,8 @@ export default function InternshipSettingsPage() {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+      <AlertDialog open={deleteDialogOpen} onOpenChange={handleDeleteDialogOpenChange}>
+        <AlertDialogContent className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>

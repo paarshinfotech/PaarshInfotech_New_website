@@ -73,6 +73,7 @@ export default function RegisterPage() {
   const [openTypeCombobox, setOpenTypeCombobox] = useState(false);
 
   const [showPolicies, setShowPolicies] = useState(false);
+  const [showSuccessView, setShowSuccessView] = useState(false);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -235,11 +236,6 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (data.success) {
-        toast({
-          title: "Registration Successful!",
-          description: data.message,
-        });
-
         // Reset form
         setFormData({
           fullName: "",
@@ -262,10 +258,8 @@ export default function RegisterPage() {
         setAcceptedTerms(false);
         setAcceptedRefundPolicy(false);
 
-        // Optionally redirect
-        setTimeout(() => {
-          router.push("/");
-        }, 2000);
+        // Show success view instead of redirecting
+        setShowSuccessView(true);
       } else {
         throw new Error(data.error);
       }
@@ -279,6 +273,76 @@ export default function RegisterPage() {
       setIsLoading(false);
     }
   };
+
+  // Success View Component
+  if (showSuccessView) {
+    return (
+      <div className="min-h-screen bg-white px-4 py-8 md:py-12">
+        <div className="max-w-2xl mx-auto w-full">
+          <Card className="border-0">
+            <CardHeader className="text-center space-y-3 pb-6">
+              <div className="mx-auto w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
+                <Check className="w-12 h-12 text-blue-600" />
+              </div>
+              <CardTitle className="text-3xl text-blue-900 font-bold">
+                Registration Successful!
+              </CardTitle>
+              <CardDescription className="text-base text-gray-700">
+                Thank you for registering with Paarsh Infotech Pvt. Ltd.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5 pb-8">
+              <div className="bg-blue-5 0 border border-blue-200 rounded-lg p-6 space-y-3">
+                <h3 className="font-semibold text-blue-900 text-lg">
+                  What happens next?
+                </h3>
+                <ul className="space-y-2 text-sm text-blue-800">
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>
+                      Your application has been received and is under review
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>
+                      Our team will verify your details and payment information
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>
+                      You will receive a confirmation email within 24-48 hours
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>
+                      Further instructions will be sent to your registered email
+                    </span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="text-center pt-3">
+                <Button
+                  size="lg"
+                  onClick={() => router.push("/")}
+                  className="min-w-[200px]"
+                >
+                  Return to Home Page
+                </Button>
+              </div>
+
+              <p className="text-sm text-center text-gray-600 pt-2">
+                If you have any questions, please feel free to contact us.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white py-12 px-4">

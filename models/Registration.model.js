@@ -94,8 +94,20 @@ registrationSchema.pre('save', async function (next) {
   if (!this.registrationNumber) {
     const date = new Date();
     const year = date.getFullYear();
-    const count = await mongoose.models.Registration.countDocuments();
-    this.registrationNumber = `PI-${year}-${String(count + 1).padStart(4, '0')}`;
+    
+    // Find the highest registration number for the current year
+    const lastRegistration = await mongoose.models.Registration.findOne({
+      registrationNumber: { $regex: `^PI-${year}-` }
+    }).sort({ registrationNumber: -1 }).select('registrationNumber');
+    
+    let nextNumber = 1;
+    if (lastRegistration && lastRegistration.registrationNumber) {
+      // Extract the number part from the last registration number
+      const lastNumber = parseInt(lastRegistration.registrationNumber.split('-')[2]);
+      nextNumber = lastNumber + 1;
+    }
+    
+    this.registrationNumber = `PI-${year}-${String(nextNumber).padStart(4, '0')}`;
   }
   next();
 });
