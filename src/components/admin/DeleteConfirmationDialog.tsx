@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,9 +27,20 @@ export function DeleteConfirmationDialog({
   onConfirm,
   itemName,
 }: DeleteConfirmationDialogProps) {
+  // Cleanup effect to ensure no lingering overlays
+  useEffect(() => {
+    if (!isOpen) {
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogContent>
+      <AlertDialogContent className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>

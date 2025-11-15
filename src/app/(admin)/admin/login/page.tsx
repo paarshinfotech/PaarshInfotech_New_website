@@ -28,30 +28,30 @@ export default function AdminLoginPage() {
   const { toast } = useToast();
   const { login } = useAuth();
 
-  const handleLogin = (event: React.FormEvent) => {
+  const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
 
-    setTimeout(() => {
-      const success = login(username, password);
-      if (success) {
-        toast({
-          title: "Login Successful",
-          description: "Redirecting to the dashboard...",
-        });
-        // Use setTimeout to allow toast to show before redirect
-        setTimeout(() => {
-          router.replace("/admin/dashboard");
-        }, 500);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Login Failed",
-          description: "Invalid username or password. Please try again.",
-        });
-        setIsLoading(false);
-      }
-    }, 1000);
+    // Small delay to simulate server request
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const success = login(username, password);
+    if (success) {
+      toast({
+        title: "Login Successful",
+        description: "Redirecting to the dashboard...",
+      });
+      // Wait briefly for toast to show, then use window.location for hard navigation
+      await new Promise(resolve => setTimeout(resolve, 300));
+      window.location.href = "/admin/dashboard";
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Invalid username or password. Please try again.",
+      });
+      setIsLoading(false);
+    }
   };
 
   return (

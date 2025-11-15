@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -61,6 +61,26 @@ export default function QuotesManagementPage() {
     error,
   } = useGetQuotesQuery(undefined);
   const [deleteQuote] = useDeleteQuoteMutation();
+
+  // Cleanup effect to ensure no lingering overlays
+    useEffect(() => {
+      return () => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      };
+    }, []);
+  
+    // Monitor modal states and ensure proper cleanup
+    useEffect(() => {
+      if (!isViewModalOpen && !isDeleteAlertOpen) {
+        const timer = setTimeout(() => {
+          document.body.style.pointerEvents = '';
+          document.body.style.overflow = '';
+        }, 300);
+        return () => clearTimeout(timer);
+      }
+    }, [isViewModalOpen, isDeleteAlertOpen]);
+  
 
   const handleView = (quote: Quote) => {
     setSelectedQuote(quote);

@@ -83,13 +83,24 @@ export function ECJourneyFormModal({ isOpen, onOpenChange, onSave, milestone }: 
     }
   }, [milestone, form]);
 
+  // Cleanup effect to ensure no lingering overlays
+  useEffect(() => {
+    if (!isOpen) {
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     onSave(values);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <DialogHeader>
           <DialogTitle>{milestone ? "Edit Milestone" : "Add Milestone"}</DialogTitle>
           <DialogDescription>

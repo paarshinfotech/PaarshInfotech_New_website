@@ -157,6 +157,25 @@ export default function TeamCategoriesPage() {
   const [deleteCategory] = useDeleteCategoryMutation();
   const [reorderCategories] = useReorderCategoriesMutation();
 
+  // Cleanup effect to ensure no lingering overlays
+  useEffect(() => {
+    return () => {
+      document.body.style.pointerEvents = '';
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  // Monitor modal states and ensure proper cleanup
+  useEffect(() => {
+    if (!isModalOpen && !isDeleteAlertOpen) {
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isModalOpen, isDeleteAlertOpen]);
+
   // Sync local state with fetched data
   useEffect(() => {
     setCategories(fetchedCategories);

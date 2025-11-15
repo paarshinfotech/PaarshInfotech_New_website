@@ -62,6 +62,17 @@ export function ProductReviewForm({ isOpen, onOpenChange, onSave, review }: Prod
     }
   }, [review]);
 
+  // Cleanup effect to ensure no lingering overlays
+  useEffect(() => {
+    if (!isOpen) {
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -116,7 +127,7 @@ export function ProductReviewForm({ isOpen, onOpenChange, onSave, review }: Prod
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <DialogHeader>
           <DialogTitle>{review ? "Edit Product Review" : "Add Product Review"}</DialogTitle>
         </DialogHeader>

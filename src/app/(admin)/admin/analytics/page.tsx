@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
   Bar,
   BarChart,
@@ -42,7 +42,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { FaGlobe, FaUsers } from "react-icons/fa";
+import { FaGlobe, FaUsers, FaSearch } from "react-icons/fa";
 import { FiSmartphone } from "react-icons/fi";
 import { TbTrendingUp } from "react-icons/tb";
 import { 
@@ -147,12 +147,13 @@ export default function AnalyticsPage() {
   const [visitors, setVisitors] = useState<Visitor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalRecords, setTotalRecords] = useState(0);
-  const [limit, setLimit] = useState(50);
+  const [itemsPerPage, setItemsPerPage] = useState<number | "all">(10);
 
   const {data : VisitorAnalyticsData, isLoading : isVisitorAnalyticsLoading} = useGetVisitorAnalyticsQuery(undefined); 
   console.log("VisitorAnalyticsData:", VisitorAnalyticsData);
@@ -196,7 +197,7 @@ export default function AnalyticsPage() {
       setIsLoading(true);
       const queryParams = new URLSearchParams({
         page: page.toString(),
-        limit: limit.toString(),
+        limit: itemsPerPage === "all" ? "1000" : itemsPerPage.toString(),
       });
 
       // Add active filters to query
@@ -273,20 +274,49 @@ export default function AnalyticsPage() {
      // Use VisitorAnalyticsData for visitors table and pagination
   useEffect(() => {
     if (VisitorAnalyticsData && VisitorAnalyticsData.success) {
-      setTotalRecords(VisitorAnalyticsData.data.length);
-      setTotalPages(Math.max(1, Math.ceil(VisitorAnalyticsData.data.length / limit)));
       setVisitors(VisitorAnalyticsData.data);
       setIsLoading(false);
     } else {
       setVisitors([]);
-      setTotalRecords(0);
-      setTotalPages(1);
       setIsLoading(false);
     }
-  }, [VisitorAnalyticsData, limit]);
+  }, [VisitorAnalyticsData]);
 
-  // Get paginated visitors for current page
-  const paginatedVisitors = visitors.slice((currentPage - 1) * limit, currentPage * limit);
+  // Filter visitors based on search query
+  const filteredVisitors = useMemo(() => {
+    if (!searchQuery.trim()) return visitors;
+    
+    const query = searchQuery.toLowerCase();
+    return visitors.filter((visitor: Visitor) => {
+      return (
+        visitor.page.toLowerCase().includes(query) ||
+        visitor.deviceType.toLowerCase().includes(query) ||
+        visitor.browser.toLowerCase().includes(query) ||
+        visitor.os.toLowerCase().includes(query) ||
+        visitor.source.toLowerCase().includes(query) ||
+        visitor.country.toLowerCase().includes(query) ||
+        visitor.city.toLowerCase().includes(query) ||
+        visitor.ipAddress.toLowerCase().includes(query)
+      );
+    });
+  }, [visitors, searchQuery]);
+
+  // Calculate pagination
+  const totalPagesCalculated = itemsPerPage === "all" ? 1 : Math.ceil(filteredVisitors.length / itemsPerPage);
+  const startIndex = itemsPerPage === "all" ? 0 : (currentPage - 1) * itemsPerPage;
+  const endIndex = itemsPerPage === "all" ? filteredVisitors.length : startIndex + itemsPerPage;
+  const paginatedVisitors = filteredVisitors.slice(startIndex, endIndex);
+
+  // Update totalPages and totalRecords based on filtered data
+  useEffect(() => {
+    setTotalRecords(filteredVisitors.length);
+    setTotalPages(totalPagesCalculated);
+  }, [filteredVisitors, totalPagesCalculated]);
+
+  // Reset to page 1 when search query or items per page changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, itemsPerPage]);
 
   // Navigation handlers
   const goToPage = (page: number) => {
@@ -295,10 +325,41 @@ export default function AnalyticsPage() {
     }
   };
 
-  // When limit changes, reset to first page
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [limit]);
+  // Generate page numbers for pagination
+  const getPageNumbers = () => {
+    const pages: (number | string)[] = [];
+    const maxVisiblePages = 5;
+    
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pages.push(i);
+        }
+        pages.push('...');
+        pages.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1);
+        pages.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        pages.push(1);
+        pages.push('...');
+        pages.push(currentPage - 1);
+        pages.push(currentPage);
+        pages.push(currentPage + 1);
+        pages.push('...');
+        pages.push(totalPages);
+      }
+    }
+    
+    return pages;
+  };
 
   const handleApplyFilters = () => {
     setActiveFilters({ ...filters });
@@ -698,17 +759,18 @@ export default function AnalyticsPage() {
               <div className="space-y-2">
                 <label className="text-sm font-medium">Records per page</label>
                 <Select
-                  value={limit.toString()}
-                  onValueChange={(value) => setLimit(parseInt(value))}
+                  value={itemsPerPage.toString()}
+                  onValueChange={(value) => setItemsPerPage(value === "all" ? "all" : parseInt(value))}
                 >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
                     <SelectItem value="25">25</SelectItem>
                     <SelectItem value="50">50</SelectItem>
                     <SelectItem value="100">100</SelectItem>
-                    <SelectItem value="200">200</SelectItem>
+                    <SelectItem value="all">All</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -727,6 +789,54 @@ export default function AnalyticsPage() {
         )}
 
         <CardContent>
+          {/* Search Bar and Entries Selector */}
+          <div className="flex items-center gap-4 mb-4 flex-wrap">
+            <div className="relative flex-1 max-w-sm">
+              <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                type="text"
+                placeholder="Search by page, device, browser, location..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            {searchQuery && (
+              <Button
+                variant="ghost"
+                onClick={() => setSearchQuery("")}
+                className="text-sm"
+              >
+                Clear
+              </Button>
+            )}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground whitespace-nowrap">Show:</span>
+              <Select
+                value={itemsPerPage.toString()}
+                onValueChange={(value) => setItemsPerPage(value === "all" ? "all" : parseInt(value))}
+              >
+                <SelectTrigger className="w-[100px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                  <SelectItem value="100">100</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
+                </SelectContent>
+              </Select>
+              <span className="text-sm text-muted-foreground whitespace-nowrap">entries</span>
+            </div>
+          </div>
+
+          {/* Results Info */}
+          <div className="text-sm text-muted-foreground mb-2">
+            Showing {paginatedVisitors.length > 0 ? startIndex + 1 : 0} to{" "}
+            {Math.min(endIndex, filteredVisitors.length)} of {filteredVisitors.length} records
+            {searchQuery && ` (filtered from ${visitors.length} total)`}
+          </div>
+
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -749,14 +859,14 @@ export default function AnalyticsPage() {
                       <p className="mt-2 text-sm text-muted-foreground">Loading visitor data...</p>
                     </TableCell>
                   </TableRow>
-                ) : visitors.length === 0 ? (
+                ) : paginatedVisitors.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                      No visitor records found
+                      {searchQuery ? "No visitor records found matching your search." : "No visitor records found"}
                     </TableCell>
                   </TableRow>
                 ) : (
-                  visitors.map((visitor) => (
+                  paginatedVisitors.map((visitor) => (
                     <TableRow key={visitor._id}>
                       <TableCell className="font-mono text-xs">
                         {format(new Date(visitor.timestamp), 'MMM dd, yyyy HH:mm')}
@@ -814,43 +924,47 @@ export default function AnalyticsPage() {
           {totalPages > 1 && (
             <div className="flex items-center justify-between mt-4">
               <div className="text-sm text-muted-foreground">
-                Showing {visitors.length} of {totalRecords.toLocaleString()} records
+                Page {currentPage} of {totalPages}
               </div>
               <div className="flex items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => fetchVisitors(1)}
+                  onClick={() => goToPage(currentPage - 1)}
                   disabled={currentPage === 1}
                 >
-                  <ChevronsLeft className="h-4 w-4" />
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Previous
                 </Button>
+                
+                <div className="flex gap-1">
+                  {getPageNumbers().map((page, index) => (
+                    page === '...' ? (
+                      <span key={`ellipsis-${index}`} className="px-2 py-1">
+                        ...
+                      </span>
+                    ) : (
+                      <Button
+                        key={page}
+                        variant={currentPage === page ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => goToPage(page as number)}
+                        className="min-w-[2.5rem]"
+                      >
+                        {page}
+                      </Button>
+                    )
+                  ))}
+                </div>
+
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => fetchVisitors(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <span className="text-sm">
-                  Page {currentPage} of {totalPages}
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fetchVisitors(currentPage + 1)}
+                  onClick={() => goToPage(currentPage + 1)}
                   disabled={currentPage === totalPages}
                 >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => fetchVisitors(totalPages)}
-                  disabled={currentPage === totalPages}
-                >
-                  <ChevronsRight className="h-4 w-4" />
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
             </div>

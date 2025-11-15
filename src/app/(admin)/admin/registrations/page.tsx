@@ -334,6 +334,11 @@ export default function RegistrationsPage() {
     } finally {
       setDeleteDialogOpen(false);
       setRegistrationToDelete(null);
+      // Ensure cleanup after delete dialog closes
+      setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 150);
     }
   };
 
@@ -1098,7 +1103,7 @@ export default function RegistrationsPage() {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <AlertDialogHeader>
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>

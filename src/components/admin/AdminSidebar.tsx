@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -45,6 +45,7 @@ import {
 } from "react-icons/lu";
 
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const mainLinks = [
   { href: "/admin/dashboard", label: "Dashboard", icon: FaHome },
@@ -99,7 +100,9 @@ const settingsLink = {
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { logout } = useAuth();
+  const { toast } = useToast();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const isTeamSectionOpen = pathname.startsWith("/admin/team");
   const isCareerSectionOpen = pathname.startsWith("/admin/careers");
@@ -110,7 +113,11 @@ export function AdminSidebar() {
     setIsLoggingOut(true);
     setTimeout(() => {
       logout();
-      // The layout effect will handle the redirect
+      toast({
+        title: "Logged Out Successfully",
+        description: "You have been logged out of the admin panel.",
+      });
+      router.push('/admin/login');
       setIsLoggingOut(false);
     }, 1000);
   };

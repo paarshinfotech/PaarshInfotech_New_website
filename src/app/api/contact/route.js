@@ -6,7 +6,7 @@ _db();
 
 export async function GET() {
   try {
-    const contacts = await ContactModel.find().lean();
+    const contacts = await ContactModel.find().sort({ date: -1 }).lean();
     return new Response(JSON.stringify(contacts), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -23,7 +23,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { name, email, message } = data;
+    const { name, email, phone, message } = data;
 
     if (!name || !email || !message) {
       return new Response(
@@ -35,6 +35,7 @@ export async function POST(request) {
     const newContact = new ContactModel({
       name,
       email,
+      phone,
       message,
       date: new Date(),
       status: "New",

@@ -81,6 +81,17 @@ export function WorkshopFormModal({ isOpen, onOpenChange, onSave, workshop }: Wo
     }
   }, [workshop, form]);
 
+  // Cleanup effect to ensure no lingering overlays
+  useEffect(() => {
+    if (!isOpen) {
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   const handleTopicKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
@@ -105,7 +116,7 @@ export function WorkshopFormModal({ isOpen, onOpenChange, onSave, workshop }: Wo
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-xl">
+      <DialogContent className="sm:max-w-xl [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <DialogHeader>
           <DialogTitle>{workshop ? "Edit Workshop" : "Add Workshop"}</DialogTitle>
           <DialogDescription>

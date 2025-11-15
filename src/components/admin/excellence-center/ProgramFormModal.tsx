@@ -64,6 +64,17 @@ export function ProgramFormModal({ isOpen, onOpenChange, onSave, program }: Prog
     }
   }, [program, form]);
 
+  // Cleanup effect to ensure no lingering overlays
+  useEffect(() => {
+    if (!isOpen) {
+      const timer = setTimeout(() => {
+        document.body.style.pointerEvents = '';
+        document.body.style.overflow = '';
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
+
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
@@ -88,7 +99,7 @@ export function ProgramFormModal({ isOpen, onOpenChange, onSave, program }: Prog
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <DialogHeader>
           <DialogTitle>{program ? "Edit Program" : "Add Program"}</DialogTitle>
           <DialogDescription>
