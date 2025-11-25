@@ -31,8 +31,8 @@ export const officeLocations = [
     },
     {
         city: "Pune Office",
-        address: "Pune, Maharashtra, India",
-        pincode: "411001",
+        address: "Second floor, Wisteriaa Fortune Bhumkar Das Gugre Rd, Near Bhumkar Chowk, Wakad, Pune-411057, Maharashtra, India",
+        pincode: "411057",
         mapUrl: "#"
     },
     {
