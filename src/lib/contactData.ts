@@ -47,12 +47,12 @@ export const officeLocations = [
         pincode: "395017",
         mapUrl: "https://maps.app.goo.gl/Fuyc2qENvXAssq1D6"
     },
-    {
-        city: "Dharwad Office",
-        address: "Office No. 1, Shelke Complex, Near Harimandir Mankilla, Dharwad, Karnataka, India",
-        pincode: "580001",
-        mapUrl: "#"
-    },
+    // {
+    //     city: "Dharwad Office",
+    //     address: "Office No. 1, Shelke Complex, Near Harimandir Mankilla, Dharwad, Karnataka, India",
+    //     pincode: "580001",
+    //     mapUrl: "#"
+    // },
     {
         city: "Jalgaon Office",
         address: "Gurukul Colony, near MJ College, Beside JDCC Bank, Jalgaon, Maharashtra, India",
