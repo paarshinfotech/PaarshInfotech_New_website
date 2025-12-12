@@ -18,7 +18,9 @@ export default function ContactPage() {
           <div className="grid lg:grid-cols-4 gap-6 lg:gap-6">
             {/* Left Column: Details */}
             <div className="lg:col-span-2">
-              <ContactDetails />
+              <div className="lg:sticky lg:top-24 lg:self-start">
+                <ContactDetails />
+              </div>
             </div>
             
             {/* Right Column: Form */}

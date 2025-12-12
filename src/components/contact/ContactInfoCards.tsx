@@ -3,17 +3,19 @@ import { contactInfo } from "@/lib/contactData";
 
 export default function ContactInfoCards() {
   return (
-    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid gap-4">
       {contactInfo.map((info) => (
         <a key={info.title} href={info.href} className="block group">
-          <Card className="p-6 h-full transition-all duration-300 group-hover:bg-primary/5 group-hover:shadow-lg group-hover:-translate-y-1 text-center">
-            <div className="flex flex-col items-center">
-              <div className="p-4 bg-primary/10 rounded-full inline-flex transition-colors group-hover:bg-accent">
-                <info.Icon className="w-8 h-8 text-primary transition-colors group-hover:text-accent-foreground" />
+          <Card className="p-4 transition-all duration-300 group-hover:bg-primary/90 group-hover:text-white group-hover:shadow-md group-hover:border-primary/30">
+            <div className="flex items-start gap-4">
+              <div className="flex-shrink-0 p-3 bg-primary/10 rounded-lg border-2 border-primary/20 group-hover:bg-primary/20 group-hover:border-white/50 group-hover:text-white transition-all duration-300">
+                <info.Icon className="w-6 h-6 text-primary group-hover:text-white transition-all duration-300" />
               </div>
-              <div className="mt-4">
-                <h3 className="text-xl font-bold text-primary">{info.title}</h3>
-                <p className="text-muted-foreground break-all mt-1">
+              <div className="flex-1 min-w-0">
+                <h3 className="text-lg font-semibold text-primary group-hover:text-white transition-all duration-300">
+                  {info.title}
+                </h3>
+                <p className="text-sm text-muted-foreground break-words leading-relaxed group-hover:text-white transition-all duration-300">
                   {info.value}
                 </p>
               </div>

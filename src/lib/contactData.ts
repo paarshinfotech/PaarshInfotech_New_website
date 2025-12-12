@@ -33,13 +33,13 @@ export const officeLocations = [
         city: "Pune Office",
         address: "Second floor, Wisteriaa Fortune, Bhumkar Das Gugre Rd, Near Bhumkar Chowk, Wakad, Pune, Maharashtra, India",
         pincode: "411057",
-        mapUrl: "#"
+        mapUrl: "https://maps.app.goo.gl/E6gmW2WiksXE3eDeA"
     },
     {
         city: "Sangli Office",
         address: "G1 Pragati Residency, Lane No. 4, Pragati Colony, Near Diamond Hotel, 100 Ft. Road, Sangli, Maharashtra, India",
         pincode: "416416",
-        mapUrl: "https://maps.app.goo.gl/VTAAToc3KuBoDnfn8"
+        mapUrl: "https://maps.app.goo.gl/saW7u7iZpXAMsTsy7"
     },
     {
         city: "Surat Office",
@@ -47,24 +47,23 @@ export const officeLocations = [
         pincode: "395017",
         mapUrl: "https://maps.app.goo.gl/Fuyc2qENvXAssq1D6"
     },
-    // {
-    //     city: "Dharwad Office",
-    //     address: "Office No. 1, Shelke Complex, Near Harimandir Mankilla, Dharwad, Karnataka, India",
-    //     pincode: "580001",
-    //     mapUrl: "#"
-    // },
     {
         city: "Jalgaon Office",
         address: "Gurukul Colony, near MJ College, Beside JDCC Bank, Jalgaon, Maharashtra, India",
         pincode: "425001",
         mapUrl: "https://maps.app.goo.gl/7AMoF7TMVWj9u23C6"
-    }
+    },
+    {
+        city: "Dharwad Office",
+        address: "Dharwad, Karnataka, India",
+        pincode: "580001",
+        mapUrl: "#"
+    },
 ];
 
 export const workingHours = [
-    { day: "Monday - Friday", hours: "9:30 AM – 6:30 PM" },
-    { day: "Saturday", hours: "10:00 AM – 4:00 PM" },
-    { day: "Sunday", hours: "Closed" },
+    { day: "Monday - Friday", hours: "09:30 AM – 07:30 PM" },
+    { day: "Saturday - Sunday", hours: "Closed" },
 ];
 
 export const contactFAQs = [
@@ -84,7 +83,7 @@ export const contactFAQs = [
         question: "Where can I find information about careers?",
         answer: "All our job openings and internship opportunities are listed on our 'Careers' page. You can apply directly through the application forms provided there."
     }
-];
+];  
 
 export const socialLinks: { name: string, Icon: IconType, href: string }[] = [
     { name: "LinkedIn", Icon: LuLinkedin, href: "https://www.linkedin.com/company/paarsh-infotech-private-limited/" },
