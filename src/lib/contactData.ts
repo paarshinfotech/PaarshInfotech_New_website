@@ -2,30 +2,30 @@ import { LuPhone, LuMail, LuLinkedin, LuTwitter, LuInstagram, LuFacebook } from 
 import type { IconType } from 'react-icons';
 
 export const contactInfo = [
-  {
-    Icon: LuPhone,
-    title: "Phone",
-    value: "+91 90752 01035",
-    href: "tel:+9190752 01035",
-  },
-  {
-    Icon: LuMail,
-    title: "Primary Email",
-    value: "info@paarshinfotech.com",
-    href: "mailto:info@paarshinfotech.com",
-  },
-  {
-    Icon: LuMail,
-    title: "Secondary Email",
-    value: "paarshinfotech@gmail.com",
-    href: "mailto:paarshinfotech@gmail.com",
-  },
+    {
+        Icon: LuPhone,
+        title: "Phone",
+        value: "+91 90752 01035",
+        href: "tel:+9190752 01035",
+    },
+    {
+        Icon: LuMail,
+        title: "Primary Email",
+        value: "info@paarshinfotech.com",
+        href: "mailto:info@paarshinfotech.com",
+    },
+    {
+        Icon: LuMail,
+        title: "Secondary Email",
+        value: "paarshinfotech@gmail.com",
+        href: "mailto:paarshinfotech@gmail.com",
+    },
 ];
 
 export const officeLocations = [
     {
         city: "Nashik Office (HQ)",
-        address: "Office No. 1, Bhakti Apartment, near Hotel Rasoi, Suchita Nagar, Mumbai Naka, Nashik, Maharashtra, India",
+        address: "Business Plus, A Wing, 5th Floor, Office No. 505, 506, Near Sai Square, Mumbai Naka, Nashik, Maharashtra, India",
         pincode: "422009",
         mapUrl: "https://maps.app.goo.gl/saW7u7iZpXAMsTsy7"
     },
@@ -62,8 +62,8 @@ export const officeLocations = [
 ];
 
 export const workingHours = [
-    { day: "Monday - Friday", hours: "09:30 AM – 07:30 PM" },
-    { day: "Saturday - Sunday", hours: "Closed" },
+    { day: "Monday - Saturday", hours: "09:30 AM – 06:30 PM" },
+    { day: "Sunday", hours: "Closed" },
 ];
 
 export const contactFAQs = [
@@ -83,7 +83,7 @@ export const contactFAQs = [
         question: "Where can I find information about careers?",
         answer: "All our job openings and internship opportunities are listed on our 'Careers' page. You can apply directly through the application forms provided there."
     }
-];  
+];
 
 export const socialLinks: { name: string, Icon: IconType, href: string }[] = [
     { name: "LinkedIn", Icon: LuLinkedin, href: "https://www.linkedin.com/company/paarsh-infotech-private-limited/" },
