@@ -1,6 +1,8 @@
+"use client";
 
 import { LuAward, LuZap, LuGem, LuUsers } from "react-icons/lu";
 import { IconType } from "react-icons";
+import type { MouseEvent } from "react";
 
 const features: { title: string; description: string; Icon: IconType }[] = [
   {
@@ -30,6 +32,15 @@ const features: { title: string; description: string; Icon: IconType }[] = [
 ];
 
 export default function WhyChooseUs() {
+  const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty("--x", `${x}px`);
+    card.style.setProperty("--y", `${y}px`);
+  };
+
   return (
     <section className="py-16 md:py-24 bg-background">
       <div className="container max-w-7xl">
@@ -46,6 +57,7 @@ export default function WhyChooseUs() {
           {features.map(({ title, description, Icon }) => (
             <div
               key={title}
+              onMouseMove={handleMouseMove}
               className="group relative rounded-md border border-primary/10 bg-background p-6 text-center shadow-lg transition-all duration-300 ease-in-out hover:shadow-2xl hover:shadow-primary/20 overflow-hidden"
             >
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(400px_circle_at_var(--x,_0)_var(--y,_0),_hsl(var(--primary)/_0.2),_transparent_80%)]"></div>
@@ -62,21 +74,6 @@ export default function WhyChooseUs() {
           ))}
         </div>
       </div>
-       <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            document.querySelectorAll('.group.relative').forEach(card => {
-              card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--x', x + 'px');
-                card.style.setProperty('--y', y + 'px');
-              });
-            });
-          `,
-        }}
-      />
     </section>
   );
 }

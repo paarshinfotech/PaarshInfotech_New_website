@@ -37,6 +37,7 @@ export const api = createApi({
     "GalleryCategory",
     "MediaHero",
     "Chatbot",
+    "Product",
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
