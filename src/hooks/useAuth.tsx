@@ -46,10 +46,26 @@ export function useAuth() {
     };
   }, [checkAuth]);
 
-  // username: 'paarshinfotech.com', password: 'PaarshInfotech#5891'
+  // Credentials are stored in localStorage under 'admin_profile' (managed by Settings page).
+  // Default fallback: username = 'paarshinfotech.com', password = 'PaarshInfotech#5891'
+  const ADMIN_PROFILE_KEY = 'admin_profile';
+  const DEFAULT_USERNAME = 'paarshinfotech.com';
+  const DEFAULT_PASSWORD = 'PaarshInfotech#5891';
 
   const login = (username?: string, password?: string): boolean => {
-    if (username === 'paarshinfotech.com' && password === 'PaarshInfotech#5891') {
+    // Always read the latest credentials from localStorage so password changes take effect
+    let storedUsername = DEFAULT_USERNAME;
+    let storedPassword = DEFAULT_PASSWORD;
+    try {
+      const stored = localStorage.getItem(ADMIN_PROFILE_KEY);
+      if (stored) {
+        const profile = JSON.parse(stored);
+        if (profile.username) storedUsername = profile.username;
+        if (profile.password) storedPassword = profile.password;
+      }
+    } catch { }
+
+    if (username === storedUsername && password === storedPassword) {
       const expirationTime = new Date().getTime() + 5 * 24 * 60 * 60 * 1000; // 5 days
       const token: AuthToken = {
         token: 'fake-jwt-token', // In a real app, this would be a real JWT

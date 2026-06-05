@@ -4,11 +4,12 @@
 import { Service } from "@/lib/servicesData";
 import { useGetServicesQuery } from "@/services/api";
 import Link from "next/link";
+import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 export function Footer() {
 
 
-  const {data: servicesData} = useGetServicesQuery(undefined);
+  const { data: servicesData } = useGetServicesQuery(undefined);
 
   const services = servicesData?.data || [];
 
@@ -22,6 +23,32 @@ export function Footer() {
             <p className="text-sm">
               Your complete technology partner for fast, scalable, and reliable software solutions. We are the emerging tech experts.
             </p>
+            <div className="flex space-x-3">
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300"
+              >
+                <FaFacebookF className="w-4 h-4" />
+              </a>
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300"
+              >
+                <FaInstagram className="w-4 h-4" />
+              </a>
+              <a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300"
+              >
+                <FaLinkedinIn className="w-4 h-4" />
+              </a>
+            </div>
           </div>
 
           {/* Useful Links */}
@@ -34,16 +61,16 @@ export function Footer() {
               <li><Link href="/careers" className="hover:text-primary transition-colors">Careers</Link></li>
               <li><Link href="/media" className="hover:text-primary transition-colors">Media</Link></li>
               <li><Link href="/contact" className="hover:text-primary transition-colors">Contact</Link></li>
-               <li><Link href="/excellence-centers" className="hover:text-primary transition-colors">Excellence Centers</Link></li>
-               <li><Link href="/register" className="hover:text-primary transition-colors">Internship Registration</Link></li>
+              <li><Link href="/excellence-centers" className="hover:text-primary transition-colors">Excellence Centers</Link></li>
+              <li><Link href="/register" className="hover:text-primary transition-colors">Internship Registration</Link></li>
             </ul>
           </div>
-          
+
           {/* Services Links */}
           <div>
             <h4 className="font-semibold mb-4">Services</h4>
             <ul className="space-y-2 text-sm">
-              {services.map((service:Service) => (
+              {services.map((service: Service) => (
                 <li key={service._id}>
                   <Link href={`/services/${service._id}`} className="hover:text-primary transition-colors">
                     {service.title}

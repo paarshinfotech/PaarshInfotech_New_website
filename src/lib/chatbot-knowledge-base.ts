@@ -284,5 +284,5 @@ Security Concerns:
 Recent reports suggest potential malware issues on the website, which may require immediate attention to ensure user safety.
 
 
-Copyright: ©2025 Paarsh Infotech Pvt Ltd, indicating proactive updates to the website’s footer.
+Copyright: ©2026 Paarsh Infotech Pvt Ltd, indicating proactive updates to the website’s footer.
 `;

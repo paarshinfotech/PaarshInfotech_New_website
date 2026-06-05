@@ -7,7 +7,7 @@ export default function PrivacyPolicyPage() {
           PAARSH INFOTECH PVT LTD PRIVACY POLICY
         </h1>
         <p className="text-sm text-muted-foreground mb-10">
-          LAST UPDATED: January 01, 2025
+          LAST UPDATED: January 01, 2026
         </p>
 
         <div className="space-y-8 text-foreground/80 prose prose-lg max-w-none">
@@ -71,7 +71,7 @@ export default function PrivacyPolicyPage() {
               </li>
               <li>
                 <strong>In what situations and with which parties do we share personal
-                information?</strong> We may share information in specific situations and
+                  information?</strong> We may share information in specific situations and
                 with specific third parties.
               </li>
               <li>
@@ -97,17 +97,17 @@ export default function PrivacyPolicyPage() {
           <div>
             <h2 className="text-2xl font-bold text-primary" id="toc">TABLE OF CONTENTS</h2>
             <ol className="list-decimal list-inside space-y-1 mt-4 underline text-primary">
-                <li><a href="#what-info">WHAT INFORMATION DO WE COLLECT?</a></li>
-                <li><a href="#how-process">HOW DO WE PROCESS YOUR INFORMATION?</a></li>
-                <li><a href="#when-share">WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?</a></li>
-                <li><a href="#social-logins">HOW DO WE HANDLE YOUR SOCIAL LOGINS?</a></li>
-                <li><a href="#how-long">HOW LONG DO WE KEEP YOUR INFORMATION?</a></li>
-                <li><a href="#how-safe">HOW DO WE KEEP YOUR INFORMATION SAFE?</a></li>
-                <li><a href="#your-rights">WHAT ARE YOUR PRIVACY RIGHTS?</a></li>
-                <li><a href="#dnt-controls">CONTROLS FOR DO-NOT-TRACK FEATURES</a></li>
-                <li><a href="#updates">DO WE MAKE UPDATES TO THIS NOTICE?</a></li>
-                <li><a href="#contact-us">HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</a></li>
-                <li><a href="#review-data">HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?</a></li>
+              <li><a href="#what-info">WHAT INFORMATION DO WE COLLECT?</a></li>
+              <li><a href="#how-process">HOW DO WE PROCESS YOUR INFORMATION?</a></li>
+              <li><a href="#when-share">WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?</a></li>
+              <li><a href="#social-logins">HOW DO WE HANDLE YOUR SOCIAL LOGINS?</a></li>
+              <li><a href="#how-long">HOW LONG DO WE KEEP YOUR INFORMATION?</a></li>
+              <li><a href="#how-safe">HOW DO WE KEEP YOUR INFORMATION SAFE?</a></li>
+              <li><a href="#your-rights">WHAT ARE YOUR PRIVACY RIGHTS?</a></li>
+              <li><a href="#dnt-controls">CONTROLS FOR DO-NOT-TRACK FEATURES</a></li>
+              <li><a href="#updates">DO WE MAKE UPDATES TO THIS NOTICE?</a></li>
+              <li><a href="#contact-us">HOW CAN YOU CONTACT US ABOUT THIS NOTICE?</a></li>
+              <li><a href="#review-data">HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?</a></li>
             </ol>
           </div>
 
@@ -120,8 +120,8 @@ export default function PrivacyPolicyPage() {
             <p><strong>Social Media Login Data:</strong> We may provide you with the option to register with us using your existing social media account details, like your Facebook, X, or other social media accounts. If you choose to register in this way, we will collect certain profile information about you from the social media provider, as described in the section called ‘HOW DO WE HANDLE YOUR SOCIAL LOGINS?’ below.</p>
             <p><strong>Application data:</strong> If you use our application(s), we also may collect the following information if you choose to provide us with access or permission:</p>
             <ul className="list-disc list-inside pl-4 space-y-2">
-                <li><strong>Geolocation Information:</strong> We may request access or permission to track location-based information from your mobile device, either continuously or while you are using our mobile application(s), to provide certain location-based services. If you wish to change our access or permissions, you may do so in your device’s settings.</li>
-                <li><strong>Push notification:</strong> We may request to send you a push notification regarding your account or certain features of the application(s). If you wish to opt-out from receiving these types of communications, you may turn them off in your device’s settings.</li>
+              <li><strong>Geolocation Information:</strong> We may request access or permission to track location-based information from your mobile device, either continuously or while you are using our mobile application(s), to provide certain location-based services. If you wish to change our access or permissions, you may do so in your device’s settings.</li>
+              <li><strong>Push notification:</strong> We may request to send you a push notification regarding your account or certain features of the application(s). If you wish to opt-out from receiving these types of communications, you may turn them off in your device’s settings.</li>
             </ul>
             <p>This information is primarily needed to maintain the security and operation of our application(s), for troubleshooting, and for our internal analytics and reporting purposes. All personal information that you provide to us must be true, complete, and accurate, and you must notify us of any changes to such personal information.</p>
             <p><strong>Google API:</strong> Our use of information received from Google APIs will adhere to Google API Services User Data Policy, including the Limited Use requirements.</p>
@@ -132,30 +132,30 @@ export default function PrivacyPolicyPage() {
             <p>We process your information to provide, improve, and administer our Services, and communicate with you, for security and fraud prevention, and to comply with law. We may also process your information for other purposes with your consent.</p>
             <p>We process your personal information for a variety of reasons, depending on how you interact with our Services, including:</p>
             <ul className="list-disc list-inside pl-4 space-y-2">
-                <li>To facilitate account creation and authentication and otherwise manage user accounts.</li>
-                <li>To deliver and facilitate the delivery of services to the user.</li>
-                <li>To respond to user inquiries/offer support to users.</li>
-                <li>To fulfill and manage your orders.</li>
-                <li>To enable user-to-user communications.</li>
-                <li>To request feedback.</li>
-                <li>To send you marketing and promotional communications.</li>
-                <li>To deliver targeted advertising to you.</li>
-                <li>To post testimonials.</li>
-                <li>To protect our Services.</li>
-                <li>To evaluate and improve our Services, products, marketing, and your experience.</li>
-                <li>To identify usage trends.</li>
-                <li>To determine the effectiveness of our marketing and promotional campaigns.</li>
+              <li>To facilitate account creation and authentication and otherwise manage user accounts.</li>
+              <li>To deliver and facilitate the delivery of services to the user.</li>
+              <li>To respond to user inquiries/offer support to users.</li>
+              <li>To fulfill and manage your orders.</li>
+              <li>To enable user-to-user communications.</li>
+              <li>To request feedback.</li>
+              <li>To send you marketing and promotional communications.</li>
+              <li>To deliver targeted advertising to you.</li>
+              <li>To post testimonials.</li>
+              <li>To protect our Services.</li>
+              <li>To evaluate and improve our Services, products, marketing, and your experience.</li>
+              <li>To identify usage trends.</li>
+              <li>To determine the effectiveness of our marketing and promotional campaigns.</li>
             </ul>
           </div>
-          
+
           <div id="when-share">
             <h2 className="text-2xl font-bold text-primary">3. WHEN AND WITH WHOM DO WE SHARE YOUR PERSONAL INFORMATION?</h2>
             <p>We may need to share your personal information in the following situations:</p>
             <ul className="list-disc list-inside pl-4 space-y-2">
-                <li><strong>Business Transfers:</strong> We may share or transfer your information in connection with or during negotiations of any merger, sale of company assets, financing, or acquisition of all or a portion of our business to another company.</li>
+              <li><strong>Business Transfers:</strong> We may share or transfer your information in connection with or during negotiations of any merger, sale of company assets, financing, or acquisition of all or a portion of our business to another company.</li>
             </ul>
           </div>
-          
+
           <div id="social-logins">
             <h2 className="text-2xl font-bold text-primary">4. HOW DO WE HANDLE YOUR SOCIAL LOGINS?</h2>
             <p>If you choose to register or log in to our Services using a social media account, we may have access to certain information about you. Our Services offer you the ability to register and log in using your third-party social media account details (like your Facebook or X logins). Where you choose to do this, we will receive certain profile information about you from your social media provider. The profile information we receive may vary depending on the social media provider concerned, but will often include your name, email address, friends list, and profile picture, as well as other information you choose to make public on such a social media platform.</p>
@@ -172,7 +172,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-2xl font-bold text-primary">6. HOW DO WE KEEP YOUR INFORMATION SAFE?</h2>
             <p>We aim to protect your personal information through a system of organizational and technical security measures. We have implemented appropriate and reasonable technical and organizational security measures designed to protect the security of any personal information we process. However, despite our safeguards and efforts to secure your information, no electronic transmission over the internet or information storage technology can be guaranteed to be 100% secure, so we cannot promise or guarantee that hackers, cybercriminals, or other unauthorized third parties will not be able to defeat our security and improperly collect, access, steal, or modify your information. Accessing and using our Services is at your own risk. You should only access the Services within a secure environment.</p>
           </div>
-          
+
           <div id="your-rights">
             <h2 className="text-2xl font-bold text-primary">7. WHAT ARE YOUR PRIVACY RIGHTS?</h2>
             <p>You may review, change, or terminate your account at any time, depending on your country, province, or state of residence.</p>
@@ -182,7 +182,7 @@ export default function PrivacyPolicyPage() {
             <p><strong>Account Information:</strong> If you would at any time like to review or change the information in your account or terminate your account, you can log in to your account settings and update your user account. Upon your request to terminate your account, we will deactivate or delete your account information from our active database. However, we may retain some information in our files to prevent fraud, troubleshoot problems, assist with any investigations, enforce our legal terms, and/or comply with applicable legal requirements.</p>
             <p>If you have questions or comments about your privacy rights, you may email us at paarshinfotech@gmail.com.</p>
           </div>
-          
+
           <div id="dnt-controls">
             <h2 className="text-2xl font-bold text-primary">8. CONTROLS FOR DO-NOT-TRACK FEATURES</h2>
             <p>Most web browsers and some mobile operating systems and mobile applications include a Do-Not-Track (‘DNT’) feature or setting you can activate to signal your privacy preference not to have data about your online browsing activities monitored and collected. At this stage, no uniform technology standard for recognizing and implementing DNT signals has been finalized. As such, we do not currently respond to DNT browser signals or any other mechanism that automatically communicates your choice not to be tracked online. If a standard for online tracking is adopted that we must follow in the future, we will inform you about that practice in a revised version of this Privacy Notice.</p>

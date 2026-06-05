@@ -43,6 +43,9 @@ export default function CompanyIntroVideo() {
                 "Building tomorrow's technology, today."
               </p>
             </div>
+            <div className="absolute top-3 right-3 px-3 py-1 bg-black/40 backdrop-blur-sm rounded">
+              <span className="text-white/70 text-sm font-semibold tracking-wider">paarshinfotech</span>
+            </div>
           </div>
         </div>
       </section>
