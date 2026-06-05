@@ -42,6 +42,7 @@ import {
   LuImage,
   LuGraduationCap,
   LuFileQuestion,
+  LuMail,
 } from "react-icons/lu";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -62,6 +63,7 @@ const mainLinks = [
   { href: "/admin/quotes", label: "Quotes", icon: LuFileQuestion },
   { href: "/admin/feedback", label: "Feedback", icon: LuStar },
   { href: "/admin/analytics", label: "Analytics", icon: FaChartBar },
+  { href: "/admin/newsletter", label: "Newsletter", icon: LuMail },
 ];
 
 const teamLinks = [
@@ -171,7 +173,7 @@ export function AdminSidebar() {
               ))}
             </CollapsibleContent>
           </Collapsible>
-          
+
           <Collapsible defaultOpen={isCareerSectionOpen}>
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="w-full justify-between">

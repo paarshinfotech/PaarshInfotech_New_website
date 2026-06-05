@@ -37,7 +37,7 @@ export const api = createApi({
     "GalleryCategory",
     "MediaHero",
     "Chatbot",
-    "Product",
+    "Newsletter",
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -852,7 +852,7 @@ export const api = createApi({
       query: (body) => ({ url: "/career-testimonial", method: "PATCH", body }),
       invalidatesTags: ["CareerTestimonial"],
     }),
-    
+
     // ================================================== Gallery Category Endpoints ================================================== //
     getGalleryCategories: builder.query({
       query: () => "/gallery-category",
@@ -878,7 +878,7 @@ export const api = createApi({
       query: (body) => ({ url: "/gallery-category", method: "DELETE", body }),
       invalidatesTags: ["GalleryCategory"],
     }),
-    
+
     // ================================================== Media Hero Endpoints ================================================== //
     getMediaHero: builder.query({
       query: () => "/media-hero",
@@ -908,6 +908,29 @@ export const api = createApi({
     getVisitorAnalytics: builder.query({
       query: () => "/visitors",
       providesTags: ["VisitorAnalytics"],
+    }),
+
+    // ================================================== Newsletter Endpoints ================================================== //
+
+    getNewsletterSubscribers: builder.query({
+      query: () => "/newsletter",
+      providesTags: ["Newsletter"],
+    }),
+    addNewsletterSubscriber: builder.mutation({
+      query: (email) => ({
+        url: "/newsletter",
+        method: "POST",
+        body: { email },
+      }),
+      invalidatesTags: ["Newsletter"],
+    }),
+    deleteNewsletterSubscriber: builder.mutation({
+      query: (_id) => ({
+        url: "/newsletter",
+        method: "DELETE",
+        body: { _id },
+      }),
+      invalidatesTags: ["Newsletter"],
     }),
 
   }),
@@ -983,7 +1006,7 @@ export const {
   useAddSiteImageMutation,
   useUpdateSiteImageMutation,
   useDeleteSiteImageMutation,
-  
+
   // Media Hero
   useGetMediaHeroQuery,
   useUpdateMediaHeroMutation,
@@ -1075,5 +1098,10 @@ export const {
 
   // Visitor Analytics
   useGetVisitorAnalyticsQuery,
+
+  // Newsletter
+  useGetNewsletterSubscribersQuery,
+  useAddNewsletterSubscriberMutation,
+  useDeleteNewsletterSubscriberMutation,
 
 } = api;
