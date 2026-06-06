@@ -21,7 +21,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminLoginPage() {
   const [isLoading, setIsLoading] = useState(false);
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
@@ -32,10 +32,7 @@ export default function AdminLoginPage() {
     event.preventDefault();
     setIsLoading(true);
 
-    // Small delay to simulate server request
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const success = login(username, password);
+    const success = await login(email, password);
     if (success) {
       toast({
         title: "Login Successful",
@@ -48,7 +45,7 @@ export default function AdminLoginPage() {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid username or password. Please try again.",
+        description: "Invalid email or password. Please try again.",
       });
       setIsLoading(false);
     }
@@ -66,14 +63,14 @@ export default function AdminLoginPage() {
           </CardHeader>
           <CardContent className="grid gap-4">
             <div className="grid gap-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="email">Email</Label>
               <Input
-                id="username"
-                type="text"
-                placeholder="paarshinfotech.com"
+                id="email"
+                type="email"
+                placeholder="Enter your email"
                 required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="grid gap-2">
