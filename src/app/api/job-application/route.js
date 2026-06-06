@@ -8,12 +8,12 @@ _db();
 export async function POST(request) {
   try {
     const data = await request.json();
-    const { jobId, name, email, resumeUrl, coverLetter } = data;
+    const { jobId, name, email, phone, resumeUrl, coverLetter } = data;
 
-    if (!jobId || !name || !email || !resumeUrl) {
+    if (!jobId || !name || !email || !phone || !resumeUrl) {
       return new Response(
         JSON.stringify({
-          error: "jobId, name, email, and resumeUrl are required",
+          error: "jobId, name, email, phone, and resumeUrl are required",
         }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
@@ -30,6 +30,7 @@ export async function POST(request) {
     const newApplicant = new ApplicantModel({
       name,
       email,
+      phone,
       resumeUrl,
       jobId,
     });
