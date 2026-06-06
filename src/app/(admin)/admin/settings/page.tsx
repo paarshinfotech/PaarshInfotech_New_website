@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -11,44 +11,18 @@ import { useToast } from "@/hooks/use-toast";
 import { LuLoader } from "react-icons/lu";
 import { Eye, EyeOff } from "lucide-react";
 
-const ADMIN_PROFILE_KEY = 'admin_profile';
-
 interface AdminProfile {
     name: string;
     email: string;
     username: string;
-    password: string;
-}
-
-const defaultProfile: AdminProfile = {
-    name: 'Admin User',
-    email: 'admin@example.com',
-    username: 'paarshinfotech.com',
-    password: 'PaarshInfotech#5891',
-};
-
-function loadProfile(): AdminProfile {
-    if (typeof window === 'undefined') return defaultProfile;
-    try {
-        const stored = localStorage.getItem(ADMIN_PROFILE_KEY);
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            return { ...defaultProfile, ...parsed };
-        }
-    } catch { }
-    return defaultProfile;
-}
-
-function saveProfile(profile: AdminProfile) {
-    localStorage.setItem(ADMIN_PROFILE_KEY, JSON.stringify(profile));
 }
 
 export default function SettingsPage() {
     const { settings, setSetting } = useSiteSettings();
     const { toast } = useToast();
 
-    // Initialize directly from localStorage to avoid stale-state mismatch
-    const [profile, setProfile] = useState<AdminProfile>(() => loadProfile());
+    const [profile, setProfile] = useState<AdminProfile>({ name: '', email: '', username: '' });
+    const [isLoadingProfile, setIsLoadingProfile] = useState(true);
     const [isProfileSaving, setIsProfileSaving] = useState(false);
 
     const [currentPassword, setCurrentPassword] = useState('');
@@ -60,32 +34,60 @@ export default function SettingsPage() {
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+    // Fetch admin profile from backend on mount
+    useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    const fetchProfile = async () => {
+        setIsLoadingProfile(true);
+        try {
+            const res = await fetch('/api/admin');
+            if (res.ok) {
+                const data = await res.json();
+                setProfile({ name: data.name, email: data.email, username: data.username });
+            } else {
+                toast({ variant: "destructive", title: "Error", description: "Failed to load profile." });
+            }
+        } catch {
+            toast({ variant: "destructive", title: "Error", description: "Failed to load profile." });
+        } finally {
+            setIsLoadingProfile(false);
+        }
+    };
+
     const handleProfileSave = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsProfileSaving(true);
-        await new Promise(resolve => setTimeout(resolve, 500));
-        saveProfile(profile);
-        toast({ title: "Profile Updated", description: "Your profile information has been saved." });
-        // Re-sync profile state from localStorage after save
-        setProfile(loadProfile());
-        setIsProfileSaving(false);
-    };
-
-    // Keep password in localStorage in sync with the profile object
-    const persistProfile = (updated: AdminProfile) => {
-        setProfile(updated);
-        saveProfile(updated);
+        try {
+            const res = await fetch('/api/admin', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'updateProfile',
+                    name: profile.name,
+                    email: profile.email,
+                }),
+            });
+            const result = await res.json();
+            if (res.ok) {
+                if (result.data) {
+                    setProfile({ name: result.data.name, email: result.data.email, username: result.data.username });
+                }
+                toast({ title: "Profile Updated", description: "Your profile information has been saved." });
+            } else {
+                toast({ variant: "destructive", title: "Error", description: result.error || "Failed to update profile." });
+            }
+        } catch {
+            toast({ variant: "destructive", title: "Error", description: "Failed to update profile." });
+        } finally {
+            setIsProfileSaving(false);
+        }
     };
 
     const handlePasswordChange = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Always compare against the latest stored password from localStorage
-        const storedProfile = loadProfile();
-        if (currentPassword !== storedProfile.password) {
-            toast({ variant: "destructive", title: "Incorrect Password", description: "The current password you entered is wrong." });
-            return;
-        }
         if (newPassword.length < 6) {
             toast({ variant: "destructive", title: "Password Too Short", description: "New password must be at least 6 characters." });
             return;
@@ -96,17 +98,43 @@ export default function SettingsPage() {
         }
 
         setIsPasswordSaving(true);
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        const updatedProfile = { ...storedProfile, password: newPassword };
-        persistProfile(updatedProfile);
-
-        setCurrentPassword('');
-        setNewPassword('');
-        setConfirmPassword('');
-        toast({ title: "Password Changed", description: "Your password has been updated successfully." });
-        setIsPasswordSaving(false);
+        try {
+            const res = await fetch('/api/admin', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'changePassword',
+                    currentPassword,
+                    newPassword,
+                }),
+            });
+            const result = await res.json();
+            if (res.ok) {
+                setCurrentPassword('');
+                setNewPassword('');
+                setConfirmPassword('');
+                toast({ title: "Password Changed", description: "Your password has been updated successfully." });
+            } else {
+                toast({
+                    variant: "destructive",
+                    title: result.error || "Error",
+                    description: result.description || "Failed to change password."
+                });
+            }
+        } catch {
+            toast({ variant: "destructive", title: "Error", description: "Failed to change password." });
+        } finally {
+            setIsPasswordSaving(false);
+        }
     };
+
+    if (isLoadingProfile) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <LuLoader className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6 max-w-2xl">
@@ -129,6 +157,7 @@ export default function SettingsPage() {
                                 id="name"
                                 value={profile.name}
                                 onChange={(e) => setProfile(prev => ({ ...prev, name: e.target.value }))}
+                                placeholder="Enter your name"
                             />
                         </div>
                         <div className="space-y-2">
@@ -138,6 +167,7 @@ export default function SettingsPage() {
                                 type="email"
                                 value={profile.email}
                                 onChange={(e) => setProfile(prev => ({ ...prev, email: e.target.value }))}
+                                placeholder="Enter your email"
                             />
                         </div>
                         <Button type="submit" disabled={isProfileSaving}>

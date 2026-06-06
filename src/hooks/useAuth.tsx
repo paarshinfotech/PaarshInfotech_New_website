@@ -39,43 +39,38 @@ export function useAuth() {
 
   useEffect(() => {
     checkAuth();
-    // Add event listener to sync auth state across tabs
     window.addEventListener('storage', checkAuth);
     return () => {
       window.removeEventListener('storage', checkAuth);
     };
   }, [checkAuth]);
 
-  // Credentials are stored in localStorage under 'admin_profile' (managed by Settings page).
-  // Default fallback: username = 'paarshinfotech.com', password = 'PaarshInfotech#5891'
-  const ADMIN_PROFILE_KEY = 'admin_profile';
-  const DEFAULT_USERNAME = 'paarshinfotech.com';
-  const DEFAULT_PASSWORD = 'PaarshInfotech#5891';
-
-  const login = (username?: string, password?: string): boolean => {
-    // Always read the latest credentials from localStorage so password changes take effect
-    let storedUsername = DEFAULT_USERNAME;
-    let storedPassword = DEFAULT_PASSWORD;
+  // Login verifies credentials against the Admin collection in MongoDB using email + password
+  const login = async (email?: string, password?: string): Promise<boolean> => {
     try {
-      const stored = localStorage.getItem(ADMIN_PROFILE_KEY);
-      if (stored) {
-        const profile = JSON.parse(stored);
-        if (profile.username) storedUsername = profile.username;
-        if (profile.password) storedPassword = profile.password;
-      }
-    } catch { }
+      const res = await fetch('/api/admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (username === storedUsername && password === storedPassword) {
-      const expirationTime = new Date().getTime() + 5 * 24 * 60 * 60 * 1000; // 5 days
-      const token: AuthToken = {
-        token: 'fake-jwt-token', // In a real app, this would be a real JWT
-        expiresAt: expirationTime,
-      };
-      localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(token));
-      setIsAuthenticated(true);
-      return true;
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        const expirationTime = new Date().getTime() + 5 * 24 * 60 * 60 * 1000; // 5 days
+        const token: AuthToken = {
+          token: 'admin-auth-token',
+          expiresAt: expirationTime,
+        };
+        localStorage.setItem(AUTH_TOKEN_KEY, JSON.stringify(token));
+        setIsAuthenticated(true);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error("Login failed:", error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {
