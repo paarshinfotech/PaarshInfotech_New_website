@@ -28,7 +28,7 @@ interface Job {
 
 interface JobCardProps {
   job: Job;
-  onApplyClick: (jobTitle: string) => void;
+  onApplyClick: (jobId: string, jobTitle: string) => void;
 }
 
 export default function JobCard({ job, onApplyClick }: JobCardProps) {
@@ -64,7 +64,7 @@ export default function JobCard({ job, onApplyClick }: JobCardProps) {
           <FaClock className="w-4 h-4" />
           Posted {job.posted}
         </p>
-        <Button onClick={() => onApplyClick(job.title)}>Apply Now</Button>
+        <Button onClick={() => onApplyClick(job._id, job.title)}>Apply Now</Button>
       </CardFooter>
     </Card>
   );

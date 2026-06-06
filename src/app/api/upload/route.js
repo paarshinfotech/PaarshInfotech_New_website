@@ -10,7 +10,7 @@ export async function POST(request) {
     const formData = await request.formData();
     const file = formData.get('file');
     const category = formData.get('category') || 'other';
-    
+
     if (!file) {
       return NextResponse.json(
         { success: false, error: 'No file uploaded' },
@@ -21,24 +21,26 @@ export async function POST(request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Generate filename based on category
+    // Generate filename based on category + timestamp
     const timestamp = Date.now();
-    const originalName = file.name.replace(/\s+/g, '-'); // Replace spaces with dashes
+    const originalName = file.name.replace(/\s+/g, '-');
+    // Use the real file extension from the original filename
+    const originalExtension = file.name.split('.').pop()?.toLowerCase() || '';
     const fileNameWithoutExt = `${category}-${timestamp}`;
-    
-    // Upload file using the shared upload utility
-    const fileUrl = await uploadFile(buffer, fileNameWithoutExt, file.type);
-    
+
+    // Upload file using the shared upload utility (auto-detects dev vs production)
+    const fileUrl = await uploadFile(buffer, fileNameWithoutExt, file.type, originalExtension);
+
     if (!fileUrl) {
       return NextResponse.json(
         { success: false, error: 'Failed to upload file' },
         { status: 500 }
       );
     }
-    
+
     // Extract just the filename from the URL for storage
     const fileName = fileUrl.split('/').pop();
-    
+
     // Save file metadata to database
     const fileRecord = await File.create({
       fileName,
@@ -49,13 +51,13 @@ export async function POST(request) {
       category,
     });
 
-    return NextResponse.json({ 
-      success: true, 
-      data: { 
+    return NextResponse.json({
+      success: true,
+      data: {
         url: fileUrl,
         fileName,
-        fileId: fileRecord._id 
-      } 
+        fileId: fileRecord._id,
+      },
     });
   } catch (error) {
     console.error('Upload error:', error);

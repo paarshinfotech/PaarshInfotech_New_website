@@ -207,8 +207,8 @@ export const api = createApi({
     // ================================================== Applicant Endpoints ================================================== //
 
     addApplicant: builder.mutation({
-      query: ({ jobId, ...applicant }) => ({
-        url: `/job/${jobId}/applicants`,
+      query: (applicant) => ({
+        url: `/job-application`,
         method: "POST",
         body: applicant,
       }),
@@ -219,6 +219,8 @@ export const api = createApi({
       query: (jobId) => `/job?populateApplicants=true&id=${jobId}`,
       providesTags: ["Applicant"],
       transformResponse: (response) => {
+        // When fetched by id, response is a single job object
+        // When fetched without id, response is an array
         const job = Array.isArray(response) ? response[0] : response;
         return job?.applicants || [];
       },

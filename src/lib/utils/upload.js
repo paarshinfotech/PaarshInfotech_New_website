@@ -1,7 +1,10 @@
 import path from "path";
 import fs from "fs";
 
-// Define upload directories - can be switched between local and VPS
+// Auto-detect environment
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
+// Define upload directories
 const LOCAL_UPLOAD_DIR = path.join(process.cwd(), "public/uploads");
 const VPS_UPLOAD_DIR = "/root/Paarsh-Infotech/uploads";
 
@@ -9,9 +12,9 @@ const VPS_UPLOAD_DIR = "/root/Paarsh-Infotech/uploads";
 const LOCAL_BASE_URL = "/uploads/";
 const VPS_BASE_URL = "https://paarshinfotech.com/Paarsh-Infotech/uploads/";
 
-// Set current configuration
-const UPLOAD_DIR = VPS_UPLOAD_DIR ; // Switch to VPS_UPLOAD_DIR for VPS storage
-const BASE_URL = VPS_BASE_URL; // Switch to VPS_BASE_URL for VPS storage
+// Automatically pick the right config based on environment
+const UPLOAD_DIR = IS_PRODUCTION ? VPS_UPLOAD_DIR : LOCAL_UPLOAD_DIR;
+const BASE_URL   = IS_PRODUCTION ? VPS_BASE_URL   : LOCAL_BASE_URL;
 
 // Ensure the upload directory exists
 if (!fs.existsSync(UPLOAD_DIR)) {
@@ -19,16 +22,44 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 }
 
 /**
+ * Maps common MIME types to correct file extensions.
+ */
+const MIME_TO_EXT = {
+    'image/jpeg': 'jpg',
+    'image/png': 'png',
+    'image/gif': 'gif',
+    'image/webp': 'webp',
+    'image/svg+xml': 'svg',
+    'application/pdf': 'pdf',
+    'application/msword': 'doc',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'docx',
+    'application/vnd.ms-excel': 'xls',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'xlsx',
+    'application/vnd.ms-powerpoint': 'ppt',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation': 'pptx',
+    'video/mp4': 'mp4',
+    'video/webm': 'webm',
+    'audio/mpeg': 'mp3',
+    'audio/wav': 'wav',
+    'text/plain': 'txt',
+    'application/zip': 'zip',
+};
+
+/**
  * Uploads a file and returns its URL.
  * @param {Buffer} buffer - The file buffer
  * @param {string} fileName - Name for the uploaded file (without extension)
  * @param {string} mimeType - The file's MIME type
+ * @param {string} [originalExtension] - Original file extension (e.g. 'docx') - preferred over MIME lookup
  * @returns {Promise<string|null>} - Public URL of the uploaded file or null on failure
  */
-export async function uploadFile(buffer, fileName, mimeType) {
+export async function uploadFile(buffer, fileName, mimeType, originalExtension) {
     try {
-        // Get file extension from MIME type
-        const extension = mimeType.split("/")[1] || 'jpg';
+        // Prefer the original extension from the filename, then MIME map, then fallback
+        const extension = originalExtension
+            || MIME_TO_EXT[mimeType]
+            || mimeType.split('/').pop().split(';')[0]
+            || 'bin';
         
         // Generate a unique file name (fileName already contains timestamp)
         const fullFileName = `${fileName}.${extension}`;

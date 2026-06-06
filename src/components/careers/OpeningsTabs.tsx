@@ -35,8 +35,10 @@ export default function OpeningsTabs() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedJobTitle, setSelectedJobTitle] = useState("");
+  const [selectedJobId, setSelectedJobId] = useState("");
 
-  const handleApplyClick = (jobTitle: string) => {
+  const handleApplyClick = (jobId: string, jobTitle: string) => {
+    setSelectedJobId(jobId);
     setSelectedJobTitle(jobTitle);
     setIsModalOpen(true);
   };
@@ -137,6 +139,7 @@ export default function OpeningsTabs() {
         )}
       </div>
       <ApplicationModal
+        jobId={selectedJobId}
         jobTitle={selectedJobTitle}
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}

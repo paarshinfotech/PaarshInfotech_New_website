@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { ImSpinner2 } from "react-icons/im";
+import { useAddApplicantMutation } from "@/services/api";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -33,18 +34,21 @@ const formSchema = z.object({
 });
 
 interface ApplicationModalProps {
+  jobId: string;
   jobTitle: string;
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
 }
 
 export function ApplicationModal({
+  jobId,
   jobTitle,
   isOpen,
   onOpenChange,
 }: ApplicationModalProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [addApplicant] = useAddApplicantMutation();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,20 +59,53 @@ export function ApplicationModal({
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    console.log({ ...values, resume: values.resume[0] });
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // 1. Upload Resume
+      const formData = new FormData();
+      formData.append('file', values.resume[0]);
+      formData.append('category', 'resume');
+      
+      const uploadRes = await fetch('/api/upload', { 
+        method: 'POST', 
+        body: formData 
+      });
+      const uploadData = await uploadRes.json();
+      
+      if (!uploadData.success) {
+        throw new Error(uploadData.error || 'Failed to upload resume');
+      }
+      
+      const resumeUrl = uploadData.data.url;
+      
+      // 2. Submit Application
+      await addApplicant({
+        jobId,
+        name: values.name,
+        email: values.email,
+        resumeUrl,
+        coverLetter: values.coverLetter,
+      }).unwrap();
+
       toast({
         title: "Application Submitted!",
         description: `Your application for ${jobTitle} has been received.`,
       });
-      setIsSubmitting(false);
+      
       onOpenChange(false);
       form.reset();
-    }, 1500);
+    } catch (error: any) {
+      console.error(error);
+      toast({
+        title: "Application Failed",
+        description: error.message || "Something went wrong. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (

@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import fs from "fs";
 import path from "path";
+import { Readable } from "stream";
 
 /**
  * Initialize Google Drive API with service account credentials
@@ -110,7 +111,6 @@ export async function uploadBufferToDrive(buffer, fileName, mimeType, category =
       parents: [folderId],
     };
 
-    const { Readable } = require("stream");
     const bufferStream = new Readable();
     bufferStream.push(buffer);
     bufferStream.push(null);

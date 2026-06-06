@@ -10,14 +10,21 @@ export async function GET(request) {
     const url = new URL(request.url);
     const populateApplicants =
       url.searchParams.get("populateApplicants") === "true";
+    const id = url.searchParams.get("id");
 
-    const query = JobModel.find();
+    let query;
+    if (id) {
+      query = JobModel.findById(id);
+    } else {
+      query = JobModel.find();
+    }
+
     if (populateApplicants) {
       query.populate("applicants");
     }
 
-    const jobs = await query.lean();
-    return new Response(JSON.stringify(jobs), {
+    const result = await query.lean();
+    return new Response(JSON.stringify(result), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });

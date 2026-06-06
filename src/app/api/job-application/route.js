@@ -1,14 +1,19 @@
-export async function POST (request) {
+import _db from "../../../lib/utils/db";
+import JobModel from "../../../../models/Job.model";
+import ApplicantModel from "../../../../models/Applicant.model";
+
+// Establish MongoDB connection once at startup
+_db();
+
+export async function POST(request) {
   try {
-    const url = new URL(request.url);
-    const jobId = url.pathname.split("/").slice(-2)[0]; // Extract job _id
     const data = await request.json();
-    const { name, email, resumeUrl } = data;
+    const { jobId, name, email, resumeUrl, coverLetter } = data;
 
     if (!jobId || !name || !email || !resumeUrl) {
       return new Response(
         JSON.stringify({
-          error: "Job _id, name, email, and resumeUrl are required",
+          error: "jobId, name, email, and resumeUrl are required",
         }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
