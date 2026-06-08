@@ -29,6 +29,10 @@ import { useAddApplicantMutation } from "@/services/api";
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  phone: z
+    .string()
+    .min(1, { message: "Phone number is required." })
+    .regex(/^\d{10}$/, { message: "Phone must be exactly 10 digits with no spaces." }),
   resume: z.any().refine((files) => files?.length === 1, "Resume is required."),
   coverLetter: z.string().optional(),
 });
@@ -55,6 +59,7 @@ export function ApplicationModal({
     defaultValues: {
       name: "",
       email: "",
+      phone: "",
       coverLetter: "",
     },
   });
@@ -67,24 +72,25 @@ export function ApplicationModal({
       const formData = new FormData();
       formData.append('file', values.resume[0]);
       formData.append('category', 'resume');
-      
-      const uploadRes = await fetch('/api/upload', { 
-        method: 'POST', 
-        body: formData 
+
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
       });
       const uploadData = await uploadRes.json();
-      
+
       if (!uploadData.success) {
         throw new Error(uploadData.error || 'Failed to upload resume');
       }
-      
+
       const resumeUrl = uploadData.data.url;
-      
+
       // 2. Submit Application
       await addApplicant({
         jobId,
         name: values.name,
         email: values.email,
+        phone: values.phone,
         resumeUrl,
         coverLetter: values.coverLetter,
       }).unwrap();
@@ -93,7 +99,7 @@ export function ApplicationModal({
         title: "Application Submitted!",
         description: `Your application for ${jobTitle} has been received.`,
       });
-      
+
       onOpenChange(false);
       form.reset();
     } catch (error: any) {
@@ -147,6 +153,30 @@ export function ApplicationModal({
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Phone Number</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="10-digit mobile number"
+                        maxLength={10}
+                        inputMode="numeric"
+                        {...field}
+                        onChange={(e) => {
+                          // Strip any non-digit characters on input
+                          const digits = e.target.value.replace(/\D/g, "");
+                          field.onChange(digits);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="resume"

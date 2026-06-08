@@ -17,6 +17,7 @@ export interface Applicant {
   _id: string;
   name: string;
   email: string;
+  phone: string;
   resumeUrl: string;
 }
 
@@ -68,6 +69,7 @@ export function ApplicantsViewModal({ isOpen, onOpenChange, job }: ApplicantsVie
                 <TableRow>
                   <TableHead>Name</TableHead>
                   <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
                   <TableHead className="text-right">Resume</TableHead>
                 </TableRow>
               </TableHeader>
@@ -76,6 +78,7 @@ export function ApplicantsViewModal({ isOpen, onOpenChange, job }: ApplicantsVie
                   <TableRow key={applicant._id}>
                     <TableCell className="font-medium">{applicant.name}</TableCell>
                     <TableCell>{applicant.email}</TableCell>
+                    <TableCell>{applicant.phone || "—"}</TableCell>
                     <TableCell className="text-right">
                       <Button variant="outline" size="sm" asChild>
                         <a href={applicant.resumeUrl} target="_blank" rel="noopener noreferrer">

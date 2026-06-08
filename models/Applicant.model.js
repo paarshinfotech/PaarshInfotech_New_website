@@ -14,6 +14,12 @@ const applicantSchema = new mongoose.Schema(
       trim: true,
       match: [/^\S+@\S+\.\S+$/, "Must be a valid email"],
     },
+    phone: {
+      type: String,
+      required: true,
+      trim: true,
+      match: [/^\d{10}$/, "Phone must be exactly 10 digits with no spaces"],
+    },
     resumeUrl: {
       type: String,
       required: true,
@@ -28,6 +34,7 @@ const applicantSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const ApplicantModel =
-  mongoose.models.Applicant || mongoose.model("Applicant", applicantSchema);
+// Force schema reload in Next.js development environment
+delete mongoose.models.Applicant;
+const ApplicantModel = mongoose.model("Applicant", applicantSchema);
 module.exports = ApplicantModel;
