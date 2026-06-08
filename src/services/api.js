@@ -38,6 +38,8 @@ export const api = createApi({
     "MediaHero",
     "Chatbot",
     "Newsletter",
+    "ECTestimonial",
+        "SuccessStory",
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //
@@ -905,6 +907,70 @@ export const api = createApi({
       invalidatesTags: ["Chatbot"],
     }),
 
+    // ================================================== EC Testimonial Endpoints ================================================== //
+
+    getECTestimonials: builder.query({
+      query: (publishedOnly = false) =>
+        `/ec-testimonial${publishedOnly ? "?publishedOnly=true" : ""}`,
+      providesTags: ["ECTestimonial"],
+    }),
+    addECTestimonial: builder.mutation({
+      query: (testimonial) => ({
+        url: "/ec-testimonial",
+        method: "POST",
+        body: testimonial,
+      }),
+      invalidatesTags: ["ECTestimonial"],
+    }),
+    updateECTestimonial: builder.mutation({
+      query: (testimonial) => ({
+        url: "/ec-testimonial",
+        method: "PUT",
+        body: testimonial,
+      }),
+      invalidatesTags: ["ECTestimonial"],
+    }),
+    deleteECTestimonial: builder.mutation({
+      query: (body) => ({ url: "/ec-testimonial", method: "DELETE", body }),
+      invalidatesTags: ["ECTestimonial"],
+    }),
+    reorderECTestimonials: builder.mutation({
+      query: (body) => ({ url: "/ec-testimonial", method: "PATCH", body }),
+      invalidatesTags: ["ECTestimonial"],
+    }),
+
+    // ================================================== Success Story Endpoints ================================================== //
+
+    getSuccessStories: builder.query({
+      query: (publishedOnly = false) =>
+        `/success-story${publishedOnly ? "?publishedOnly=true" : ""}`,
+      providesTags: ["SuccessStory"],
+    }),
+    addSuccessStory: builder.mutation({
+      query: (story) => ({
+        url: "/success-story",
+        method: "POST",
+        body: story,
+      }),
+      invalidatesTags: ["SuccessStory"],
+    }),
+    updateSuccessStory: builder.mutation({
+      query: (story) => ({
+        url: "/success-story",
+        method: "PUT",
+        body: story,
+      }),
+      invalidatesTags: ["SuccessStory"],
+    }),
+    deleteSuccessStory: builder.mutation({
+      query: (body) => ({ url: "/success-story", method: "DELETE", body }),
+      invalidatesTags: ["SuccessStory"],
+    }),
+    reorderSuccessStories: builder.mutation({
+      query: (body) => ({ url: "/success-story", method: "PATCH", body }),
+      invalidatesTags: ["SuccessStory"],
+    }),
+
     // Visitor Analytics Endpoints can be added here
 
     getVisitorAnalytics: builder.query({
@@ -1105,5 +1171,19 @@ export const {
   useGetNewsletterSubscribersQuery,
   useAddNewsletterSubscriberMutation,
   useDeleteNewsletterSubscriberMutation,
+
+  // EC Testimonials
+  useGetECTestimonialsQuery,
+  useAddECTestimonialMutation,
+  useUpdateECTestimonialMutation,
+  useDeleteECTestimonialMutation,
+  useReorderECTestimonialsMutation,
+
+  // Success Stories
+  useGetSuccessStoriesQuery,
+  useAddSuccessStoryMutation,
+  useUpdateSuccessStoryMutation,
+  useDeleteSuccessStoryMutation,
+  useReorderSuccessStoriesMutation,
 
 } = api;

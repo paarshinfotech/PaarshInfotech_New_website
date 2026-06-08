@@ -52,6 +52,16 @@ export default function AdminLoginPage() {
   };
 
   return (
+    <>
+      <style>{`
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+          display: none;
+        }
+        input[type="password"]::-webkit-credentials-auto-fill-button {
+          display: none !important;
+        }
+      `}</style>
     <div className="flex min-h-screen items-center justify-center bg-secondary">
       <Card className="w-full max-w-sm">
         <form onSubmit={handleLogin}>
@@ -108,5 +118,6 @@ export default function AdminLoginPage() {
         </form>
       </Card>
     </div>
+    </>
   );
 }

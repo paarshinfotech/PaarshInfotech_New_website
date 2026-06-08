@@ -87,6 +87,8 @@ const excellenceCenterLinks = [
   { href: "/admin/excellence-center/workshops", label: "Workshops" },
   { href: "/admin/excellence-center/awards", label: "Awards" },
   { href: "/admin/excellence-center/feedbacks", label: "Feedbacks" },
+  { href: "/admin/excellence-center/testimonials", label: "Testimonials" },
+  { href: "/admin/excellence-center/success-stories", label: "Success Stories" },
 ];
 
 const internshipLinks = [
