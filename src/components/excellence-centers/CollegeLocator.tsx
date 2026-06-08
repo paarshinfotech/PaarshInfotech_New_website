@@ -41,14 +41,36 @@ export default function CollegeLocator() {
     (college: College) => college._id === selectedCollegeId
   );
 
-  // Generate embed URL based on partnerId.location
+  // Generate embed URL based on partnerId.location or college.location
   const getMapEmbedUrl = (college: College | undefined) => {
     if (!college) {
       return "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d121059.047111496!2d73.7805667!3d18.524545!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc2bf2e67461101%3A0x828d43bf9d9ee343!2sPune%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1628588042466!5m2!1sen!2sin";
     }
-    const locationQuery = encodeURIComponent(college.partnerId.location);
-    // Approximate embed URL without API key
-    return `https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d121059!2d73.7805667!3d18.524545!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s${locationQuery}!5e0!3m2!1sen!2sin`;
+
+    const loc = college.location || "";
+
+    // If location is an iframe code, extract src
+    if (loc.includes("<iframe") && loc.includes("src=")) {
+      const match = loc.match(/src="([^"]+)"/);
+      if (match && match[1]) return match[1];
+    }
+
+    // If location is already a google maps embed URL
+    if (loc.includes("google.com/maps/embed")) {
+      return loc;
+    }
+
+    // Otherwise use name and partner location to search
+    let queryText = college.name;
+    if (college.partnerId?.location) {
+      queryText += `, ${college.partnerId.location}`;
+    } else if (loc && !loc.startsWith("http")) {
+      // Use loc if it's plain text and not a URL
+      queryText = loc;
+    }
+
+    const locationQuery = encodeURIComponent(queryText);
+    return `https://maps.google.com/maps?q=${locationQuery}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
   };
 
   // Map location for the iframe

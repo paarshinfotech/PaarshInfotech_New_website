@@ -6,9 +6,9 @@ import { ImagePreviewModal } from "../common/ImagePreviewModal";
 import { useGetECGalleryQuery } from "@/services/api";
 
 interface MediaGalleryItem {
+  _id?: string;
   imageUrl: string;
-  alt: string;
-  hint: string;
+  title: string;
 }
 
 export default function MediaGallery() {
@@ -34,16 +34,16 @@ export default function MediaGallery() {
               <ImagePreviewModal
                 key={index}
                 imgSrc={item.imageUrl}
-                alt={item.hint}
-                data-ai-hint={item.hint}
+                alt={item.title}
+                data-ai-hint={item.title}
               >
                 <Card
                   className="overflow-hidden group relative aspect-video cursor-pointer"
-                  data-ai-hint={item.hint}
+                  data-ai-hint={item.title}
                 >
                   <Image
                     src={item.imageUrl}
-                    alt={item.hint}
+                    alt={item.title}
                     fill
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                     className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
@@ -51,7 +51,7 @@ export default function MediaGallery() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent transition-opacity duration-300 group-hover:from-black/70">
                     <div className="absolute bottom-0 p-4">
                       <p className="text-white font-semibold text-sm drop-shadow-md">
-                        {item.hint}
+                        {item.title}
                       </p>
                     </div>
                   </div>
