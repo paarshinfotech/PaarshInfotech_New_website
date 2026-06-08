@@ -34,7 +34,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { JobFormModal } from "@/components/admin/careers/JobFormModal";
 import { DeleteConfirmationDialog } from "@/components/admin/DeleteConfirmationDialog";
 import { format } from "date-fns";
-import { ApplicantsViewModal } from "@/components/admin/careers/ApplicantsViewModal";
+import { ApplicantsViewModal, type Applicant, type Job } from "@/components/admin/careers/ApplicantsViewModal";
 import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import {
@@ -44,27 +44,7 @@ import {
   useDeleteJobMutation,
 } from "../../../../services/api";
 
-export interface Applicant {
-  _id: string;
-  name: string;
-  email: string;
-  resumeUrl: string;
-}
-
-export interface Job {
-  _id: string;
-  title: string;
-  location: string;
-  type: "Full-Time" | "Internship";
-  status: "Open" | "Closed" | "Scheduled";
-  published: boolean;
-  applicants: string[] | Applicant[];
-  description: string;
-  skills: string[];
-  publishDate: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
+// Applicant and Job types are imported from ApplicantsViewModal to avoid duplication
 
 export default function CareersManagementPage() {
   const { toast } = useToast();

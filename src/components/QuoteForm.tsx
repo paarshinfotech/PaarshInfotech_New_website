@@ -11,7 +11,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { LuLoader } from "react-icons/lu";
-import { getSmartReply } from "@/app/actions";
 import { useAddQuoteMutation } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 
@@ -39,7 +38,6 @@ type FormData = z.infer<typeof formSchema>;
 
 export function QuoteForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const [smartReply, setSmartReply] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [addQuote] = useAddQuoteMutation();
   const { toast } = useToast();
@@ -57,7 +55,6 @@ export function QuoteForm() {
 
   async function onSubmit(values: FormData) {
     setIsLoading(true);
-    setSmartReply(null);
     setError(null);
 
     try {
@@ -69,17 +66,8 @@ export function QuoteForm() {
         description: "Thank you for your request. We'll be in touch shortly.",
       });
 
-      // Then, get the AI-generated smart reply
-      const reply = await getSmartReply({
-          clientMessage: values.message,
-          selectedServices: values.services,
-      });
-      
-      if(reply.success) {
-          setSmartReply(reply.content || '');
-      } else {
-          setError(reply.error || 'An unexpected error occurred while generating the email draft.');
-      }
+      // Reset form after successful submission
+      form.reset();
 
     } catch (err: any) {
         toast({
@@ -163,24 +151,13 @@ export function QuoteForm() {
               
               <Button type="submit" disabled={isLoading}>
                 {isLoading && <LuLoader className="mr-2 h-4 w-4 animate-spin" />}
-                Get Quote & AI Reply
+                Submit Quote Request
               </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
 
-      {smartReply && (
-        <Card>
-            <CardHeader>
-                <CardTitle>AI-Generated Follow-Up Email</CardTitle>
-                <CardDescription>Here's a personalized draft you can use to follow up.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Textarea readOnly value={smartReply} rows={8} className="bg-secondary" />
-            </CardContent>
-        </Card>
-      )}
 
       {error && (
         <Card className="border-destructive">

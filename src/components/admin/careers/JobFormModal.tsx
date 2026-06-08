@@ -28,7 +28,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 
 
-import type { Job } from "@/app/(admin)/admin/careers/page";
+import type { Job } from "@/components/admin/careers/ApplicantsViewModal";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
