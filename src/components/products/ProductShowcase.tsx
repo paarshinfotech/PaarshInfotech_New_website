@@ -14,7 +14,7 @@ import { iconMap } from "@/lib/iconsMap";
 // Skeleton component for loading state
 const ProductShowcaseSkeleton = () => {
   return (
-    <section id="products" className="py-12 bg-background">
+    <section id="products" className="py-16 md:py-24 bg-background">
       <div className="container max-w-7xl">
         <div className="text-center mb-10">
           <div className="h-6 bg-gray-200 rounded w-48 mx-auto mb-3 animate-pulse"></div>
@@ -97,7 +97,7 @@ export default function ProductShowcase() {
   // Handle error state
   if (isError) {
     return (
-      <section id="products" className="py-12 bg-background">
+      <section id="products" className="py-16 md:py-24 bg-background">
         <div className="container max-w-7xl">
           <div className="bg-red-50 border border-red-200 rounded-md p-4 text-center">
             <h3 className="text-red-800 font-medium">Error loading products</h3>
@@ -116,7 +116,7 @@ export default function ProductShowcase() {
   // Handle no published products
   if (publishedProducts.length === 0) {
     return (
-      <section id="products" className="py-12 bg-background">
+      <section id="products" className="py-16 md:py-24 bg-background">
         <div className="container max-w-7xl text-center">
           <p className="text-muted-foreground text-sm">No products available at the moment.</p>
         </div>
@@ -125,7 +125,7 @@ export default function ProductShowcase() {
   }
 
   return (
-    <section id="products" className="py-12 bg-background">
+    <section id="products" className="py-16 md:py-24 bg-background">
       <div className="container max-w-7xl">
         <motion.div
           className="text-center mb-10"
@@ -173,17 +173,22 @@ export default function ProductShowcase() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-4 md:p-6 shadow-lg border border-gray-200 max-w-4xl mx-auto"
+            className="bg-gradient-to-br from-white to-gray-50 rounded-xl p-4 md:p-6 shadow-lg border border-gray-200 max-w-6xl mx-auto"
           >
             <div className="flex flex-col md:flex-row-reverse gap-6">
-              <div className="flex-shrink-0 w-full md:w-1/3 h-48 md:h-auto rounded-lg overflow-hidden relative">
-                <Image
-                  src={activeProduct.heroImageBase64}
-                  alt={`${activeProduct.name} dashboard`}
-                  fill
-                  className="object-cover"
-                  data-ai-hint="dashboard screen"
-                />
+              <div className="flex-shrink-0 w-full md:w-1/2 h-[300px] rounded-lg overflow-hidden relative">
+                {activeProduct.heroImageBase64 ? (
+                  <Image
+                    src={activeProduct.heroImageBase64}
+                    alt={`${activeProduct.name} dashboard`}
+                    fill
+                    className="object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                    <LuPackage className="w-16 h-16 text-gray-300" />
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent"></div>
               </div>
 

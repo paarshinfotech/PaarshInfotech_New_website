@@ -3,11 +3,30 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
-import { testimonials } from "@/lib/excellenceCentersData";
-
-const extendedTestimonials = [...testimonials, ...testimonials];
+import { useGetECTestimonialsQuery } from "@/services/api";
+import { LuLoader } from "react-icons/lu";
 
 export default function Testimonials() {
+  const { data, isLoading } = useGetECTestimonialsQuery(true); // publishedOnly=true
+  const testimonials = (data?.data || []).sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+
+  // Duplicate for infinite scroll effect
+  const extendedTestimonials = testimonials.length > 0 ? [...testimonials, ...testimonials] : [];
+
+  if (isLoading) {
+    return (
+      <section className="py-16 md:py-24 bg-secondary">
+        <div className="container max-w-7xl flex justify-center">
+          <LuLoader className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </section>
+    );
+  }
+
+  if (testimonials.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-16 md:py-24 bg-secondary">
       <div className="container max-w-7xl">
@@ -22,9 +41,9 @@ export default function Testimonials() {
         </div>
         <div className="relative w-full overflow-hidden group">
           <div className="flex animate-marquee-slow group-hover:[animation-play-state:paused]">
-            {extendedTestimonials.map((testimonial, index) => (
+            {extendedTestimonials.map((testimonial: any, index: number) => (
               <div
-                key={index}
+                key={`${testimonial._id}-${index}`}
                 className="flex-shrink-0 w-full md:w-1/2 lg:w-1/3 p-4"
               >
                 <Card className="h-full bg-background shadow-lg text-center flex flex-col items-center p-8 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl">
@@ -35,10 +54,9 @@ export default function Testimonials() {
                       width={80}
                       height={80}
                       className="rounded-full object-cover mb-6 border-4 border-primary/10"
-                      data-ai-hint={testimonial.hint}
                     />
                     <p className="text-foreground/80 mb-6 italic flex-grow">
-                      "{testimonial.quote}"
+                      &ldquo;{testimonial.quote}&rdquo;
                     </p>
                     <div className="mt-auto">
                       <p className="font-semibold text-primary">
