@@ -24,16 +24,9 @@ export function Footer() {
               Your complete technology partner for fast, scalable, and reliable software solutions. We are the emerging tech experts.
             </p>
             <div className="flex space-x-3">
+              
               <a
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300"
-              >
-                <FaFacebookF className="w-4 h-4" />
-              </a>
-              <a
-                href="#"
+                href="https://www.instagram.com/paarsh_infotech?igsh=MWpicmZ1a29qbDV4Yg=="
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300"
@@ -41,7 +34,7 @@ export function Footer() {
                 <FaInstagram className="w-4 h-4" />
               </a>
               <a
-                href="#"
+                href="https://www.linkedin.com/company/paarsh-infotech-pvt-ltd/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all duration-300"
