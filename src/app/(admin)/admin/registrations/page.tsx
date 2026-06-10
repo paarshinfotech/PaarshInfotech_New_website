@@ -747,6 +747,7 @@ export default function RegistrationsPage() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Reg. Number</TableHead>
+                    <TableHead>Reg. Date</TableHead>
                     <TableHead className="w-[80px] text-center">Status</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead className="w-[180px]">Email</TableHead>
@@ -760,13 +761,13 @@ export default function RegistrationsPage() {
                 <TableBody>
                   {isLoading ? (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center py-8">
+                      <TableCell colSpan={10} className="text-center py-8">
                         <Loader2 className="h-6 w-6 animate-spin mx-auto" />
                       </TableCell>
                     </TableRow>
                   ) : registrations.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center text-muted-foreground py-8">
+                      <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
                         No registrations found
                       </TableCell>
                     </TableRow>
@@ -775,6 +776,9 @@ export default function RegistrationsPage() {
                       <TableRow key={registration._id}>
                         <TableCell className="font-medium">
                           {registration.registrationNumber}
+                        </TableCell>
+                        <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                          {format(new Date(registration.createdAt), 'dd MMM yyyy')}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center justify-center gap-1">
