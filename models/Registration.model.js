@@ -65,7 +65,15 @@ const registrationSchema = new mongoose.Schema(
     },
     paymentScreenshotUrl: {
       type: String,
-      required: true,
+      default: '',
+    },
+    paymentInfo: {
+      paymentId: { type: String, default: '' },
+      orderId:   { type: String, default: '' },
+      amount:    { type: Number, default: 0 },
+      currency:  { type: String, default: 'INR' },
+      paidAt:    { type: Date },
+      status:    { type: String, default: 'pending' }, // 'pending' | 'paid'
     },
     registrationNumber: {
       type: String,

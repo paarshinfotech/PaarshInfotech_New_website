@@ -1,7 +1,4 @@
-"use client";
-
 // This is the root layout that is not part of any route group
-import type { Metadata } from "next";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";

@@ -64,7 +64,15 @@ interface Registration {
   referralName?: string;
   internshipNote?: string;
   resumeUrl: string;
-  paymentScreenshotUrl: string;
+  paymentScreenshotUrl?: string;
+  paymentInfo?: {
+    paymentId: string;
+    orderId: string;
+    amount: number;
+    currency: string;
+    paidAt?: string;
+    status: string;
+  };
   registrationNumber: string;
   createdAt: string;
   offerLetterSent?: boolean;
@@ -1075,30 +1083,70 @@ export default function RegistrationsPage() {
               {/* Documents */}
               <div>
                 <h3 className="text-sm sm:text-base font-semibold mb-2 pb-1.5 border-b">Documents</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <h4 className="font-semibold text-xs text-muted-foreground mb-2">Resume</h4>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-8 w-full sm:w-auto"
-                      onClick={() => window.open(selectedRegistration.resumeUrl, '_blank')}
-                    >
-                      View Resume
-                    </Button>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-xs text-muted-foreground mb-2">Payment Screenshot</h4>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs h-8 w-full sm:w-auto"
-                      onClick={() => window.open(selectedRegistration.paymentScreenshotUrl, '_blank')}
-                    >
-                      View Payment
-                    </Button>
-                  </div>
+                <div>
+                  <h4 className="font-semibold text-xs text-muted-foreground mb-2">Resume</h4>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-xs h-8"
+                    onClick={() => window.open(selectedRegistration.resumeUrl, '_blank')}
+                  >
+                    View Resume
+                  </Button>
                 </div>
+              </div>
+
+              {/* Payment History */}
+              <div>
+                <h3 className="text-sm sm:text-base font-semibold mb-2 pb-1.5 border-b">Payment History</h3>
+                {selectedRegistration.paymentInfo?.paymentId ? (
+                  <div className="rounded-lg border bg-emerald-50/70 border-emerald-200 p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wide flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                        Razorpay Payment Success
+                      </span>
+                      <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-600 text-white shadow-sm">
+                        ₹{selectedRegistration.paymentInfo.amount?.toLocaleString('en-IN') || '0'} Paid
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                      <div>
+                        <h4 className="font-semibold text-xs text-muted-foreground mb-1">Total Paid Amount</h4>
+                        <p className="text-base font-extrabold text-emerald-700">
+                          ₹{selectedRegistration.paymentInfo.amount?.toLocaleString('en-IN') || '0'}{' '}
+                          <span className="font-normal text-xs text-muted-foreground">({selectedRegistration.paymentInfo.currency || 'INR'})</span>
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-xs text-muted-foreground mb-1">Payment Date & Time</h4>
+                        <p className="text-sm font-medium">
+                          {selectedRegistration.paymentInfo.paidAt
+                            ? format(new Date(selectedRegistration.paymentInfo.paidAt), 'MMM dd, yyyy HH:mm')
+                            : 'N/A'}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-xs text-muted-foreground mb-1">Razorpay Payment ID</h4>
+                        <p className="text-xs font-mono bg-white/80 p-1.5 rounded border border-emerald-100 break-all">{selectedRegistration.paymentInfo.paymentId}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-lg border bg-yellow-50 border-yellow-200 p-4">
+                    <p className="text-sm text-yellow-800">No Razorpay payment recorded for this registration.</p>
+                    {selectedRegistration.paymentScreenshotUrl && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs h-8 mt-2"
+                        onClick={() => window.open(selectedRegistration.paymentScreenshotUrl, '_blank')}
+                      >
+                        View Payment Screenshot
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}

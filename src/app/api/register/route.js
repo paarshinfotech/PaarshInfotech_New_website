@@ -121,7 +121,7 @@ export async function POST(request) {
     const requiredFields = [
       'fullName', 'email', 'contactNumber', 'address',
       'college', 'internshipType', 'attendanceMode',
-      'joiningDate', 'internshipDuration', 'resumeUrl', 'paymentScreenshotUrl'
+      'joiningDate', 'internshipDuration', 'resumeUrl'
     ];
     
     for (const field of requiredFields) {
