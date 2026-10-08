@@ -150,7 +150,7 @@ export default function RegisterPage() {
       }
 
       const options = {
-        key: data.keyId || "rzp_test_SLBxzQHGTzUTCO",
+        key: data.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_SLBxzQHGTzUTCO",
         amount: data.order.amount,
         currency: data.order.currency,
         name: "Paarsh Infotech Pvt. Ltd.",
