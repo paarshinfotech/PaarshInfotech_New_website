@@ -92,7 +92,7 @@ export default function RegisterPage() {
     internshipNote: "",
   });
 
-  const handleRazorpayPayment = async () => {
+  const handlePayment = async () => {
     if (!formData.fullName || !formData.email || !formData.contactNumber) {
       toast({
         title: "Information Required",
@@ -114,7 +114,82 @@ export default function RegisterPage() {
 
     setRazorpayLoading(true);
     try {
-      const isLoaded = await new Promise((resolve) => {
+      // 1. Try Cashfree Payment Gateway first
+      const cfResponse = await fetch("/api/cashfree/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          amount: amountNum,
+          customerName: formData.fullName,
+          customerEmail: formData.email,
+          customerPhone: formData.contactNumber,
+        }),
+      });
+
+      const cfData = await cfResponse.json();
+
+      if (cfData.success && cfData.paymentSessionId) {
+        // Load Cashfree JS SDK v3
+        const isLoaded = await new Promise((resolve) => {
+          if ((window as any).Cashfree) {
+            resolve(true);
+            return;
+          }
+          const script = document.createElement("script");
+          script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
+          script.onload = () => resolve(true);
+          script.onerror = () => resolve(false);
+          document.body.appendChild(script);
+        });
+
+        if (!isLoaded || !(window as any).Cashfree) {
+          throw new Error("Failed to load Cashfree payment gateway SDK.");
+        }
+
+        const cashfree = (window as any).Cashfree({
+          mode: cfData.mode || "production",
+        });
+
+        const checkoutResult = await cashfree.checkout({
+          paymentSessionId: cfData.paymentSessionId,
+          redirectTarget: "_modal",
+        });
+
+        if (checkoutResult?.error) {
+          toast({
+            title: "Payment Cancelled",
+            description: checkoutResult.error.message || "Payment modal was closed.",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        // Verify payment with server
+        const verifyRes = await fetch("/api/cashfree/verify-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: cfData.orderId }),
+        });
+
+        const verifyData = await verifyRes.json();
+        if (verifyData.success) {
+          setPaymentUrl(verifyData.paymentUrl || `https://merchant.cashfree.com/merchants/orders/${cfData.orderId}`);
+          setPaymentDetails({
+            paymentId: verifyData.paymentId,
+            orderId: cfData.orderId,
+          });
+          toast({
+            title: "Payment Successful!",
+            description: `Payment ID: ${verifyData.paymentId}`,
+          });
+        } else {
+          throw new Error(verifyData.error || "Payment verification failed.");
+        }
+        return;
+      }
+
+      // 2. Fallback to Razorpay if Cashfree is not available
+      const rzpLoaded = await new Promise((resolve) => {
         if ((window as any).Razorpay) {
           resolve(true);
           return;
@@ -126,8 +201,8 @@ export default function RegisterPage() {
         document.body.appendChild(script);
       });
 
-      if (!isLoaded) {
-        throw new Error("Failed to load Razorpay payment gateway script.");
+      if (!rzpLoaded) {
+        throw new Error(cfData.error || "Failed to load payment gateway script.");
       }
 
       const response = await fetch("/api/razorpay/create-order", {
@@ -205,7 +280,7 @@ export default function RegisterPage() {
     } catch (error: any) {
       toast({
         title: "Payment Error",
-        description: error.message || "Failed to launch Razorpay",
+        description: error.message || "Failed to launch payment gateway",
         variant: "destructive",
       });
     } finally {
@@ -213,10 +288,45 @@ export default function RegisterPage() {
     }
   };
 
-  // Fetch dropdown data on mount
+  const handleRazorpayPayment = handlePayment;
+
+  // Check for Cashfree redirect callback & fetch dropdown data on mount
   useEffect(() => {
     fetchDropdownData();
+
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const cfOrderId = params.get("cf_order_id") || params.get("order_id");
+      if (cfOrderId && !paymentDetails) {
+        setRazorpayLoading(true);
+        fetch("/api/cashfree/verify-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: cfOrderId }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success) {
+              setPaymentUrl(data.paymentUrl || `https://merchant.cashfree.com/merchants/orders/${cfOrderId}`);
+              setPaymentDetails({
+                paymentId: data.paymentId,
+                orderId: data.orderId,
+              });
+              if (data.amount) {
+                setPaymentAmount(String(data.amount));
+              }
+              toast({
+                title: "Payment Verified!",
+                description: `Payment ID: ${data.paymentId}`,
+              });
+            }
+          })
+          .catch(console.error)
+          .finally(() => setRazorpayLoading(false));
+      }
+    }
   }, []);
+
 
   const fetchDropdownData = async () => {
     try {
@@ -324,7 +434,7 @@ export default function RegisterPage() {
     if (!paymentUrl || !paymentDetails) {
       toast({
         title: "Payment Required",
-        description: "Please complete the Razorpay payment before submitting.",
+        description: "Please complete the registration fee payment before submitting.",
         variant: "destructive",
       });
       return;
@@ -857,12 +967,12 @@ export default function RegisterPage() {
                     </div>
                   </div>
 
-                  {/* Direct Razorpay Online Payment */}
+                  {/* Direct Online Payment */}
                   <div>
                     <Label className="text-base font-semibold">Registration Fee Payment *</Label>
                     <div className="mt-2 p-4 border rounded-lg bg-blue-50/40 space-y-3">
                       <p className="text-sm text-slate-600">
-                        Pay registration fee securely via Razorpay (UPI, Credit/Debit Cards, NetBanking, Wallets).
+                        Pay registration fee securely online (UPI, Credit/Debit Cards, NetBanking, Wallets).
                       </p>
 
                       {paymentUrl && paymentDetails ? (
@@ -893,17 +1003,17 @@ export default function RegisterPage() {
                           </div>
                           <Button
                             type="button"
-                            onClick={handleRazorpayPayment}
+                            onClick={handlePayment}
                             disabled={razorpayLoading || !paymentAmount}
                             className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 text-base"
                           >
                             {razorpayLoading ? (
                               <>
                                 <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                Opening Razorpay Gateway...
+                                Opening Payment Gateway...
                               </>
                             ) : (
-                              "Pay via Razorpay"
+                              "Pay Online Securely"
                             )}
                           </Button>
                         </div>

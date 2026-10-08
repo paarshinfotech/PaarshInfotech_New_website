@@ -1104,7 +1104,7 @@ export default function RegistrationsPage() {
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wide flex items-center gap-1.5">
                         <span className="h-2 w-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
-                        Razorpay Payment Success
+                        Online Payment Success
                       </span>
                       <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-600 text-white shadow-sm">
                         ₹{selectedRegistration.paymentInfo.amount?.toLocaleString('en-IN') || '0'} Paid
@@ -1127,14 +1127,14 @@ export default function RegistrationsPage() {
                         </p>
                       </div>
                       <div>
-                        <h4 className="font-semibold text-xs text-muted-foreground mb-1">Razorpay Payment ID</h4>
+                        <h4 className="font-semibold text-xs text-muted-foreground mb-1">Payment ID</h4>
                         <p className="text-xs font-mono bg-white/80 p-1.5 rounded border border-emerald-100 break-all">{selectedRegistration.paymentInfo.paymentId}</p>
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="rounded-lg border bg-yellow-50 border-yellow-200 p-4">
-                    <p className="text-sm text-yellow-800">No Razorpay payment recorded for this registration.</p>
+                    <p className="text-sm text-yellow-800">No online payment recorded for this registration.</p>
                     {selectedRegistration.paymentScreenshotUrl && (
                       <Button
                         variant="outline"
