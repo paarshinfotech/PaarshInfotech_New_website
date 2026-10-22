@@ -55,11 +55,11 @@ export default function SocialWall() {
               <Card key={post._id} className="flex flex-col bg-background">
                 <CardHeader className="flex flex-row items-center gap-4">
                   <Image
-                    src="https://placehold.co/40x40.png"
+                    src="/uploads/paarsh-logo-circle.png"
                     alt="Paarsh Infotech Logo"
                     width={40}
                     height={40}
-                    className="rounded-full"
+                    className="rounded-full object-cover border border-primary/20 shadow-sm"
                     data-ai-hint="company logo"
                   />
                   <div>
@@ -72,13 +72,14 @@ export default function SocialWall() {
                 <CardContent className="flex-grow space-y-4">
                   <p className="whitespace-pre-wrap break-words">{post.content}</p>
                   {post.image && (
-                     <ImagePreviewModal imgSrc={post.image} alt="Social media post image">
-                      <div className="relative h-64 w-full rounded-lg overflow-hidden cursor-pointer bg-muted/30">
+                     <ImagePreviewModal imgSrc={post.image} alt={post.content || "Social media post image"}>
+                      <div className="relative h-64 w-full rounded-lg overflow-hidden cursor-pointer bg-muted/30 group">
                         <Image
                           src={post.image}
-                          alt="Social media post image"
+                          alt={post.content || "Social media post image"}
                           fill
-                          className="object-contain"
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           data-ai-hint={post.hint}
                         />
                       </div>

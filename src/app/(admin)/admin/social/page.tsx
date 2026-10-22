@@ -113,18 +113,14 @@ export default function SocialManagementPage() {
 
   const handleSave = async (postData: {
     content: string;
-    image?: FileList | string | null;
+    image: string | null;
     published?: boolean;
+    _id?: string;
   }) => {
     try {
       const dataToSave = {
-        ...postData,
-        image:
-          typeof postData.image === "string"
-            ? postData.image
-            : postData.image && postData.image[0]
-            ? "https://placehold.co/600x400.png"
-            : null,
+        content: postData.content,
+        image: postData.image || null,
         likes: selectedPost?.likes || 0,
         comments: selectedPost?.comments || 0,
         hint: selectedPost?.hint || "social media",
