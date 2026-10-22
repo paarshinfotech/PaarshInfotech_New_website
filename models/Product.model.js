@@ -69,7 +69,17 @@ const productSchema = new mongoose.Schema(
     gallery: [galleryItemSchema],
     published: {
       type: Boolean,
-      default: false,
+      default: true,
+    },
+    videoUrl: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    videoThumbnail: {
+      type: String,
+      trim: true,
+      default: "",
     },
   },
   { timestamps: true }

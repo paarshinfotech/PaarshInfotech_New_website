@@ -49,7 +49,7 @@ export default function ProductSlugPage() {
   return (
     <>
       <ProductHero product={product} />
-      <ProductDemoVideo />
+      <ProductDemoVideo videoUrl={product.videoUrl} videoThumbnail={product.videoThumbnail} />
       <FeatureGrid features={product.features} />
       <HowItWorks />
       <UseCases />

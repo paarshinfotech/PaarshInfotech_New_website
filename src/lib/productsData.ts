@@ -10,6 +10,8 @@ export interface Product {
     tagline: string;
     description: string;
     published: boolean;
+    videoUrl?: string;
+    videoThumbnail?: string;
     Icon: IconType;
     heroImage: string;
     gallery: {

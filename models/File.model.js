@@ -24,7 +24,6 @@ const fileSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['resume', 'payment', 'other'],
       default: 'other',
     },
     uploadedBy: {
@@ -39,6 +38,11 @@ const fileSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Clear cached model in development/reloads so schema changes take effect immediately
+if (mongoose.models && mongoose.models.File) {
+  delete mongoose.models.File;
+}
 
 const File = mongoose.models.File || mongoose.model('File', fileSchema);
 

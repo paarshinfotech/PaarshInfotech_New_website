@@ -38,7 +38,8 @@ export const api = createApi({
     "Chatbot",
     "Newsletter",
     "ECTestimonial",
-        "SuccessStory",
+    "SuccessStory",
+    "Product",
   ], // Define tags for caching
   endpoints: (builder) => ({
     // ================================================== DB Connection Endpoints ================================================== //

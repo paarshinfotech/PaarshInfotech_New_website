@@ -10,12 +10,15 @@ export async function POST(request) {
   try {
     const data = await request.json();
     const {
+      id,
       name,
       tagline,
       description,
       heroImageBase64,
       features,
-      gallery
+      gallery,
+      videoUrl,
+      videoThumbnail,
     } = data;
 
     if (
@@ -57,13 +60,31 @@ export async function POST(request) {
       })
     );
 
+    let videoThumbnailUrl = "";
+    if (videoThumbnail) {
+      if (videoThumbnail.startsWith('data:image/')) {
+        videoThumbnailUrl = (await uploadBase64(videoThumbnail, `thumb-${name}-${Date.now()}`)) || "";
+      } else {
+        videoThumbnailUrl = videoThumbnail;
+      }
+    }
+
+    let finalVideoUrl = videoUrl || "";
+    if (videoUrl && videoUrl.startsWith('data:video/')) {
+      finalVideoUrl = (await uploadBase64(videoUrl, `video-${name}-${Date.now()}`)) || videoUrl;
+    }
+
     const newProduct = new ProductModel({
+      id: id || name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
       name,
       tagline,
       description,
       heroImageBase64: heroImageUrl,
       features,
-      gallery: galleryData
+      gallery: galleryData,
+      videoUrl: finalVideoUrl,
+      videoThumbnail: videoThumbnailUrl,
+      published: true,
     });
 
     await newProduct.save();
@@ -104,6 +125,7 @@ export async function PUT(request) {
     const data = await request.json();
     const {
       _id,
+      id,
       name,
       tagline,
       description,
@@ -111,6 +133,8 @@ export async function PUT(request) {
       features,
       gallery,
       published,
+      videoUrl,
+      videoThumbnail,
     } = data;
 
     if (!_id) {
@@ -123,6 +147,7 @@ export async function PUT(request) {
     const updateData = {};
 
     // Add simple fields if they exist
+    if (id !== undefined) updateData.id = id;
     if (name !== undefined) updateData.name = name;
     if (tagline !== undefined) updateData.tagline = tagline;
     if (description !== undefined) updateData.description = description;
@@ -140,10 +165,11 @@ export async function PUT(request) {
           throw new Error("Failed to upload hero image");
         }
         updateData.heroImageBase64 = heroImageUrl;
-      } else if (heroImageBase64.startsWith('http://') || heroImageBase64.startsWith('https://')) {
+      } else if (heroImageBase64.startsWith('http://') || heroImageBase64.startsWith('https://') || heroImageBase64.startsWith('/')) {
         updateData.heroImageBase64 = heroImageBase64;
       } else {
-        throw new Error("Invalid hero image format. Must be base64 data or valid URL");
+        // Ignore invalid format silently — don't throw, just skip
+        console.warn("Skipping invalid hero image format:", heroImageBase64.substring(0, 30));
       }
     }
 
@@ -161,15 +187,35 @@ export async function PUT(request) {
                 throw new Error(`Failed to upload gallery image ${index}`);
               }
               return { ...item, src: imageUrl, srcBase64: imageUrl };
-            } else if (item.srcBase64.startsWith('http://') || item.srcBase64.startsWith('https://')) {
+            } else if (item.srcBase64.startsWith('http://') || item.srcBase64.startsWith('https://') || item.srcBase64.startsWith('/')) {
               return { ...item, src: item.srcBase64, srcBase64: item.srcBase64 };
             } else {
-              throw new Error(`Invalid gallery image format at index ${index}. Must be base64 data or valid URL`);
+              // Skip invalid format silently — keep existing item
+              return item;
             }
           }
           return item;
         })
       );
+    }
+
+    // Handle video URL and Thumbnail if provided
+    if (videoUrl !== undefined) {
+      if (typeof videoUrl === "string" && videoUrl.startsWith('data:video/')) {
+        const uploaded = await uploadBase64(videoUrl, `video-${_id}-${Date.now()}`);
+        updateData.videoUrl = uploaded || videoUrl;
+      } else {
+        updateData.videoUrl = videoUrl;
+      }
+    }
+
+    if (videoThumbnail !== undefined) {
+      if (typeof videoThumbnail === "string" && videoThumbnail.startsWith('data:image/')) {
+        const thumbUrl = await uploadBase64(videoThumbnail, `thumb-${_id}-${Date.now()}`);
+        updateData.videoThumbnail = thumbUrl || videoThumbnail;
+      } else {
+        updateData.videoThumbnail = videoThumbnail;
+      }
     }
 
     // Only proceed with update if there are fields to update

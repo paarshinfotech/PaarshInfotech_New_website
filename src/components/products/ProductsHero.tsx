@@ -12,14 +12,7 @@ import {
   LuGraduationCap,
 } from "react-icons/lu";
 import { useGetProductsQuery } from "@/services/api";
-
-interface Product {
-  _id: string;
-  name: string;
-  description: string;
-  image: string;
-  link: string;
-}
+import { Product } from "@/lib/productsData";
 
 type IconType = typeof LuArrowRight;
 
@@ -85,11 +78,13 @@ export default function ProductsHero() {
               <div>Error loading products</div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {productsData?.data?.map((product : Product, index : number) => {
+                {productsData?.data
+                  ?.filter((product: Product) => product.published)
+                  ?.map((product: Product, index: number) => {
                   const Icon = productIcons[product.name] || LuLayers; // Fallback to LuLayers if no icon match
                   return (
                     <motion.div
-                      key={product._id}
+                      key={product._id || product.id || index}
                       className="flex items-center gap-3 p-2 rounded-md bg-white border border-gray-100 hover:border-primary/30 transition-all duration-300"
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}

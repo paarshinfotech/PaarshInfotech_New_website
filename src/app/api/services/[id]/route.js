@@ -7,7 +7,10 @@ await _db();
 
 export async function GET(request , { params }) {
   try {
-    const service = await ServiceModel.findById(params.id);
+    const { id } = await params;
+    const service = mongoose.Types.ObjectId.isValid(id)
+      ? await ServiceModel.findById(id)
+      : await ServiceModel.findOne({ id });
     if (!service) {
       return NextResponse.json(
         { success: false, error: "Service not found" },

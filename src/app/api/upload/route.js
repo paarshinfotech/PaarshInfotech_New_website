@@ -9,7 +9,8 @@ export async function POST(request) {
   try {
     const formData = await request.formData();
     const file = formData.get('file');
-    const category = formData.get('category') || 'other';
+    const rawCategory = formData.get('category');
+    const category = typeof rawCategory === 'string' && rawCategory.trim() ? rawCategory.trim() : 'other';
 
     if (!file) {
       return NextResponse.json(

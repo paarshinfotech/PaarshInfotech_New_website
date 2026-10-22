@@ -73,18 +73,35 @@ const getProductIcon = (productName: string) => {
   }
 };
 
-export default function ProductShowcase() {
+interface ProductShowcaseProps {
+  selectedProduct?: Product | null;
+  onSelectProduct?: (product: Product) => void;
+}
+
+export default function ProductShowcase({
+  selectedProduct: externalSelectedProduct,
+  onSelectProduct,
+}: ProductShowcaseProps = {}) {
   const { data: productsData, isLoading, isError, error } = useGetProductsQuery(undefined);
 
-  // Initialize activeProduct as null and set it when products are available
-  const [activeProduct, setActiveProduct] = useState<Product | null>(null);
+  // Initialize internal state if not controlled
+  const [internalActiveProduct, setInternalActiveProduct] = useState<Product | null>(null);
+
+  const activeProduct = externalSelectedProduct !== undefined ? externalSelectedProduct : internalActiveProduct;
+
+  const handleSelectProduct = (product: Product) => {
+    if (onSelectProduct) {
+      onSelectProduct(product);
+    }
+    setInternalActiveProduct(product);
+  };
 
   // Set activeProduct when productsData is available
   useEffect(() => {
     if (productsData?.data?.length) {
       const publishedProducts = productsData.data.filter((p: Product) => p.published);
       if (publishedProducts.length > 0 && !activeProduct) {
-        setActiveProduct(publishedProducts[0]);
+        handleSelectProduct(publishedProducts[0]);
       }
     }
   }, [productsData, activeProduct]);
@@ -155,7 +172,7 @@ export default function ProductShowcase() {
               >
                 <Button
                   variant={activeProduct?._id === product._id ? "default" : "outline"}
-                  onClick={() => setActiveProduct(product)}
+                  onClick={() => handleSelectProduct(product)}
                   className="capitalize rounded-full px-4 py-2 text-xs font-medium transition-all duration-200 hover:scale-105"
                   size="sm"
                 >
