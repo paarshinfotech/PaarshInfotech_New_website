@@ -65,7 +65,7 @@ const registrationSchema = new mongoose.Schema(
     },
     paymentScreenshotUrl: {
       type: String,
-      default: '',
+      required: true,
     },
     paymentInfo: {
       paymentId: { type: String, default: '' },

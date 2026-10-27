@@ -1083,23 +1083,40 @@ export default function RegistrationsPage() {
               {/* Documents */}
               <div>
                 <h3 className="text-sm sm:text-base font-semibold mb-2 pb-1.5 border-b">Documents</h3>
-                <div>
-                  <h4 className="font-semibold text-xs text-muted-foreground mb-2">Resume</h4>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="text-xs h-8"
-                    onClick={() => window.open(selectedRegistration.resumeUrl, '_blank')}
-                  >
-                    View Resume
-                  </Button>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-2">Resume</h4>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs h-8 w-full sm:w-auto"
+                      onClick={() => window.open(selectedRegistration.resumeUrl, '_blank')}
+                    >
+                      View Resume
+                    </Button>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-xs text-muted-foreground mb-2">Payment Screenshot</h4>
+                    {selectedRegistration.paymentScreenshotUrl ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-xs h-8 w-full sm:w-auto"
+                        onClick={() => window.open(selectedRegistration.paymentScreenshotUrl, '_blank')}
+                      >
+                        View Payment Screenshot
+                      </Button>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">No screenshot uploaded</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
-              {/* Payment History */}
-              <div>
-                <h3 className="text-sm sm:text-base font-semibold mb-2 pb-1.5 border-b">Payment History</h3>
-                {selectedRegistration.paymentInfo?.paymentId ? (
+              {/* Payment History (if paid online) */}
+              {selectedRegistration.paymentInfo?.paymentId && (
+                <div>
+                  <h3 className="text-sm sm:text-base font-semibold mb-2 pb-1.5 border-b">Online Payment History</h3>
                   <div className="rounded-lg border bg-emerald-50/70 border-emerald-200 p-4 space-y-3">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-emerald-800 uppercase tracking-wide flex items-center gap-1.5">
@@ -1132,22 +1149,8 @@ export default function RegistrationsPage() {
                       </div>
                     </div>
                   </div>
-                ) : (
-                  <div className="rounded-lg border bg-yellow-50 border-yellow-200 p-4">
-                    <p className="text-sm text-yellow-800">No online payment recorded for this registration.</p>
-                    {selectedRegistration.paymentScreenshotUrl && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-xs h-8 mt-2"
-                        onClick={() => window.open(selectedRegistration.paymentScreenshotUrl, '_blank')}
-                      >
-                        View Payment Screenshot
-                      </Button>
-                    )}
-                  </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           )}
         </DialogContent>

@@ -59,11 +59,9 @@ export default function RegisterPage() {
   const [resumeUrl, setResumeUrl] = useState("");
   const [resumeUploading, setResumeUploading] = useState(false);
 
+  const [paymentFile, setPaymentFile] = useState<File | null>(null);
   const [paymentUrl, setPaymentUrl] = useState("");
   const [paymentUploading, setPaymentUploading] = useState(false);
-  const [paymentAmount, setPaymentAmount] = useState("");
-  const [razorpayLoading, setRazorpayLoading] = useState(false);
-  const [paymentDetails, setPaymentDetails] = useState<{ paymentId?: string; orderId?: string } | null>(null);
 
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [acceptedRefundPolicy, setAcceptedRefundPolicy] = useState(false);
@@ -92,241 +90,10 @@ export default function RegisterPage() {
     internshipNote: "",
   });
 
-  const handlePayment = async () => {
-    if (!formData.fullName || !formData.email || !formData.contactNumber) {
-      toast({
-        title: "Information Required",
-        description: "Please enter your Full Name, Email, and Contact Number first.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const amountNum = parseFloat(paymentAmount);
-    if (!paymentAmount || isNaN(amountNum) || amountNum <= 0) {
-      toast({
-        title: "Amount Required",
-        description: "Please enter a valid registration fee amount before proceeding.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setRazorpayLoading(true);
-    try {
-      // 1. Try Cashfree Payment Gateway first
-      const cfResponse = await fetch("/api/cashfree/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: amountNum,
-          customerName: formData.fullName,
-          customerEmail: formData.email,
-          customerPhone: formData.contactNumber,
-        }),
-      });
-
-      const cfData = await cfResponse.json();
-
-      if (cfData.success && cfData.paymentSessionId) {
-        // Load Cashfree JS SDK v3
-        const isLoaded = await new Promise((resolve) => {
-          if ((window as any).Cashfree) {
-            resolve(true);
-            return;
-          }
-          const script = document.createElement("script");
-          script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
-          script.onload = () => resolve(true);
-          script.onerror = () => resolve(false);
-          document.body.appendChild(script);
-        });
-
-        if (!isLoaded || !(window as any).Cashfree) {
-          throw new Error("Failed to load Cashfree payment gateway SDK.");
-        }
-
-        const cashfree = (window as any).Cashfree({
-          mode: cfData.mode || "production",
-        });
-
-        const checkoutResult = await cashfree.checkout({
-          paymentSessionId: cfData.paymentSessionId,
-          redirectTarget: "_modal",
-        });
-
-        if (checkoutResult?.error) {
-          toast({
-            title: "Payment Cancelled",
-            description: checkoutResult.error.message || "Payment modal was closed.",
-            variant: "destructive",
-          });
-          return;
-        }
-
-        // Verify payment with server
-        const verifyRes = await fetch("/api/cashfree/verify-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: cfData.orderId }),
-        });
-
-        const verifyData = await verifyRes.json();
-        if (verifyData.success) {
-          setPaymentUrl(verifyData.paymentUrl || `https://merchant.cashfree.com/merchants/orders/${cfData.orderId}`);
-          setPaymentDetails({
-            paymentId: verifyData.paymentId,
-            orderId: cfData.orderId,
-          });
-          toast({
-            title: "Payment Successful!",
-            description: `Payment ID: ${verifyData.paymentId}`,
-          });
-        } else {
-          throw new Error(verifyData.error || "Payment verification failed.");
-        }
-        return;
-      }
-
-      // 2. Fallback to Razorpay if Cashfree is not available
-      const rzpLoaded = await new Promise((resolve) => {
-        if ((window as any).Razorpay) {
-          resolve(true);
-          return;
-        }
-        const script = document.createElement("script");
-        script.src = "https://checkout.razorpay.com/v1/checkout.js";
-        script.onload = () => resolve(true);
-        script.onerror = () => resolve(false);
-        document.body.appendChild(script);
-      });
-
-      if (!rzpLoaded) {
-        throw new Error(cfData.error || "Failed to load payment gateway script.");
-      }
-
-      const response = await fetch("/api/razorpay/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          amount: amountNum,
-          currency: "INR",
-          notes: {
-            fullName: formData.fullName,
-            email: formData.email,
-            contactNumber: formData.contactNumber,
-          },
-        }),
-      });
-
-      const data = await response.json();
-      if (!data.success) {
-        throw new Error(data.error || "Failed to create payment order");
-      }
-
-      const options = {
-        key: data.keyId || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_SLBxzQHGTzUTCO",
-        amount: data.order.amount,
-        currency: data.order.currency,
-        name: "Paarsh Infotech Pvt. Ltd.",
-        description: "Internship Registration Fee",
-        order_id: data.order.id,
-        handler: async function (res: any) {
-          try {
-            const verifyRes = await fetch("/api/razorpay/verify-payment", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                razorpay_order_id: res.razorpay_order_id,
-                razorpay_payment_id: res.razorpay_payment_id,
-                razorpay_signature: res.razorpay_signature,
-              }),
-            });
-            const verifyData = await verifyRes.json();
-
-            if (verifyData.success) {
-              setPaymentUrl(verifyData.paymentUrl || `https://razorpay.com/payment/${res.razorpay_payment_id}`);
-              setPaymentDetails({
-                paymentId: res.razorpay_payment_id,
-                orderId: res.razorpay_order_id,
-              });
-              toast({
-                title: "Payment Successful!",
-                description: `Payment ID: ${res.razorpay_payment_id}`,
-              });
-            } else {
-              throw new Error(verifyData.error || "Payment verification failed");
-            }
-          } catch (err: any) {
-            toast({
-              title: "Verification Failed",
-              description: err.message,
-              variant: "destructive",
-            });
-          }
-        },
-        prefill: {
-          name: formData.fullName,
-          email: formData.email,
-          contact: formData.contactNumber,
-        },
-        theme: {
-          color: "#1d4ed8",
-        },
-      };
-
-      const paymentObject = new (window as any).Razorpay(options);
-      paymentObject.open();
-    } catch (error: any) {
-      toast({
-        title: "Payment Error",
-        description: error.message || "Failed to launch payment gateway",
-        variant: "destructive",
-      });
-    } finally {
-      setRazorpayLoading(false);
-    }
-  };
-
-  const handleRazorpayPayment = handlePayment;
-
-  // Check for Cashfree redirect callback & fetch dropdown data on mount
+  // Fetch dropdown data on mount
   useEffect(() => {
     fetchDropdownData();
-
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const cfOrderId = params.get("cf_order_id") || params.get("order_id");
-      if (cfOrderId && !paymentDetails) {
-        setRazorpayLoading(true);
-        fetch("/api/cashfree/verify-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: cfOrderId }),
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.success) {
-              setPaymentUrl(data.paymentUrl || `https://merchant.cashfree.com/merchants/orders/${cfOrderId}`);
-              setPaymentDetails({
-                paymentId: data.paymentId,
-                orderId: data.orderId,
-              });
-              if (data.amount) {
-                setPaymentAmount(String(data.amount));
-              }
-              toast({
-                title: "Payment Verified!",
-                description: `Payment ID: ${data.paymentId}`,
-              });
-            }
-          })
-          .catch(console.error)
-          .finally(() => setRazorpayLoading(false));
-      }
-    }
   }, []);
-
 
   const fetchDropdownData = async () => {
     try {
@@ -398,8 +165,9 @@ export default function RegisterPage() {
         setUrl(data.data.url);
         toast({
           title: "Success",
-          description: `${category === "resume" ? "Resume" : "Payment screenshot"
-            } uploaded successfully`,
+          description: `${
+            category === "resume" ? "Resume" : "Payment screenshot"
+          } uploaded successfully`,
         });
       } else {
         throw new Error(data.error);
@@ -422,19 +190,10 @@ export default function RegisterPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!resumeUrl) {
+    if (!resumeUrl || !paymentUrl) {
       toast({
         title: "Error",
-        description: "Please upload your resume before submitting.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!paymentUrl || !paymentDetails) {
-      toast({
-        title: "Payment Required",
-        description: "Please complete the registration fee payment before submitting.",
+        description: "Please upload both resume and payment screenshot",
         variant: "destructive",
       });
       return;
@@ -470,14 +229,7 @@ export default function RegisterPage() {
           ...formData,
           hasLaptop: formData.hasLaptop === "yes",
           resumeUrl,
-          paymentInfo: {
-            paymentId: paymentDetails.paymentId || "",
-            orderId:   paymentDetails.orderId   || "",
-            amount:    parseFloat(paymentAmount) || 0,
-            currency:  "INR",
-            paidAt:    new Date().toISOString(),
-            status:    "paid",
-          },
+          paymentScreenshotUrl: paymentUrl,
         }),
       });
 
@@ -501,9 +253,8 @@ export default function RegisterPage() {
         });
         setResumeFile(null);
         setResumeUrl("");
+        setPaymentFile(null);
         setPaymentUrl("");
-        setPaymentAmount("");
-        setPaymentDetails(null);
         setAcceptedTerms(false);
         setAcceptedRefundPolicy(false);
 
@@ -691,8 +442,8 @@ export default function RegisterPage() {
                         >
                           {formData.college
                             ? colleges.find(
-                              (college) => college._id === formData.college
-                            )?.name
+                                (college) => college._id === formData.college
+                              )?.name
                             : "Select your college"}
                           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -745,8 +496,8 @@ export default function RegisterPage() {
                         >
                           {formData.internshipType
                             ? internshipTypes.find(
-                              (type) => type._id === formData.internshipType
-                            )?.name
+                                (type) => type._id === formData.internshipType
+                              )?.name
                             : "Select internship type"}
                           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
@@ -967,55 +718,33 @@ export default function RegisterPage() {
                     </div>
                   </div>
 
-                  {/* Direct Online Payment */}
+                  {/* Payment Screenshot Upload */}
                   <div>
-                    <Label className="text-base font-semibold">Registration Fee Payment *</Label>
-                    <div className="mt-2 p-4 border rounded-lg bg-blue-50/40 space-y-3">
-                      <p className="text-sm text-slate-600">
-                        Pay registration fee securely online (UPI, Credit/Debit Cards, NetBanking, Wallets).
-                      </p>
-
-                      {paymentUrl && paymentDetails ? (
-                        <div className="p-4 bg-green-50 border border-green-200 rounded-md text-sm text-green-700 space-y-1.5">
-                          <div className="flex items-center gap-2 font-semibold text-base">
-                            <Check className="h-5 w-5 text-green-600" />
-                            Payment Completed Successfully!
-                          </div>
-                          <p className="text-xs text-green-800">
-                            Transaction ID: <span className="font-mono font-bold">{paymentDetails.paymentId}</span>
-                          </p>
+                    <Label htmlFor="payment">Payment Screenshot *</Label>
+                    <div className="mt-2">
+                      <Input
+                        id="payment"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setPaymentFile(file);
+                            handleFileUpload(file, "payment");
+                          }
+                        }}
+                        disabled={paymentUploading}
+                      />
+                      {paymentUploading && (
+                        <div className="flex items-center gap-2 mt-2 text-sm text-blue-600">
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Uploading...
                         </div>
-                      ) : (
-                        <div className="space-y-3">
-                          <div>
-                            <Label htmlFor="paymentAmount">Enter Amount (₹) *</Label>
-                            <Input
-                              id="paymentAmount"
-                              type="number"
-                              min="1"
-                              step="1"
-                              placeholder="Enter registration fee amount"
-                              value={paymentAmount}
-                              onChange={(e) => setPaymentAmount(e.target.value)}
-                              disabled={razorpayLoading}
-                              className="mt-1"
-                            />
-                          </div>
-                          <Button
-                            type="button"
-                            onClick={handlePayment}
-                            disabled={razorpayLoading || !paymentAmount}
-                            className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 text-base"
-                          >
-                            {razorpayLoading ? (
-                              <>
-                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                                Opening Payment Gateway...
-                              </>
-                            ) : (
-                              "Pay Online Securely"
-                            )}
-                          </Button>
+                      )}
+                      {paymentUrl && (
+                        <div className="flex items-center gap-2 mt-2 text-sm text-green-600">
+                          <Check className="h-4 w-4" />
+                          Payment screenshot uploaded successfully
                         </div>
                       )}
                     </div>
@@ -1032,14 +761,14 @@ export default function RegisterPage() {
                     onClick={() => setShowPolicies((prev) => !prev)}
                     aria-expanded={showPolicies}
                   >
-
+                    
                     {showPolicies
                       ? "Hide Details"
                       : "Show Terms & Conditions & Refund Policy"}{showPolicies ? (
-                        <ChevronLeft className="h-4 w-4 transition-transform duration-200" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4 transition-transform duration-200" />
-                      )}
+                      <ChevronLeft className="h-4 w-4 transition-transform duration-200" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 transition-transform duration-200" />
+                    )}
                   </button>
                   {showPolicies && (
                     <div className="space-y-6 mt-4">
